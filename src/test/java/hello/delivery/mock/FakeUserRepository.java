@@ -50,20 +50,6 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByOwnerUsername(String username) {
-        return data.stream()
-                .filter(u -> u.getUsername().equals(username) && u.getRole() == OWNER)
-                .findAny();
-    }
-
-    @Override
-    public Optional<User> findByCustomerUsername(String username) {
-        return data.stream()
-                .filter(u -> u.getUsername().equals(username) && u.getRole() == CUSTOMER)
-                .findAny();
-    }
-
-    @Override
     public boolean existsByUsername(String username) {
         return data.stream()
                 .anyMatch(u -> u.getUsername().equals(username));

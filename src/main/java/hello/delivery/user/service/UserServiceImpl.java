@@ -40,9 +40,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserNotFound::new);
         user.checkPassword(login.getPassword());
 
-        user = user.login();
-        userRepository.save(user);
-
         return user;
     }
 

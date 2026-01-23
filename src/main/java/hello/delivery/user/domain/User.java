@@ -66,17 +66,6 @@ public class User {
         }
     }
 
-    public User login() {
-        return User.builder()
-                .id(id)
-                .name(name)
-                .username(username)
-                .password(password)
-                .address(address)
-                .role(role)
-                .build();
-    }
-
     public boolean isNotOwner(Long anotherId) {
         return !this.id.equals(anotherId);
     }

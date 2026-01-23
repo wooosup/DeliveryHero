@@ -65,9 +65,14 @@
 
 --- 
 
-## 실행 방법
+## Architecture Diagram
+<div align="center">
+    <img src="src/main/resources/static/img.png" width="700">
+</div>
 
-- 빌드: ./gradlew build
-- 실행: ./gradlew bootRun
-- 테스트: ./gradlew test
+## How to run
+
+- build: ./gradlew build
+- run: ./gradlew bootRun
+- test: ./gradlew test
 - swagger: http://localhost:8080/swagger-ui/index.html

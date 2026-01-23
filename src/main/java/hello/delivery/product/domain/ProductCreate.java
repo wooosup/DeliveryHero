@@ -23,16 +23,20 @@ public class ProductCreate {
     @NotNull(message = "상품 타입은 필수 입력 값입니다.")
     private final ProductType type;
 
+    private final Integer stock;
+
     @Builder
     private ProductCreate(
             @JsonProperty("storeName") String storeName,
             @JsonProperty("name") String name,
             @JsonProperty("price") int price,
-            @JsonProperty("type") ProductType type) {
+            @JsonProperty("type") ProductType type,
+            @JsonProperty("stock") Integer stock) {
         this.storeName = storeName;
         this.name = name;
         this.price = price;
         this.type = type;
+        this.stock = stock;
     }
 
 }

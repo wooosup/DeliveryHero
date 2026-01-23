@@ -3,7 +3,9 @@ package hello.delivery.order.service;
 import static hello.delivery.user.domain.UserRole.CUSTOMER;
 import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import hello.delivery.common.exception.StockException;
 import hello.delivery.delivery.service.DeliveryServiceImpl;
 import hello.delivery.mock.FakeDeliveryRepository;
 import hello.delivery.mock.FakeFinder;
@@ -17,6 +19,7 @@ import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderCreate;
 import hello.delivery.order.domain.OrderProductRequest;
 import hello.delivery.product.domain.Product;
+import hello.delivery.product.domain.Stock;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.service.StoreServiceImpl;
 import hello.delivery.user.domain.User;
@@ -34,11 +37,13 @@ class OrderServiceTest {
 
     private static final int PRODUCT_PRICE = 20000;
     private static final int ORDER_QUANTITY = 2;
+    public static final int ORDER_STOCK_QUANTITY = 11;
     private static final String ADDRESS = "대구시 달서구";
 
     private User customer;
     private Store store;
     private Product product;
+    private Product productWithStock;
 
     @BeforeEach
     void setUp() {
@@ -67,6 +72,7 @@ class OrderServiceTest {
         customer = buildUser();
         store = buildStore(owner);
         product = buildProduct(store);
+        productWithStock = buildProductWithStock(store);
     }
 
     @Test
@@ -85,6 +91,18 @@ class OrderServiceTest {
         assertThat(order.getTotalPrice()).isEqualTo(PRODUCT_PRICE * ORDER_QUANTITY);
 
         assertThat(fakeDeliveryRepository.findByOrderId(order.getId())).isNotNull();
+    }
+
+    @Test
+    @DisplayName("재고가 부족한 상품을 주문하면 예외를 던진다.")
+    void validateOrderOf() {
+        // given
+        OrderCreate orderCreate = createOrderCreateWithStock(store, productWithStock);
+
+        // expect
+        assertThatThrownBy(() -> orderService.order(customer.getId(), orderCreate))
+                .isInstanceOf(StockException.class)
+                .hasMessageContaining("재고가 부족합니다. 현재 재고: " + productWithStock.getStock().getQuantity());
     }
 
     @Test
@@ -108,6 +126,19 @@ class OrderServiceTest {
         OrderProductRequest orderProduct = OrderProductRequest.builder()
                 .productName(product.getName())
                 .quantity(ORDER_QUANTITY)
+                .build();
+
+        return OrderCreate.builder()
+                .storeName(store.getName())
+                .orderProducts(List.of(orderProduct))
+                .address(ADDRESS)
+                .build();
+    }
+
+    private OrderCreate createOrderCreateWithStock(Store store, Product product) {
+        OrderProductRequest orderProduct = OrderProductRequest.builder()
+                .productName(product.getName())
+                .quantity(ORDER_STOCK_QUANTITY)
                 .build();
 
         return OrderCreate.builder()
@@ -163,4 +194,17 @@ class OrderServiceTest {
         fakeFinder.addProduct(savedProduct);
         return savedProduct;
     }
+
+    private Product buildProductWithStock(Store store) {
+        Product savedProduct = fakeProductRepository.save(Product.builder()
+                .id(2L)
+                .name("콜라")
+                .price(PRODUCT_PRICE)
+                .store(store)
+                .stock(Stock.of(10))
+                .build());
+        fakeFinder.addProduct(savedProduct);
+        return savedProduct;
+    }
+
 }

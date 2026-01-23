@@ -102,10 +102,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private void validateProductDuplicate(Store store, String name) {
-        productRepository.findByStoreAndName(store, name)
-                .ifPresent(product -> {
-                    throw new ProductException("이미 존재하는 상품입니다.");
-                });
+        if (productRepository.existsByStoreAndName(store, name)) {
+            throw new ProductException("이미 존재하는 상품입니다.");
+        }
     }
 
     private static void validateList(List<ProductCreate> requests) {

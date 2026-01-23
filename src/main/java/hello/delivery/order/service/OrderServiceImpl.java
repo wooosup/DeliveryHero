@@ -38,7 +38,6 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderProduct> orderProducts = createOrderProducts(store, request.getOrderProducts());
         Order order = Order.order(user, store, orderProducts, request.getAddress(), clockHolder);
-
         storeService.addTotalSales(store.getId(), order.getTotalPrice());
 
         Order savedOrder = orderRepository.save(order);
@@ -60,8 +59,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderProduct createOrderProduct(Store store, OrderProductRequest request) {
-        Product product = productRepository.findByStoreAndName(store, request.getProductName())
+        Product product = productRepository.findByStoreAndNameWithLock(store, request.getProductName())
                 .orElseThrow(ProductNotFound::new);
+
+        Product decreasedProduct = product.decreaseStock(request.getQuantity());
+        productRepository.save(decreasedProduct);
 
         return OrderProduct.create(product, request.getQuantity());
     }

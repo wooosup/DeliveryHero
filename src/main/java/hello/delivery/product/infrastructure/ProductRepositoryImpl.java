@@ -18,11 +18,6 @@ public class ProductRepositoryImpl implements ProductRepository {
     private final ProductJpaRepository productJpaRepository;
 
     @Override
-    public Optional<Product> findByProductName(String productName) {
-        return productJpaRepository.findByName(productName).map(ProductEntity::toDomain);
-    }
-
-    @Override
     public Optional<Product> findById(Long id) {
         return productJpaRepository.findById(id).map(ProductEntity::toDomain);
     }
@@ -74,9 +69,14 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Optional<Product> findByStoreAndName(Store store, String name) {
-        return productJpaRepository.findByStoreAndName(StoreEntity.of(store), name)
+    public Optional<Product> findByStoreAndNameWithLock(Store store, String name) {
+        return productJpaRepository.findByStoreAndNameWithLock(StoreEntity.of(store), name)
                 .map(ProductEntity::toDomain);
+    }
+
+    @Override
+    public boolean existsByStoreAndName(Store store, String name) {
+        return productJpaRepository.existsByStoreAndName(StoreEntity.of(store), name);
     }
 
     @Override

@@ -74,7 +74,7 @@ public class FakeProductRepository implements ProductRepository {
     }
 
     @Override
-    public Optional<Product> findByStoreAndName(Store store, String name) {
+    public Optional<Product> findByStoreAndNameWithLock(Store store, String name) {
         return data.stream()
                 .filter(product -> product.getStore().getId().equals(store.getId()) &&
                         product.getName().equals(name))
@@ -82,17 +82,17 @@ public class FakeProductRepository implements ProductRepository {
     }
 
     @Override
+    public boolean existsByStoreAndName(Store store, String name) {
+        return data.stream()
+                .anyMatch(product -> product.getStore().getId().equals(store.getId()) &&
+                        product.getName().equals(name));
+    }
+
+    @Override
     public List<Product> findByStore(Store store) {
         return data.stream()
                 .filter(product -> product.getStore().getId().equals(store.getId()))
                 .toList();
-    }
-
-    @Override
-    public Optional<Product> findByProductName(String productName) {
-        return data.stream()
-                .filter(product -> product.getName().equals(productName))
-                .findAny();
     }
 
 }

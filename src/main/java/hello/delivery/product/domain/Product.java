@@ -17,10 +17,11 @@ public class Product {
     private final int price;
     private final ProductType productType;
     private final ProductSellingStatus productSellingStatus;
+    private final Stock stock;
 
     @Builder
     private Product(Long id, Store store, User owner, String name, int price, ProductType productType,
-                    ProductSellingStatus productSellingStatus) {
+                    ProductSellingStatus productSellingStatus, Stock stock) {
         this.id = id;
         this.store = store;
         this.owner = owner;
@@ -28,6 +29,7 @@ public class Product {
         this.price = price;
         this.productType = productType;
         this.productSellingStatus = productSellingStatus;
+        this.stock = stock;
     }
 
     public static Product of(ProductCreate productCreate, Store store, User owner) {
@@ -36,9 +38,11 @@ public class Product {
                 .name(productCreate.getName())
                 .price(productCreate.getPrice())
                 .productType(productCreate.getType())
-                .productSellingStatus(ProductSellingStatus.SELLING)
+                .productSellingStatus(isZeroStock(productCreate.getStock())
+                        ? ProductSellingStatus.SOLD_OUT : ProductSellingStatus.SELLING)
                 .store(store)
                 .owner(owner)
+                .stock(Stock.of(productCreate.getStock()))
                 .build();
     }
 
@@ -58,8 +62,37 @@ public class Product {
                 .productType(productType)
                 .productSellingStatus(newStatus)
                 .owner(owner)
+                .stock(stock)
                 .build();
+    }
 
+    public Product decreaseStock(int quantity) {
+        if (productSellingStatus == ProductSellingStatus.SOLD_OUT) {
+            throw new ProductException("품절된 상품입니다.");
+        }
+        if (stock == null) {
+            return this;
+        }
+
+        Stock newStock = this.stock.decrease(quantity);
+
+        ProductSellingStatus newStatus = newStock.isSoldOut()
+                ? ProductSellingStatus.SOLD_OUT : productSellingStatus;
+
+        return Product.builder()
+                .id(id)
+                .store(store)
+                .name(name)
+                .price(price)
+                .productType(productType)
+                .productSellingStatus(newStatus)
+                .owner(owner)
+                .stock(newStock)
+                .build();
+    }
+
+    private static boolean isZeroStock(Integer quantity) {
+        return quantity != null && quantity == 0;
     }
 
     private static void validate(ProductCreate productCreate, Store store) {
@@ -76,5 +109,4 @@ public class Product {
             throw new ProductException("가게가 일치하지 않습니다.");
         }
     }
-
 }

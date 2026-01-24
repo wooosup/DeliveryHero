@@ -1,5 +1,7 @@
 package hello.delivery.product.domain;
 
+import static hello.delivery.product.domain.ProductSellingStatus.*;
+
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.StoreException;
 import hello.delivery.store.domain.Store;
@@ -38,8 +40,7 @@ public class Product {
                 .name(productCreate.getName())
                 .price(productCreate.getPrice())
                 .productType(productCreate.getType())
-                .productSellingStatus(isZeroStock(productCreate.getStock())
-                        ? ProductSellingStatus.SOLD_OUT : ProductSellingStatus.SELLING)
+                .productSellingStatus(determineSellingStatus(productCreate.getStock()))
                 .store(store)
                 .owner(owner)
                 .stock(Stock.of(productCreate.getStock()))
@@ -67,7 +68,7 @@ public class Product {
     }
 
     public Product decreaseStock(int quantity) {
-        if (productSellingStatus == ProductSellingStatus.SOLD_OUT) {
+        if (productSellingStatus == SOLD_OUT) {
             throw new ProductException("품절된 상품입니다.");
         }
         if (stock == null) {
@@ -76,8 +77,7 @@ public class Product {
 
         Stock newStock = this.stock.decrease(quantity);
 
-        ProductSellingStatus newStatus = newStock.isSoldOut()
-                ? ProductSellingStatus.SOLD_OUT : productSellingStatus;
+        ProductSellingStatus newStatus = newStock.isSoldOut(productSellingStatus);
 
         return Product.builder()
                 .id(id)
@@ -91,8 +91,11 @@ public class Product {
                 .build();
     }
 
-    private static boolean isZeroStock(Integer quantity) {
-        return quantity != null && quantity == 0;
+    private static ProductSellingStatus determineSellingStatus(Integer quantity) {
+        if (quantity != null && quantity == 0) {
+            return SOLD_OUT;
+        }
+        return SELLING;
     }
 
     private static void validate(ProductCreate productCreate, Store store) {

@@ -5,6 +5,7 @@ import hello.delivery.store.domain.StoreType;
 import hello.delivery.store.service.port.StoreRepository;
 import hello.delivery.user.domain.User;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,11 @@ public class FakeStoreRepository implements StoreRepository {
                     .storeType(store.getStoreType())
                     .name(store.getName())
                     .totalSales(store.getTotalSales())
+                    .openTime(store.getOpenTime())
+                    .closeTime(store.getCloseTime())
+                    .dailySales(store.getDailySales())
+                    .openDate(store.getOpenDate())
+                    .lastSalesDate(store.getLastSalesDate())
                     .build();
             data.add(newStore);
             return newStore;
@@ -61,7 +67,7 @@ public class FakeStoreRepository implements StoreRepository {
     }
 
     @Override
-    public void updateSales(Long storeId, int dailySales, int totalSales, LocalDate lastSalesDate) {
+    public void updateSales(Long storeId, int dailySales, int totalSales, LocalDate lastSalesDate, LocalTime openTime, LocalTime closeTime) {
         data.stream()
                 .filter(store -> store.getId().equals(storeId))
                 .findAny()
@@ -76,6 +82,8 @@ public class FakeStoreRepository implements StoreRepository {
                             .totalSales(totalSales)
                             .openDate(store.getOpenDate())
                             .lastSalesDate(lastSalesDate)
+                            .openTime(openTime)
+                            .closeTime(closeTime)
                             .build();
                     data.add(updatedStore);
                 });

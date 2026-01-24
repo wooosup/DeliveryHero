@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -53,9 +54,13 @@ public class StoreEntity extends BaseEntity {
 
     private LocalDate lastSalesDate;
 
+    private LocalTime openTime;
+
+    private LocalTime closeTime;
+
     @Builder
     private StoreEntity(Long id, UserEntity owner, String name, int dailySales, int totalSales, StoreType storeType,
-                       LocalDate openDate, LocalDate lastSalesDate) {
+                        LocalDate openDate, LocalDate lastSalesDate, LocalTime openTime, LocalTime closeTime) {
         this.id = id;
         this.owner = owner;
         this.name = name;
@@ -64,6 +69,8 @@ public class StoreEntity extends BaseEntity {
         this.storeType = storeType;
         this.openDate = openDate;
         this.lastSalesDate = lastSalesDate;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
     }
 
     public static StoreEntity of(Store store) {
@@ -76,6 +83,8 @@ public class StoreEntity extends BaseEntity {
                 .storeType(store.getStoreType())
                 .openDate(store.getOpenDate())
                 .lastSalesDate(store.getLastSalesDate())
+                .openTime(store.getOpenTime())
+                .closeTime(store.getCloseTime())
                 .build();
     }
 
@@ -89,6 +98,8 @@ public class StoreEntity extends BaseEntity {
                 .storeType(storeType)
                 .openDate(openDate)
                 .lastSalesDate(lastSalesDate)
+                .openTime(openTime)
+                .closeTime(closeTime)
                 .build();
     }
 }

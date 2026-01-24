@@ -3,6 +3,7 @@ package hello.delivery.store.domain;
 import hello.delivery.common.exception.StoreException;
 import hello.delivery.user.domain.User;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,11 +18,13 @@ public class Store {
     private final int totalSales;
     private final LocalDate lastSalesDate;
     private final LocalDate openDate;
+    private final LocalTime openTime;
+    private final LocalTime closeTime;
 
     @Builder
     private Store(Long id, User owner, String name, int dailySales, int totalSales, StoreType storeType,
                   LocalDate openDate,
-                  LocalDate lastSalesDate) {
+                  LocalDate lastSalesDate, LocalTime openTime, LocalTime closeTime) {
         this.id = id;
         this.owner = owner;
         this.name = name;
@@ -30,6 +33,8 @@ public class Store {
         this.storeType = storeType;
         this.openDate = openDate;
         this.lastSalesDate = lastSalesDate;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
     }
 
     public static Store create(StoreCreate storeCreate, User owner, LocalDate currentDate) {
@@ -42,7 +47,31 @@ public class Store {
                 .totalSales(0)
                 .openDate(currentDate)
                 .lastSalesDate(null)
+                .openTime(storeCreate.getOpenTime())
+                .closeTime(storeCreate.getCloseTime())
                 .build();
+    }
+
+    public Store openStore(LocalTime openTime) {
+        return copyWithBuilder()
+                .openTime(openTime)
+                .build();
+    }
+
+    public Store closeStore(LocalTime closeTime) {
+        return copyWithBuilder()
+                .closeTime(closeTime)
+                .build();
+    }
+
+    public boolean isOpening(LocalTime now) {
+        if (openTime == null || closeTime == null) {
+            return false;
+        }
+        if (closeTime.isBefore(openTime)) {
+            return now.isAfter(openTime) || now.isBefore(closeTime);
+        }
+        return !now.isBefore(openTime) && !now.isAfter(closeTime);
     }
 
     public Store addTotalSales(int amount, LocalDate currentDate) {
@@ -55,14 +84,9 @@ public class Store {
             newLastSalesDate = lastSalesDate;
         }
 
-        return Store.builder()
-                .id(id)
-                .owner(owner)
-                .name(name)
-                .storeType(storeType)
+        return copyWithBuilder()
                 .dailySales(newDailySales)
                 .totalSales(newTotalSales)
-                .openDate(openDate)
                 .lastSalesDate(newLastSalesDate)
                 .build();
     }
@@ -84,6 +108,14 @@ public class Store {
             throw new StoreException("가게 타입은 필수 입력 값입니다.");
         }
         owner.validateOwnerRole();
+    }
+
+    private StoreBuilder copyWithBuilder() {
+        return Store.builder()
+                .id(id).owner(owner).name(name).storeType(storeType)
+                .dailySales(dailySales).totalSales(totalSales)
+                .openDate(openDate).lastSalesDate(lastSalesDate)
+                .openTime(openTime).closeTime(closeTime);
     }
 
 }

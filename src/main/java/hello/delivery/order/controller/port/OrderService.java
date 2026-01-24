@@ -8,6 +8,8 @@ public interface OrderService {
 
     Order order(Long userId, OrderCreate request);
 
+    Order accept(Long ownerId, Long orderId);
+
     List<Order> findOrdersByUserId(Long userId);
 
 }

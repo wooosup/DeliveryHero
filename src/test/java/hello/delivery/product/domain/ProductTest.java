@@ -1,7 +1,9 @@
 package hello.delivery.product.domain;
 
 import static hello.delivery.product.domain.ProductSellingStatus.SELLING;
+import static hello.delivery.product.domain.ProductSellingStatus.SOLD_OUT;
 import static hello.delivery.product.domain.ProductSellingStatus.STOP_SELLING;
+import static hello.delivery.product.domain.ProductType.BEVERAGE;
 import static hello.delivery.product.domain.ProductType.FOOD;
 import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +38,56 @@ class ProductTest {
         assertThat(product.getPrice()).isEqualTo(20000);
         assertThat(product.getProductType()).isEqualTo(FOOD);
         assertThat(product.getProductSellingStatus()).isEqualTo(SELLING);
+    }
+
+    @Test
+    @DisplayName("재고가 있는 상품을 생성할 수 있다.")
+    void createProductWithStock() throws Exception {
+        // given
+        User owner = buildOwner();
+        Store store = buildStore(owner);
+        ProductCreate productCreate = ProductCreate.builder()
+                .storeName(store.getName())
+                .name("콜라")
+                .price(1500)
+                .type(BEVERAGE)
+                .stock(5)
+                .build();
+
+        // when
+        Product product = Product.of(productCreate, store, owner);
+
+        // then
+        assertThat(product.getName()).isEqualTo("콜라");
+        assertThat(product.getPrice()).isEqualTo(1500);
+        assertThat(product.getProductType()).isEqualTo(BEVERAGE);
+        assertThat(product.getProductSellingStatus()).isEqualTo(SELLING);
+        assertThat(product.getStock().getQuantity()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("재고가 0이면 품절 상태로 상품을 생성할 수 있다.")
+    void checkProductOfSoldOut() throws Exception {
+        // given
+        User owner = buildOwner();
+        Store store = buildStore(owner);
+        ProductCreate productCreate = ProductCreate.builder()
+                .storeName(store.getName())
+                .name("콜라")
+                .price(1500)
+                .type(BEVERAGE)
+                .stock(0)
+                .build();
+
+        // when
+        Product product = Product.of(productCreate, store, owner);
+
+        // then
+        assertThat(product.getName()).isEqualTo("콜라");
+        assertThat(product.getPrice()).isEqualTo(1500);
+        assertThat(product.getProductType()).isEqualTo(BEVERAGE);
+        assertThat(product.getProductSellingStatus()).isEqualTo(SOLD_OUT);
+        assertThat(product.getStock().getQuantity()).isEqualTo(0);
     }
 
     @Test

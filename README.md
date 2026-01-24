@@ -1,73 +1,31 @@
-## 프로젝트 개요
-
-- 본 프로젝트는 주문에서 배달로 이어지는 배달 플랫폼의 비즈니스 흐름을 구현한 것입니다. 기술적인 측면에서는 도메인 주도 설계를 기반으로 비즈니스 로직을 중심에 두고, Spring Boot나 JPA와 같은 외부 기술에 도메인이 의존하지 않도록 헥사고날 아키텍처를 점진적으로 적용하는 것을 주된 목표로 삼았습니다.
-- [API 문서 바로가기](https://wooosup.github.io/deliveryApp/)
-
-## 기술 스택
-
-- Java 17
-- Spring Boot 3.5.6
-- JPA (H2 인메모리 DB)
-- Swagger
-
-## 도메인
-
-### Store
-
-- [x] 가게 등록/조회 기능을 제공한다.
-- [x] 당일 및 누적 판매금액을 집계한다.
-
-### Product
-
-- [x] 상품 CRUD 기능을 제공한다.
-- [x] 상품 판매 상태와 타입을 관리한다.
-- [x] 사장이 자신의 가게 상품을 관리한다.
-
-### User
-
-- [x] 손님과 사장 역할을 구분하여 회원가입/로그인 기능을 제공한다.
-- [x] 사용자 정보(주소, 비밀번호) 변경을 처리한다.
-- [x] 손님은 주문을 생성하고 자신의 주문 이력을 조회한다.
-
-### Order
-
-- [x] 여러 상품을 한 번에 주문하는 기능을 제공한다.
-- [x] 주문상품 목록과 총 결제 금액을 계산/유지한다.
-
-### OrderProduct
-
-- [x] 주문과 상품의 다대다 관계를 연결하는 중간 테이블을 담당한다.
-- [x] 각 주문상품의 수량 및 금액 정보를 보존한다.
-
-### Rider
-
-- [x] 라이더 등록/로그인 기능을 제공한다.
-- [x] 라이더 상태(대기/배달중/휴식중)를 관리한다.
-- [x] 배차 가능한 라이더 목록을 조회한다.
-
-### Delivery
-
-- [x] 배달 생성 및 조회 기능을 제공한다.
-- [x] 배달 상태(대기/배차완료/픽업완료/배달완료)를 관리한다.
-- [x] 라이더 배차 기능을 제공한다.
-- [x] 배달 시작/완료 처리를 담당한다.
-- [x] 배달 주소 정보를 관리한다.
-
-## 진행 목표 체크리스트
-
-- [x] 가게 등록/조회, 총 판매금액 집계
-- [x] 상품 CRUD, 판매상태/타입 관리
-- [x] 손님, 사장 등록/조회 및 수정
-- [x] 주문 생성, 주문상품 처리, 결제 금액 계산
-- [x] Swagger로 API 문서화
-- [x] 배달 생성/조회, 배차/시작/완료 처리
-- [x] 라이더 등록/로그인, 상태 관리, 배차 가능 목록 조회
+# DeliveryHero
 
 --- 
 
+## Project Overview
+- 본 프로젝트는 배달 플랫폼의 비즈니스 흐름을 구현한 것입니다. 기술적인 측면에서는 도메인 주도 설계를 기반으로 비즈니스 로직을 중심에 두고, Spring Boot나 JPA와 같은 외부 기술에 도메인이 의존하지 않도록 헥사고날 아키텍처를 점진적으로 적용하는 것을 주된 목표로 삼았습니다.
+- [API 문서 바로가기](https://wooosup.github.io/deliveryApp/)
+
+## Technology stack
+
+- Java 17
+- Spring Boot 3.5.6
+- JPA
+- Docker (MySQL)
+- Swagger
+
+## Engineering Focus: Testability
+- **추상화 기반 테스트**: `ClockHolder` 인터페이스를 도입하여 현재 시간 등 외부 환경에 의존적인 로직을 예측 가능하게 테스트함.
+- **도메인 순수성**: 도메인 객체(`User`, `Product` 등)를 순수 Java 객체로 설계하여 프레임워크 기술(JPA 등)의 변화에 영향을 받지 않도록 보호함.
+
 ## Architecture Diagram
 <div align="center">
-    <img src="src/main/resources/static/img.png" width="700">
+    <img src="src/main/resources/static/architecture.png" width="700">
+</div>
+
+## ERD Diagram
+<div align="center">
+    <img src="src/main/resources/static/ERD.png" width="700">
 </div>
 
 ## How to run

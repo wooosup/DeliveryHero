@@ -10,6 +10,7 @@ import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.domain.StoreType;
 import hello.delivery.store.service.port.StoreRepository;
 import hello.delivery.user.domain.User;
+import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,24 @@ public class StoreServiceImpl implements StoreService {
         Store store = Store.create(request, owner, clockHolder.now());
 
         return storeRepository.save(store);
+    }
+
+    @Transactional
+    public Store changeOpenTime(Long id, LocalTime newOpenTime) {
+        Store store = finder.findByStore(id);
+        Store updatedStore = store.openStore(newOpenTime);
+
+        repositoryUpdate(store, updatedStore);
+        return updatedStore;
+    }
+
+    @Transactional
+    public Store changeCloseTime(Long id, LocalTime newCloseTime) {
+        Store store = finder.findByStore(id);
+        Store updatedStore = store.closeStore(newCloseTime);
+
+        repositoryUpdate(store, updatedStore);
+        return updatedStore;
     }
 
     @Transactional
@@ -73,7 +92,9 @@ public class StoreServiceImpl implements StoreService {
                 store.getId(),
                 updatedStore.getDailySales(),
                 updatedStore.getTotalSales(),
-                updatedStore.getLastSalesDate()
+                updatedStore.getLastSalesDate(),
+                updatedStore.getOpenTime(),
+                updatedStore.getCloseTime()
         );
     }
 

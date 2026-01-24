@@ -68,7 +68,7 @@ class StoreServiceImplTest {
         LocalTime newOpenTime = LocalTime.of(8, 0);
 
         //when
-        Store openedStore = storeService.changeOpenTime(store.getId(), newOpenTime);
+        Store openedStore = storeService.changeOpenTime(store.getOwner().getId(), store.getId(), newOpenTime);
 
         //then
         assertThat(openedStore.getOpenTime()).isNotEqualTo(OPEN_TIME);
@@ -86,7 +86,7 @@ class StoreServiceImplTest {
         LocalTime newCloseTime = LocalTime.of(23, 0);
 
         //when
-        Store openedStore = storeService.changeCloseTime(store.getId(), newCloseTime);
+        Store openedStore = storeService.changeCloseTime(store.getOwner().getId(), store.getId(), newCloseTime);
 
         //then
         assertThat(openedStore.getCloseTime()).isNotEqualTo(CLOSE_TIME);

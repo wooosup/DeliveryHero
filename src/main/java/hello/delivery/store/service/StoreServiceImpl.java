@@ -36,19 +36,25 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Transactional
-    public Store changeOpenTime(Long id, LocalTime newOpenTime) {
-        Store store = finder.findByStore(id);
-        Store updatedStore = store.openStore(newOpenTime);
+    public Store changeOpenTime(Long userId, Long storeId, LocalTime newOpenTime) {
+        Store store = finder.findByStore(storeId);
+        User user = finder.findByUser(userId);
 
+        store.validateIsOwner(user);
+
+        Store updatedStore = store.openStore(newOpenTime);
         repositoryUpdate(store, updatedStore);
         return updatedStore;
     }
 
     @Transactional
-    public Store changeCloseTime(Long id, LocalTime newCloseTime) {
-        Store store = finder.findByStore(id);
-        Store updatedStore = store.closeStore(newCloseTime);
+    public Store changeCloseTime(Long userId, Long storeId, LocalTime newCloseTime) {
+        Store store = finder.findByStore(storeId);
+        User user = finder.findByUser(userId);
 
+        store.validateIsOwner(user);
+
+        Store updatedStore = store.closeStore(newCloseTime);
         repositoryUpdate(store, updatedStore);
         return updatedStore;
     }

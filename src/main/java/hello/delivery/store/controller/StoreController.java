@@ -2,6 +2,7 @@ package hello.delivery.store.controller;
 
 import hello.delivery.common.annotation.LoginUser;
 import hello.delivery.common.api.ApiResponse;
+import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.product.controller.port.ProductService;
 import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.product.domain.Product;
@@ -31,6 +32,7 @@ public class StoreController implements StoreControllerDocs {
 
     private final StoreService storeService;
     private final ProductService productService;
+    private final ClockHolder clockHolder;
 
     @Override
     @PostMapping("/new")
@@ -44,7 +46,7 @@ public class StoreController implements StoreControllerDocs {
     @GetMapping("/type/{type}")
     public ApiResponse<List<StoreCustomerResponse>> getStoresByType(@PathVariable StoreType type) {
         List<Store> stores = storeService.findByStoreType(type);
-        return ApiResponse.ok(StoreCustomerResponse.of(stores));
+        return ApiResponse.ok(StoreCustomerResponse.of(stores, clockHolder));
     }
 
     @Override
@@ -58,14 +60,14 @@ public class StoreController implements StoreControllerDocs {
     @GetMapping("/all")
     public ApiResponse<List<StoreCustomerResponse>> findAll() {
         List<Store> stores = storeService.findAll();
-        return ApiResponse.ok(StoreCustomerResponse.of(stores));
+        return ApiResponse.ok(StoreCustomerResponse.of(stores, clockHolder));
     }
 
     @Override
     @GetMapping("/search")
     public ApiResponse<StoreCustomerResponse> searchByName(@RequestParam String name) {
         Store store = storeService.findByName(name);
-        return ApiResponse.ok(StoreCustomerResponse.of(store));
+        return ApiResponse.ok(StoreCustomerResponse.of(store, clockHolder));
     }
 
     @Override

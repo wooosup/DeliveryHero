@@ -10,9 +10,9 @@ public interface StoreService {
 
     Store create(Long userId, StoreCreate request);
 
-    Store changeOpenTime(Long id, LocalTime time);
+    Store changeOpenTime(Long userId, Long storeId, LocalTime time);
 
-    Store changeCloseTime(Long id, LocalTime time);
+    Store changeCloseTime(Long userId, Long storeId, LocalTime time);
 
     void addTotalSales(Long storeId, int amount);
 

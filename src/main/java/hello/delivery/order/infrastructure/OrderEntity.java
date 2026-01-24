@@ -3,6 +3,7 @@ package hello.delivery.order.infrastructure;
 import hello.delivery.common.infrastructure.BaseEntity;
 import hello.delivery.delivery.domain.DeliveryAddress;
 import hello.delivery.order.domain.Order;
+import hello.delivery.order.domain.OrderStatus;
 import hello.delivery.store.infrastructure.StoreEntity;
 import hello.delivery.user.infrastructure.UserEntity;
 import jakarta.persistence.AttributeOverride;
@@ -10,6 +11,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -48,6 +51,9 @@ public class OrderEntity extends BaseEntity {
 
     private LocalDateTime orderedAt;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderProductEntity> orderProducts = new ArrayList<>();
 
@@ -61,6 +67,7 @@ public class OrderEntity extends BaseEntity {
         orderEntity.orderedAt = order.getOrderedAt();
         List<OrderProductEntity> children = OrderProductEntity.of(order.getOrderProducts(), orderEntity);
         orderEntity.orderProducts.addAll(children);
+        orderEntity.orderStatus = order.getOrderStatus();
         return orderEntity;
     }
 
@@ -74,6 +81,7 @@ public class OrderEntity extends BaseEntity {
                 .orderProducts(orderProducts.stream()
                         .map(OrderProductEntity::toDomain)
                         .toList())
+                .orderStatus(orderStatus)
                 .build();
     }
 }

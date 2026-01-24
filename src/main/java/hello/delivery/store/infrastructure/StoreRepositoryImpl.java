@@ -6,6 +6,7 @@ import hello.delivery.store.service.port.StoreRepository;
 import hello.delivery.user.domain.User;
 import hello.delivery.user.infrastructure.UserEntity;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -49,8 +50,8 @@ public class StoreRepositoryImpl implements StoreRepository {
     }
 
     @Override
-    public void updateSales(Long storeId, int dailySales, int totalSales, LocalDate lastSalesDate) {
-        storeJpaRepository.updateSales(storeId, dailySales, totalSales, lastSalesDate);
+    public void updateSales(Long storeId, int dailySales, int totalSales, LocalDate lastSalesDate, LocalTime openTime, LocalTime closeTime) {
+        storeJpaRepository.updateSales(storeId, dailySales, totalSales, lastSalesDate, openTime, closeTime);
     }
 
     @Override

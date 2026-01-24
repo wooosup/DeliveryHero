@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import hello.delivery.mock.TestClockHolder;
 import hello.delivery.user.domain.User;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,9 +19,14 @@ class StoreTest {
         // given
         LocalDate now = new TestClockHolder().now();
         User owner = buildOwner();
+        LocalTime openTime = LocalTime.of(12, 0);
+        LocalTime closeTIme = LocalTime.of(21, 0);
+
         StoreCreate storeCreate = StoreCreate.builder()
                 .storeType(KOREAN_FOOD)
                 .storeName("한식당")
+                .openTime(openTime)
+                .closeTime(closeTIme)
                 .build();
 
         // when
@@ -33,14 +39,42 @@ class StoreTest {
     }
 
     @Test
+    @DisplayName("가게가 오픈했는지 확인한다.")
+    void isOpening() throws Exception {
+        //given
+        LocalDate now = new TestClockHolder().now();
+        User owner = buildOwner();
+        LocalTime openTime = LocalTime.of(12, 0);
+        LocalTime closeTIme = LocalTime.of(21, 0);
+        StoreCreate storeCreate = StoreCreate.builder()
+                .storeType(KOREAN_FOOD)
+                .storeName("한식당")
+                .openTime(openTime)
+                .closeTime(closeTIme)
+                .build();
+        Store store = Store.create(storeCreate, owner, now);
+
+        //when
+        boolean isOpening = store.isOpening(LocalTime.of(13, 0));
+
+        //then
+        assertThat(isOpening).isTrue();
+    }
+
+    @Test
     @DisplayName("총 매출과 일일 매출이 같은 날짜면 누적된다.")
     void addTotalSalesWithSameDay() throws Exception {
         // given
         LocalDate now = new TestClockHolder().now();
         User owner = buildOwner();
+        LocalTime openTime = LocalTime.of(12, 0);
+        LocalTime closeTIme = LocalTime.of(21, 0);
+
         StoreCreate storeCreate = StoreCreate.builder()
                 .storeType(KOREAN_FOOD)
                 .storeName("한식당")
+                .openTime(openTime)
+                .closeTime(closeTIme)
                 .build();
         Store store = Store.create(storeCreate, owner, now);
 
@@ -60,9 +94,14 @@ class StoreTest {
         LocalDate today = LocalDate.of(2025, 11, 10);
 
         User owner = buildOwner();
+        LocalTime openTime = LocalTime.of(12, 0);
+        LocalTime closeTIme = LocalTime.of(21, 0);
+
         StoreCreate storeCreate = StoreCreate.builder()
                 .storeType(KOREAN_FOOD)
                 .storeName("한식당")
+                .openTime(openTime)
+                .closeTime(closeTIme)
                 .build();
         Store store = Store.create(storeCreate, owner, yesterday);
 

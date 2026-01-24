@@ -55,15 +55,9 @@ public class Product {
 
     public Product changeSellingStatus(ProductSellingStatus status) {
         ProductSellingStatus newStatus = this.productSellingStatus.changeStatus(status);
-        return Product.builder()
-                .id(id)
-                .store(store)
-                .name(name)
-                .price(price)
-                .productType(productType)
+
+        return copyWithBuilder()
                 .productSellingStatus(newStatus)
-                .owner(owner)
-                .stock(stock)
                 .build();
     }
 
@@ -79,15 +73,9 @@ public class Product {
 
         ProductSellingStatus newStatus = newStock.isSoldOut(productSellingStatus);
 
-        return Product.builder()
-                .id(id)
-                .store(store)
-                .name(name)
-                .price(price)
-                .productType(productType)
-                .productSellingStatus(newStatus)
-                .owner(owner)
+        return copyWithBuilder()
                 .stock(newStock)
+                .productSellingStatus(newStatus)
                 .build();
     }
 
@@ -112,4 +100,32 @@ public class Product {
             throw new ProductException("가게가 일치하지 않습니다.");
         }
     }
+
+    public Product increaseStock(int quantity) {
+        if (stock == null) {
+            return this;
+        }
+
+        Stock newStock = this.stock.increase(quantity);
+
+        ProductSellingStatus newStatus = newStock.isSelling(productSellingStatus);
+
+        return copyWithBuilder()
+                .stock(newStock)
+                .productSellingStatus(newStatus)
+                .build();
+    }
+
+    public ProductBuilder copyWithBuilder() {
+        return Product.builder()
+                .id(id)
+                .store(store)
+                .owner(owner)
+                .name(name)
+                .price(price)
+                .productType(productType)
+                .productSellingStatus(productSellingStatus)
+                .stock(stock);
+    }
+
 }

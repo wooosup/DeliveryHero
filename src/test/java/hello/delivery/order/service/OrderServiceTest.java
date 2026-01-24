@@ -1,5 +1,6 @@
 package hello.delivery.order.service;
 
+import static hello.delivery.order.domain.OrderStatus.ACCEPTED;
 import static hello.delivery.user.domain.UserRole.CUSTOMER;
 import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +24,8 @@ import hello.delivery.product.domain.Stock;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.service.StoreServiceImpl;
 import hello.delivery.user.domain.User;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +42,11 @@ class OrderServiceTest {
     private static final int ORDER_QUANTITY = 2;
     public static final int ORDER_STOCK_QUANTITY = 11;
     private static final String ADDRESS = "대구시 달서구";
+
+    public static final LocalDateTime ORDERED_AT = LocalDateTime.of(2026, 1, 30, 12, 0);
+    public static final LocalDateTime WRONG_ORDERED_AT = LocalDateTime.of(2026, 1, 30, 11, 0);
+    public static final LocalTime OPEN_TIME = LocalTime.of(12, 0);
+    public static final LocalTime CLOSE_TIME = LocalTime.of(23, 0);
 
     private User customer;
     private Store store;
@@ -91,6 +99,20 @@ class OrderServiceTest {
         assertThat(order.getTotalPrice()).isEqualTo(PRODUCT_PRICE * ORDER_QUANTITY);
 
         assertThat(fakeDeliveryRepository.findByOrderId(order.getId())).isNotNull();
+    }
+
+    @Test
+    @DisplayName("주문을 수락할 수 있다.")
+    void accept() throws Exception {
+        //given
+        OrderCreate orderCreate = createOrderCreate(store, product);
+        Order order = orderService.order(customer.getId(), orderCreate);
+
+        //when
+        Order acceptedOrder = orderService.accept(store.getOwner().getId(), order.getId());
+
+        //then
+        assertThat(acceptedOrder.getOrderStatus()).isEqualTo(ACCEPTED);
     }
 
     @Test
@@ -179,6 +201,8 @@ class OrderServiceTest {
                 .id(1L)
                 .name("BBQ")
                 .owner(owner)
+                .openTime(OPEN_TIME)
+                .closeTime(CLOSE_TIME)
                 .build();
         fakeFinder.addStore(store);
         return store;

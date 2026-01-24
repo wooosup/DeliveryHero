@@ -15,9 +15,12 @@ import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.domain.StoreType;
 import jakarta.validation.Valid;
+import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -90,6 +93,24 @@ public class StoreController implements StoreControllerDocs {
                                                                 @PathVariable ProductType type) {
         List<Product> products = productService.findByType(storeId, type);
         return ApiResponse.ok(ProductResponse.of(products));
+    }
+
+    @Override
+    @PatchMapping("/{storeId}/open-time")
+    public ApiResponse<StoreOwnerResponse> changeOpenTime(@LoginUser Long userId,
+                                                          @PathVariable Long storeId,
+                                                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime newOpenTime) {
+        Store store = storeService.changeOpenTime(userId, storeId, newOpenTime);
+        return ApiResponse.ok(StoreOwnerResponse.of(store));
+    }
+
+    @Override
+    @PatchMapping("/{storeId}/close-time")
+    public ApiResponse<StoreOwnerResponse> changeCloseTime(@LoginUser Long userId,
+                                                           @PathVariable Long storeId,
+                                                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime newCloseTime) {
+        Store store = storeService.changeCloseTime(userId, storeId, newCloseTime);
+        return ApiResponse.ok(StoreOwnerResponse.of(store));
     }
 
 }

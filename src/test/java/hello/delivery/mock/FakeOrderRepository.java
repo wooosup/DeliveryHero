@@ -22,6 +22,7 @@ public class FakeOrderRepository implements OrderRepository {
                     .address(order.getAddress())
                     .orderedAt(order.getOrderedAt())
                     .orderProducts(order.getOrderProducts())
+                    .orderStatus(order.getOrderStatus())
                     .build();
             data.add(newOrder);
             return newOrder;

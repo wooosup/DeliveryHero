@@ -1,5 +1,6 @@
 package hello.delivery.order.service;
 
+import hello.delivery.common.exception.OrderNotFound;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.common.service.port.FinderPort;
@@ -37,13 +38,22 @@ public class OrderServiceImpl implements OrderService {
         Store store = finder.findByStoreName(request.getStoreName());
 
         List<OrderProduct> orderProducts = createOrderProducts(store, request.getOrderProducts());
-        Order order = Order.order(user, store, orderProducts, request.getAddress(), clockHolder);
-        storeService.addTotalSales(store.getId(), order.getTotalPrice());
+        Order order = Order.order(user, store, orderProducts, request.getAddress(), clockHolder.nowDateTime());
 
-        Order savedOrder = orderRepository.save(order);
-        deliveryService.createDeliveryForOrder(savedOrder);
+        return orderRepository.save(order);
+    }
 
-        return savedOrder;
+    public Order accept(Long ownerId, Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(OrderNotFound::new);
+
+        order.validateOwner(ownerId);
+        Order acceptedOrder = order.accept();
+
+        storeService.addTotalSales(acceptedOrder.getStore().getId(), acceptedOrder.getTotalPrice());
+        deliveryService.createDeliveryForOrder(acceptedOrder);
+
+        return orderRepository.save(acceptedOrder);
     }
 
     @Transactional(readOnly = true)

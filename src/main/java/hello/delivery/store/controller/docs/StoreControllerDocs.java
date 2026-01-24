@@ -12,7 +12,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.LocalTime;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,6 +53,22 @@ public interface StoreControllerDocs {
     ApiResponse<List<ProductResponse>> getProductsByType(
             @Parameter(description = "가게 ID") @PathVariable Long storeId,
             @Parameter(description = "가게 타입") @PathVariable ProductType type
+    );
+
+    @Operation(summary = "가게 오픈 시간 변경", description = "가게의 영업 시작 시간을 변경합니다.")
+    ApiResponse<StoreOwnerResponse> changeOpenTime(
+            @Parameter(hidden = true) @LoginUser Long userId,
+            @Parameter(description = "가게 ID") @PathVariable Long storeId,
+            @Parameter(description = "변경할 시간 (예: 09:00:00)", example = "09:00:00")
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime newOpenTime
+    );
+
+    @Operation(summary = "가게 마감 시간 변경", description = "가게의 영업 종료 시간을 변경합니다.")
+    ApiResponse<StoreOwnerResponse> changeCloseTime(
+            @Parameter(hidden = true) @LoginUser Long userId,
+            @Parameter(description = "가게 ID") @PathVariable Long storeId,
+            @Parameter(description = "변경할 시간 (예: 22:00:00)", example = "22:00:00")
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime newCloseTime
     );
 
 }

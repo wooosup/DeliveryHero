@@ -34,3 +34,19 @@ Content-Type: application/json
 ### 상품 타입별 조회
 GET localhost:8080/api/stores/1/type/FOOD
 Content-Type: application/json
+
+### 오픈 시간 변경
+PATCH localhost:8080/api/stores/1/open-time
+Content-Type: application/json
+
+{
+  "openTime" : "10:00"
+}
+
+### 종료 시간 변경
+PATCH localhost:8080/api/stores/1/close-time
+Content-Type: application/json
+
+{
+  "closeTime" : "22:00"
+}

@@ -48,4 +48,17 @@ public class Stock {
         }
     }
 
+    public Stock increase(int quantity) {
+        return Stock.builder()
+                .quantity(this.quantity + quantity)
+                .build();
+    }
+
+    public ProductSellingStatus isSelling(ProductSellingStatus productSellingStatus) {
+        if (quantity > 0) {
+            return SELLING;
+        }
+        return productSellingStatus;
+    }
+
 }

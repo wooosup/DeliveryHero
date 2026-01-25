@@ -106,7 +106,7 @@ public class Product {
             return this;
         }
 
-        Stock newStock = this.stock.increase(quantity);
+        Stock newStock = stock.increase(quantity);
 
         ProductSellingStatus newStatus = newStock.isSelling(productSellingStatus);
 

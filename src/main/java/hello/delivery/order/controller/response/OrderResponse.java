@@ -14,17 +14,19 @@ public class OrderResponse {
     private final int totalPrice;
     private final String address;
     private final String storeName;
+    private final String orderStatus;
     private final LocalDateTime orderedAt;
     private final List<OrderProductResponse> orderProducts;
 
     @Builder
-    private OrderResponse(Long id, Long storeId, int totalPrice, String address, String storeName,
+    private OrderResponse(Long id, Long storeId, int totalPrice, String address, String storeName, String orderStatus,
                           LocalDateTime orderedAt, List<OrderProductResponse> orderProducts) {
         this.id = id;
         this.storeId = storeId;
         this.totalPrice = totalPrice;
         this.address = address;
         this.storeName = storeName;
+        this.orderStatus = orderStatus;
         this.orderedAt = orderedAt;
         this.orderProducts = orderProducts;
     }
@@ -36,6 +38,7 @@ public class OrderResponse {
                 .totalPrice(order.getTotalPrice())
                 .address(order.getAddress().getAddress())
                 .storeName(order.getStore().getName())
+                .orderStatus(order.getOrderStatus().getDescription())
                 .orderedAt(order.getOrderedAt())
                 .orderProducts(order.getOrderProducts().stream()
                         .map(OrderProductResponse::of)

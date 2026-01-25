@@ -1,0 +1,25 @@
+name: Update Swagger UI
+on:
+  push:
+    branches: [ main ]
+jobs:
+  update-swagger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Generate API Docs
+        run: ./gradlew generateOpenApiDocs
+      - name: Copy to docs
+        run: cp build/openapi.yaml docs/swagger.yaml
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/swagger.yaml
+          git commit -m "docs: update latest swagger.yaml" || echo "No changes to commit"
+          git push

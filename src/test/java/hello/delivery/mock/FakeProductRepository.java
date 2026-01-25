@@ -32,6 +32,7 @@ public class FakeProductRepository implements ProductRepository {
                     .productSellingStatus(product.getProductSellingStatus())
                     .name(product.getName())
                     .price(product.getPrice())
+                    .stock(product.getStock())
                     .build();
             data.add(newProduct);
             return newProduct;

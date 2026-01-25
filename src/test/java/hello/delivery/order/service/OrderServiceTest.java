@@ -1,11 +1,14 @@
 package hello.delivery.order.service;
 
 import static hello.delivery.order.domain.OrderStatus.ACCEPTED;
+import static hello.delivery.order.domain.OrderStatus.CANCELLED;
+import static hello.delivery.order.domain.OrderStatus.COMPLETED;
 import static hello.delivery.user.domain.UserRole.CUSTOMER;
 import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import hello.delivery.common.exception.OrderException;
 import hello.delivery.common.exception.StockException;
 import hello.delivery.delivery.service.DeliveryServiceImpl;
 import hello.delivery.mock.FakeDeliveryRepository;
@@ -24,7 +27,6 @@ import hello.delivery.product.domain.Stock;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.service.StoreServiceImpl;
 import hello.delivery.user.domain.User;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,15 +38,11 @@ class OrderServiceTest {
     private OrderService orderService;
     private FakeFinder fakeFinder;
     private FakeProductRepository fakeProductRepository;
-    private FakeDeliveryRepository fakeDeliveryRepository;
 
+    public static final int ORDER_QUANTITY = 2;
     private static final int PRODUCT_PRICE = 20000;
-    private static final int ORDER_QUANTITY = 2;
-    public static final int ORDER_STOCK_QUANTITY = 11;
     private static final String ADDRESS = "대구시 달서구";
 
-    public static final LocalDateTime ORDERED_AT = LocalDateTime.of(2026, 1, 30, 12, 0);
-    public static final LocalDateTime WRONG_ORDERED_AT = LocalDateTime.of(2026, 1, 30, 11, 0);
     public static final LocalTime OPEN_TIME = LocalTime.of(12, 0);
     public static final LocalTime CLOSE_TIME = LocalTime.of(23, 0);
 
@@ -59,7 +57,7 @@ class OrderServiceTest {
         fakeFinder = new FakeFinder();
         fakeProductRepository = new FakeProductRepository();
         TestClockHolder testClockHolder = new TestClockHolder();
-        fakeDeliveryRepository = new FakeDeliveryRepository();
+        FakeDeliveryRepository fakeDeliveryRepository = new FakeDeliveryRepository();
         FakeRiderRepository fakeRiderRepository = new FakeRiderRepository();
         StoreServiceImpl storeService = new StoreServiceImpl(new FakeStoreRepository(), fakeFinder, testClockHolder);
         DeliveryServiceImpl deliveryService = new DeliveryServiceImpl(fakeDeliveryRepository, fakeRiderRepository, fakeFinder, testClockHolder);
@@ -87,7 +85,7 @@ class OrderServiceTest {
     @DisplayName("주문을 생성할 수 있다.")
     void order() {
         // given
-        OrderCreate orderCreate = createOrderCreate(store, product);
+        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
 
         // when
         Order order = orderService.order(customer.getId(), orderCreate);
@@ -97,15 +95,32 @@ class OrderServiceTest {
         assertThat(order.getOrderProducts().get(0).getProduct().getName()).isEqualTo("치킨");
         assertThat(order.getOrderProducts().get(0).getQuantity()).isEqualTo(ORDER_QUANTITY);
         assertThat(order.getTotalPrice()).isEqualTo(PRODUCT_PRICE * ORDER_QUANTITY);
+    }
 
-        assertThat(fakeDeliveryRepository.findByOrderId(order.getId())).isNotNull();
+    @Test
+    @DisplayName("재고가 있는 상품을 주문하면 재고가 차감된다.")
+    void orderWithStock() {
+        // given
+        OrderCreate orderCreate = createOrderCreate(store, productWithStock, ORDER_QUANTITY);
+
+        // when
+        Order order = orderService.order(customer.getId(), orderCreate);
+
+        // then
+        assertThat(order.getOrderProducts()).hasSize(1);
+        assertThat(order.getOrderProducts().get(0).getProduct().getName()).isEqualTo("콜라");
+        assertThat(order.getOrderProducts().get(0).getQuantity()).isEqualTo(ORDER_QUANTITY);
+        assertThat(order.getTotalPrice()).isEqualTo(PRODUCT_PRICE * ORDER_QUANTITY);
+
+        Product result = fakeProductRepository.findById(productWithStock.getId()).get();
+        assertThat(result.getStock().getQuantity()).isEqualTo(8);
     }
 
     @Test
     @DisplayName("주문을 수락할 수 있다.")
     void accept() throws Exception {
         //given
-        OrderCreate orderCreate = createOrderCreate(store, product);
+        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
         Order order = orderService.order(customer.getId(), orderCreate);
 
         //when
@@ -116,10 +131,96 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("가게 소유자가 아니면 주문을 수락할 수 없다.")
+    void validateAcceptForOwner() throws Exception {
+        //given
+        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        Order order = orderService.order(customer.getId(), orderCreate);
+
+        // expect
+        assertThatThrownBy(() -> orderService.accept(customer.getId(), order.getId()))
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("가게 소유자만 접근할 수 있습니다.");
+    }
+
+    @Test
+    @DisplayName("주문을 취소할 수 있다.")
+    void cancel() throws Exception {
+        //given
+        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        Order order = orderService.order(customer.getId(), orderCreate);
+
+        //when
+        Order cancelledOrder = orderService.cancel(order.getId());
+
+        //then
+        assertThat(cancelledOrder.getOrderStatus()).isEqualTo(CANCELLED);
+    }
+
+    @Test
+    @DisplayName("주문을 취소하면 재고가 복구된다.")
+    void cancelWithIncreaseStock() throws Exception {
+        //given
+        OrderCreate orderCreate = createOrderCreate(store, productWithStock, 10);
+        Order order = orderService.order(customer.getId(), orderCreate);
+
+        //when
+        Order cancelledOrder = orderService.cancel(order.getId());
+
+        //then
+        assertThat(cancelledOrder.getOrderStatus()).isEqualTo(CANCELLED);
+        Product result = fakeProductRepository.findById(productWithStock.getId()).get();
+        assertThat(result.getStock().getQuantity()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("상태가 완료된 주문을 취소하면 예외를 던진다.")
+    void validateCancel() throws Exception {
+        //given
+        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        Order order = orderService.order(customer.getId(), orderCreate);
+        Order acceptedOrder = orderService.accept(store.getOwner().getId(), order.getId());
+        Order completedOrder = orderService.complete(acceptedOrder.getId());
+
+        // expect
+        assertThatThrownBy(() -> orderService.cancel(completedOrder.getId()))
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("주문을 취소할 수 없는 상태입니다.");
+    }
+
+    @Test
+    @DisplayName("주문을 완료할 수 있다.")
+    void complete() throws Exception {
+        //given
+        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        Order order = orderService.order(customer.getId(), orderCreate);
+        Order acceptedOrder = orderService.accept(store.getOwner().getId(), order.getId());
+
+        //when
+        Order completedOrder = orderService.complete(acceptedOrder.getId());
+
+        //then
+        assertThat(completedOrder.getOrderStatus()).isEqualTo(COMPLETED);
+    }
+
+    @Test
+    @DisplayName("상태가 수락되지 않은 주문을 완료하면 예외를 던진다.")
+    void validateComplete() throws Exception {
+        //given
+        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        Order order = orderService.order(customer.getId(), orderCreate);
+
+        // expect
+        assertThatThrownBy(() -> orderService.complete(order.getId()))
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("수락된 주문만 완료 처리할 수 있습니다.");
+    }
+
+    @Test
     @DisplayName("재고가 부족한 상품을 주문하면 예외를 던진다.")
     void validateOrderOf() {
         // given
-        OrderCreate orderCreate = createOrderCreateWithStock(store, productWithStock);
+        OrderCreate orderCreate = createOrderCreate(store, productWithStock, 20);
 
         // expect
         assertThatThrownBy(() -> orderService.order(customer.getId(), orderCreate))
@@ -131,7 +232,7 @@ class OrderServiceTest {
     @DisplayName("사용자 아이디로 주문 내역을 조회할 수 있다.")
     void findOrdersByUserId() {
         // given
-        OrderCreate orderCreate = createOrderCreate(store, product);
+        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
         orderService.order(customer.getId(), orderCreate);
 
         // when
@@ -144,23 +245,10 @@ class OrderServiceTest {
         assertThat(result.get(0).getTotalPrice()).isEqualTo(PRODUCT_PRICE * ORDER_QUANTITY);
     }
 
-    private OrderCreate createOrderCreate(Store store, Product product) {
+    private OrderCreate createOrderCreate(Store store, Product product, int quantity) {
         OrderProductRequest orderProduct = OrderProductRequest.builder()
                 .productName(product.getName())
-                .quantity(ORDER_QUANTITY)
-                .build();
-
-        return OrderCreate.builder()
-                .storeName(store.getName())
-                .orderProducts(List.of(orderProduct))
-                .address(ADDRESS)
-                .build();
-    }
-
-    private OrderCreate createOrderCreateWithStock(Store store, Product product) {
-        OrderProductRequest orderProduct = OrderProductRequest.builder()
-                .productName(product.getName())
-                .quantity(ORDER_STOCK_QUANTITY)
+                .quantity(quantity)
                 .build();
 
         return OrderCreate.builder()

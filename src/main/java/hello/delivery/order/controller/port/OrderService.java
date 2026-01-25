@@ -10,6 +10,10 @@ public interface OrderService {
 
     Order accept(Long ownerId, Long orderId);
 
+    Order cancel(Long orderId);
+
+    Order complete(Long orderId);
+
     List<Order> findOrdersByUserId(Long userId);
 
 }

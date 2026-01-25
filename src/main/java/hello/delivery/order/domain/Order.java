@@ -1,6 +1,8 @@
 package hello.delivery.order.domain;
 
 import static hello.delivery.order.domain.OrderStatus.ACCEPTED;
+import static hello.delivery.order.domain.OrderStatus.CANCELLED;
+import static hello.delivery.order.domain.OrderStatus.COMPLETED;
 import static hello.delivery.order.domain.OrderStatus.PENDING;
 import static hello.delivery.user.domain.UserRole.CUSTOMER;
 
@@ -26,8 +28,12 @@ public class Order {
     private final OrderStatus orderStatus;
 
     @Builder
-    private Order(Long id, User user, Store store, DeliveryAddress address, LocalDateTime orderedAt, List<OrderProduct> orderProducts,
+    private Order(Long id, User user, Store store, DeliveryAddress address, LocalDateTime orderedAt,
+                  List<OrderProduct> orderProducts,
                   OrderStatus orderStatus) {
+        validateUserAndStore(user, store);
+        validate(orderProducts);
+        validateStoresOpen(store, orderedAt);
         this.id = id;
         this.user = user;
         this.store = store;
@@ -40,11 +46,8 @@ public class Order {
         this.totalPrice = calculateTotalPrice();
     }
 
-    public static Order order(User user, Store store, List<OrderProduct> orderProducts, String address, LocalDateTime orderedAt) {
-        validateUserAndStore(user, store);
-        validate(orderProducts);
-        validateStoresOpen(store, orderedAt);
-
+    public static Order order(User user, Store store, List<OrderProduct> orderProducts, String address,
+                              LocalDateTime orderedAt) {
         return Order.builder()
                 .user(user)
                 .store(store)
@@ -59,14 +62,26 @@ public class Order {
         if (this.orderStatus != PENDING) {
             throw new OrderException("주문을 수락할 수 없는 상태입니다.");
         }
-        return Order.builder()
-                .id(id)
-                .user(user)
-                .store(store)
-                .address(address)
-                .orderedAt(orderedAt)
-                .orderProducts(orderProducts)
+        return copyWithBuilder()
                 .orderStatus(ACCEPTED)
+                .build();
+    }
+
+    public Order cancel() {
+        if (orderStatus == COMPLETED || orderStatus == CANCELLED) {
+            throw new OrderException("주문을 취소할 수 없는 상태입니다.");
+        }
+        return copyWithBuilder()
+                .orderStatus(CANCELLED)
+                .build();
+    }
+
+    public Order complete() {
+        if (this.orderStatus != ACCEPTED) {
+            throw new OrderException("수락된 주문만 완료 처리할 수 있습니다.");
+        }
+        return copyWithBuilder()
+                .orderStatus(COMPLETED)
                 .build();
     }
 
@@ -76,13 +91,13 @@ public class Order {
         }
     }
 
-    private static void validateStoresOpen(Store store, LocalDateTime orderedAt) {
+    private void validateStoresOpen(Store store, LocalDateTime orderedAt) {
         if (!store.isOpening(orderedAt.toLocalTime())) {
             throw new OrderException("가게가 현재 영업중이 아닙니다.");
         }
     }
 
-    private static void validateUserAndStore(User user, Store store) {
+    private void validateUserAndStore(User user, Store store) {
         if (user == null) {
             throw new OrderException("주문하는 사용자는 필수입니다.");
         }
@@ -94,7 +109,7 @@ public class Order {
         }
     }
 
-    private static void validate(List<OrderProduct> orderProducts) {
+    private void validate(List<OrderProduct> orderProducts) {
         if (orderProducts == null || orderProducts.isEmpty()) {
             throw new OrderException("주문에는 최소 1개 이상의 상품이 포함되어야 합니다.");
         }
@@ -105,4 +120,16 @@ public class Order {
                 .mapToInt(OrderProduct::calculatePrice)
                 .sum();
     }
+
+    private OrderBuilder copyWithBuilder() {
+        return Order.builder()
+                .id(id)
+                .user(user)
+                .store(store)
+                .address(address)
+                .orderedAt(orderedAt)
+                .orderProducts(orderProducts)
+                .orderStatus(orderStatus);
+    }
+
 }

@@ -4,7 +4,7 @@
 
 ## Project Overview
 - 본 프로젝트는 배달 플랫폼의 비즈니스 흐름을 구현한 것입니다. 기술적인 측면에서는 도메인 주도 설계를 기반으로 비즈니스 로직을 중심에 두고, Spring Boot나 JPA와 같은 외부 기술에 도메인이 의존하지 않도록 헥사고날 아키텍처를 점진적으로 적용하는 것을 주된 목표로 삼았습니다.
-- [API 문서 바로가기](https://wooosup.github.io/deliveryApp/)
+- [API 문서 바로가기](https://wooosup.github.io/DeliveryHero/)
 
 ## Technology stack
 

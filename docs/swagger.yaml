@@ -1,2259 +1,2447 @@
----
-openapi: "3.0.1"
+openapi: 3.0.1
 info:
-  title: "Delivery API"
-  description: "배달 서비스 API 명세서"
-  version: "v1.0"
+  title: Delivery API
+  description: 배달 서비스 API 명세서
+  version: v1.0
 servers:
-  - url: "http://localhost:8080"
-    description: "Generated server url"
+- url: http://localhost:8080
+  description: Generated server url
 tags:
-  - name: "사용자 (user, owner)"
-    description: "회원가입, 로그인, 정보 수정"
-  - name: "가게"
-    description: "가게 등록, 조회"
-  - name: "상품"
-    description: "상품 등록, 수정, 삭제"
-  - name: "주문"
-    description: "주문 생성, 조회"
-  - name: "라이더"
-    description: "라이더 회원가입, 로그인, 상태 변경"
-  - name: "배달"
-    description: "배달 상태 변경, 배달 조회"
+- name: "사용자 (user, owner)"
+  description: "회원가입, 로그인, 정보 수정"
+- name: 가게
+  description: "가게 등록, 조회"
+- name: 상품
+  description: "상품 등록, 수정, 삭제"
+- name: 주문
+  description: "주문 생성, 조회"
+- name: 라이더
+  description: "라이더 회원가입, 로그인, 상태 변경"
+- name: 배달
+  description: "배달 상태 변경, 배달 조회"
 paths:
   /api/users/signup:
     post:
       tags:
-        - "사용자 (user, owner)"
-      summary: "고객 회원가입"
-      description: "고객의 권한으로 회원가입을 진행합니다."
-      operationId: "signupCustomer"
+      - "사용자 (user, owner)"
+      summary: 고객 회원가입
+      description: 고객의 권한으로 회원가입을 진행합니다.
+      operationId: signupCustomer
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/UserCreate"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseUserResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseUserResponse"
   /api/users/owners/signup:
     post:
       tags:
-        - "사용자 (user, owner)"
-      summary: "사장님 회원가입"
-      description: "사장의 권한으로 회원가입을 진행합니다."
-      operationId: "signupOwner"
+      - "사용자 (user, owner)"
+      summary: 사장님 회원가입
+      description: 사장의 권한으로 회원가입을 진행합니다.
+      operationId: signupOwner
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/UserCreate"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseUserResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseUserResponse"
   /api/users/login:
     post:
       tags:
-        - "사용자 (user, owner)"
-      summary: "로그인"
-      description: "아이디와 비밀번호로 로그인을 진행하고 세션을 생성합니다."
-      operationId: "login"
+      - "사용자 (user, owner)"
+      summary: 로그인
+      description: 아이디와 비밀번호로 로그인을 진행하고 세션을 생성합니다.
+      operationId: login
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/Login"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseUserResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseUserResponse"
   /api/stores/new:
     post:
       tags:
-        - "가게"
-      summary: "가게 등록"
-      description: "새로운 가게를 등록합니다."
-      operationId: "createStore"
+      - 가게
+      summary: 가게 등록
+      description: 새로운 가게를 등록합니다.
+      operationId: createStore
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/StoreCreate"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseStoreOwnerResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseStoreOwnerResponse"
   /api/riders/new:
     post:
       tags:
-        - "라이더"
-      summary: "라이더 등록"
-      description: "새로운 라이더를 등록합니다."
-      operationId: "signup"
+      - 라이더
+      summary: 라이더 등록
+      description: 새로운 라이더를 등록합니다.
+      operationId: signup
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/RiderCreate"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseRiderResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseRiderResponse"
   /api/riders/login:
     post:
       tags:
-        - "라이더"
-      summary: "라이더 로그인"
-      description: "라이더가 전화번호로 로그인합니다."
-      operationId: "login_1"
+      - 라이더
+      summary: 라이더 로그인
+      description: 라이더가 전화번호로 로그인합니다.
+      operationId: login_1
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/RiderLogin"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseRiderResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseRiderResponse"
   /api/products/new:
     post:
       tags:
-        - "상품"
-      summary: "상품 등록"
-      description: "사장의 권한으로 새로운 상품을 등록합니다."
-      operationId: "createProduct"
+      - 상품
+      summary: 상품 등록
+      description: 사장의 권한으로 새로운 상품을 등록합니다.
+      operationId: createProduct
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/ProductCreate"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseProductResponse"
-        500:
-          description: "Internal Server Error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
   /api/products/new/batch:
     post:
       tags:
-        - "상품"
-      summary: "상품 일괄 등록"
-      description: "사장의 권한으로 여러 상품을 한 번에 등록합니다."
-      operationId: "createProducts"
+      - 상품
+      summary: 상품 일괄 등록
+      description: 사장의 권한으로 여러 상품을 한 번에 등록합니다.
+      operationId: createProducts
       requestBody:
         content:
           application/json:
             schema:
-              type: "array"
+              type: array
               items:
                 $ref: "#/components/schemas/ProductCreate"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseListProductResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseListProductResponse"
   /api/orders/new:
     post:
       tags:
-        - "주문"
-      summary: "주문 생성"
-      description: "새로운 주문을 생성합니다."
-      operationId: "order"
+      - 주문
+      summary: 주문 생성
+      description: 새로운 주문을 생성합니다.
+      operationId: order
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/OrderCreate"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseOrderResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseOrderResponse"
+  /api/orders/complete/{orderId}:
+    post:
+      tags:
+      - 주문
+      summary: 주문 완료
+      description: 배달이 완료되어 주문 상태를 완료로 변경합니다.
+      operationId: complete
+      parameters:
+      - name: orderId
+        in: path
+        description: 주문 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseOrderResponse"
+  /api/orders/cancel/{orderId}:
+    post:
+      tags:
+      - 주문
+      summary: 주문 취소
+      description: "사장님이 주문을 거절하거나, 특정 조건에서 주문을 취소합니다."
+      operationId: cancel
+      parameters:
+      - name: orderId
+        in: path
+        description: 주문 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseOrderResponse"
+  /api/orders/accept/{orderId}:
+    post:
+      tags:
+      - 주문
+      summary: 주문 승인
+      description: 사장님이 들어온 주문을 승인하고 조리를 시작합니다.
+      operationId: accept
+      parameters:
+      - name: orderId
+        in: path
+        description: 주문 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseOrderResponse"
   /api/users/password:
     patch:
       tags:
-        - "사용자 (user, owner)"
-      summary: "비밀번호 변경"
-      description: "로그인한 사용자의 비밀번호를 변경합니다."
-      operationId: "changePassword"
+      - "사용자 (user, owner)"
+      summary: 비밀번호 변경
+      description: 로그인한 사용자의 비밀번호를 변경합니다.
+      operationId: changePassword
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/PasswordUpdate"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseUserResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseUserResponse"
   /api/users/address:
     patch:
       tags:
-        - "사용자 (user, owner)"
-      summary: "주소 변경"
-      description: "로그인한 사용자의 주소를 변경합니다."
-      operationId: "changeAddress"
+      - "사용자 (user, owner)"
+      summary: 주소 변경
+      description: 로그인한 사용자의 주소를 변경합니다.
+      operationId: changeAddress
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/AddressUpdate"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseUserResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseUserResponse"
+  /api/stores/{storeId}/open-time:
+    patch:
+      tags:
+      - 가게
+      summary: 가게 오픈 시간 변경
+      description: 가게의 영업 시작 시간을 변경합니다.
+      operationId: changeOpenTime
+      parameters:
+      - name: storeId
+        in: path
+        description: 가게 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: newOpenTime
+        in: query
+        description: "변경할 시간 (예: 09:00:00)"
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: 09:00:00
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseStoreOwnerResponse"
+  /api/stores/{storeId}/close-time:
+    patch:
+      tags:
+      - 가게
+      summary: 가게 마감 시간 변경
+      description: 가게의 영업 종료 시간을 변경합니다.
+      operationId: changeCloseTime
+      parameters:
+      - name: storeId
+        in: path
+        description: 가게 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: newCloseTime
+        in: query
+        description: "변경할 시간 (예: 22:00:00)"
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: 22:00:00
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseStoreOwnerResponse"
   /api/riders/status:
     patch:
       tags:
-        - "라이더"
-      summary: "라이더 상태 변경"
-      description: "라이더의 상태(출근/퇴근/배달중)를 변경합니다."
-      operationId: "changeStatus"
+      - 라이더
+      summary: 라이더 상태 변경
+      description: 라이더의 상태(출근/퇴근/배달중)를 변경합니다.
+      operationId: changeStatus
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/RiderStatusUpdate"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseRiderResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseRiderResponse"
   /api/products/{id}/status:
     patch:
       tags:
-        - "상품"
-      summary: "상품 판매 상태 변경"
+      - 상품
+      summary: 상품 판매 상태 변경
       description: "상품의 판매 상태(SELLING, STOP_SELLING)를 변경합니다."
-      operationId: "changeStatus_1"
+      operationId: changeStatus_1
       parameters:
-        - name: "id"
-          in: "path"
-          description: "상품 ID"
-          required: "true"
-          schema:
-            type: "integer"
-            format: "int64"
+      - name: id
+        in: path
+        description: 상품 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/ProductStatusUpdate"
-        required: "true"
+        required: true
       responses:
-        200:
-          description: "OK"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseProductResponse"
-        500:
-          description: "Internal Server Error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
   /api/deliveries/{deliveryId}/start:
     patch:
       tags:
-        - "배달"
-      summary: "배달 시작"
-      description: "배달을 시작 상태(PICKED_UP)로 변경합니다. (라이더용)"
-      operationId: "start"
+      - 배달
+      summary: 배달 시작
+      description: 배달을 시작 상태(PICKED_UP)로 변경합니다. (라이더용)
+      operationId: start
       parameters:
-        - name: "deliveryId"
-          in: "path"
-          description: "배달 ID"
-          required: "true"
-          schema:
-            type: "integer"
-            format: "int64"
+      - name: deliveryId
+        in: path
+        description: 배달 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseDeliveryResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseDeliveryResponse"
   /api/deliveries/{deliveryId}/complete:
     patch:
       tags:
-        - "배달"
-      summary: "배달 완료"
-      description: "배달을 완료 상태(DELIVERED)로 변경합니다. (라이더용)"
-      operationId: "complete"
+      - 배달
+      summary: 배달 완료
+      description: 배달을 완료 상태(DELIVERED)로 변경합니다. (라이더용)
+      operationId: complete_1
       parameters:
-        - name: "deliveryId"
-          in: "path"
-          description: "배달 ID"
-          required: "true"
-          schema:
-            type: "integer"
-            format: "int64"
+      - name: deliveryId
+        in: path
+        description: 배달 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseDeliveryResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseDeliveryResponse"
   /api/deliveries/{deliveryId}/assign:
     patch:
       tags:
-        - "배달"
-      summary: "배차 완료"
-      description: "배달을 시작 상태(ASSIGNED)로 변경합니다. (라이더용)"
-      operationId: "assign"
+      - 배달
+      summary: 배차 완료
+      description: 배달을 시작 상태(ASSIGNED)로 변경합니다. (라이더용)
+      operationId: assign
       parameters:
-        - name: "deliveryId"
-          in: "path"
-          description: "배달 ID"
-          required: "true"
-          schema:
-            type: "integer"
-            format: "int64"
+      - name: deliveryId
+        in: path
+        description: 배달 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
-        200:
-          description: "OK"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseDeliveryResponse"
-        500:
-          description: "Internal Server Error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
   /api/stores/{storeId}:
     get:
       tags:
-        - "가게"
-      summary: "가게별 상품 조회"
-      description: "특정 가게에 속한 모든 상품을 조회합니다."
-      operationId: "getProductsByStore"
+      - 가게
+      summary: 가게별 상품 조회
+      description: 특정 가게에 속한 모든 상품을 조회합니다.
+      operationId: getProductsByStore
       parameters:
-        - name: "storeId"
-          in: "path"
-          description: "가게 ID"
-          required: "true"
-          schema:
-            type: "integer"
-            format: "int64"
+      - name: storeId
+        in: path
+        description: 가게 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseListProductResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseListProductResponse"
   /api/stores/{storeId}/type/{type}:
     get:
       tags:
-        - "가게"
-      summary: "가게별 상품 타입 조회"
-      description: "특정 가게에 속한 특정 타입의 상품들을 조회합니다."
-      operationId: "getProductsByType"
+      - 가게
+      summary: 가게별 상품 타입 조회
+      description: 특정 가게에 속한 특정 타입의 상품들을 조회합니다.
+      operationId: getProductsByType
       parameters:
-        - name: "storeId"
-          in: "path"
-          description: "가게 ID"
-          required: "true"
-          schema:
-            type: "integer"
-            format: "int64"
-        - name: "type"
-          in: "path"
-          description: "가게 타입"
-          required: "true"
-          schema:
-            type: "string"
-            enum:
-              - "FOOD"
-              - "BEVERAGE"
-              - "DESSERT"
+      - name: storeId
+        in: path
+        description: 가게 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: type
+        in: path
+        description: 가게 타입
+        required: true
+        schema:
+          type: string
+          enum:
+          - FOOD
+          - BEVERAGE
+          - DESSERT
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseListProductResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseListProductResponse"
   /api/stores/{storeId}/selling:
     get:
       tags:
-        - "가게"
-      summary: "가게별 판매 중인 상품 조회"
-      description: "특정 가게에 속한 판매 중인 상품들을 조회합니다."
-      operationId: "getSellingProducts"
+      - 가게
+      summary: 가게별 판매 중인 상품 조회
+      description: 특정 가게에 속한 판매 중인 상품들을 조회합니다.
+      operationId: getSellingProducts
       parameters:
-        - name: "storeId"
-          in: "path"
-          description: "가게 ID"
-          required: "true"
-          schema:
-            type: "integer"
-            format: "int64"
+      - name: storeId
+        in: path
+        description: 가게 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseListProductResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseListProductResponse"
   /api/stores/type/{type}:
     get:
       tags:
-        - "가게"
-      summary: "가게 타입별 조회"
-      description: "가게 타입에 해당하는 가게들을 조회합니다."
-      operationId: "getStoresByType"
+      - 가게
+      summary: 가게 타입별 조회
+      description: 가게 타입에 해당하는 가게들을 조회합니다.
+      operationId: getStoresByType
       parameters:
-        - name: "type"
-          in: "path"
-          description: "가게 타입"
-          required: "true"
-          schema:
-            type: "string"
-            enum:
-              - "CAFE"
-              - "KOREAN_FOOD"
-              - "WESTERN_FOOD"
-              - "CHINESE_FOOD"
-              - "JAPANESE_FOOD"
-              - "SNACK"
-              - "FAST_FOOD"
-              - "DESSERT"
+      - name: type
+        in: path
+        description: 가게 타입
+        required: true
+        schema:
+          type: string
+          enum:
+          - CAFE
+          - KOREAN_FOOD
+          - WESTERN_FOOD
+          - CHINESE_FOOD
+          - JAPANESE_FOOD
+          - SNACK
+          - FAST_FOOD
+          - DESSERT
       responses:
-        200:
-          description: "OK"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseListStoreCustomerResponse"
-        500:
-          description: "Internal Server Error"
+  /api/stores/search:
+    get:
+      tags:
+      - 가게
+      summary: 가게 이름별 조회
+      description: 가게 이름에 해당하는 가게를 조회합니다.
+      operationId: searchByName
+      parameters:
+      - name: name
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /api/stores/search:
-    get:
-      tags:
-        - "가게"
-      summary: "가게 이름별 조회"
-      description: "가게 이름에 해당하는 가게를 조회합니다."
-      operationId: "searchByName"
-      parameters:
-        - name: "name"
-          in: "query"
-          required: "true"
-          schema:
-            type: "string"
-      responses:
-        200:
-          description: "OK"
+        "200":
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseStoreCustomerResponse"
-        500:
-          description: "Internal Server Error"
+  /api/stores/owner:
+    get:
+      tags:
+      - 가게
+      summary: 자신의 가게 조회
+      description: 자신이 등록한 가게를 조회합니다.
+      operationId: getMyStores
+      responses:
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /api/stores/owner:
-    get:
-      tags:
-        - "가게"
-      summary: "자신의 가게 조회"
-      description: "자신이 등록한 가게를 조회합니다."
-      operationId: "getMyStores"
-      responses:
-        200:
-          description: "OK"
+        "200":
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseListStoreOwnerResponse"
-        500:
-          description: "Internal Server Error"
+  /api/stores/all:
+    get:
+      tags:
+      - 가게
+      summary: 전체 가게 조회
+      description: 등록된 모든 가게들을 조회합니다.
+      operationId: findAll
+      responses:
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /api/stores/all:
-    get:
-      tags:
-        - "가게"
-      summary: "전체 가게 조회"
-      description: "등록된 모든 가게들을 조회합니다."
-      operationId: "findAll"
-      responses:
-        200:
-          description: "OK"
+        "200":
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseListStoreCustomerResponse"
-        500:
-          description: "Internal Server Error"
+  /api/riders/available:
+    get:
+      tags:
+      - 라이더
+      summary: 배차 가능 라이더 조회
+      description: 현재 배차 가능한(AVAILABLE) 상태의 라이더 목록을 조회합니다.
+      operationId: getAvailableRiders
+      responses:
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /api/riders/available:
-    get:
-      tags:
-        - "라이더"
-      summary: "배차 가능 라이더 조회"
-      description: "현재 배차 가능한(AVAILABLE) 상태의 라이더 목록을 조회합니다."
-      operationId: "getAvailableRiders"
-      responses:
-        200:
-          description: "OK"
+        "200":
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseListRiderResponse"
-        500:
-          description: "Internal Server Error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
   /api/products:
     get:
       tags:
-        - "상품"
-      summary: "전체 상품 조회"
-      description: "등록된 모든 상품을 조회합니다."
-      operationId: "getAllProducts"
+      - 상품
+      summary: 전체 상품 조회
+      description: 등록된 모든 상품을 조회합니다.
+      operationId: getAllProducts
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseListProductResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseListProductResponse"
   /api/products/selling:
     get:
       tags:
-        - "상품"
-      summary: "판매 중인 상품 조회"
-      description: "판매 상태가 SELLING인 상품만 조회합니다."
-      operationId: "getSellingProducts_1"
+      - 상품
+      summary: 판매 중인 상품 조회
+      description: 판매 상태가 SELLING인 상품만 조회합니다.
+      operationId: getSellingProducts_1
       parameters:
-        - name: "storeId"
-          in: "query"
-          description: "가게 ID"
-          required: "true"
-          schema:
-            type: "integer"
-            format: "int64"
+      - name: storeId
+        in: query
+        description: 가게 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseListProductResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseListProductResponse"
   /api/products/search:
     get:
       tags:
-        - "상품"
-      summary: "타입별 상품 조회"
+      - 상품
+      summary: 타입별 상품 조회
       description: "특정 타입(FOOD, BEVERAGE 등)의 상품을 조회합니다."
-      operationId: "getProductsByType_1"
+      operationId: getProductsByType_1
       parameters:
-        - name: "storeId"
-          in: "query"
-          description: "가게 ID"
-          required: "true"
-          schema:
-            type: "integer"
-            format: "int64"
-        - name: "type"
-          in: "query"
-          description: "상품 타입"
-          required: "true"
-          schema:
-            type: "string"
-            enum:
-              - "FOOD"
-              - "BEVERAGE"
-              - "DESSERT"
+      - name: storeId
+        in: query
+        description: 가게 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: type
+        in: query
+        description: 상품 타입
+        required: true
+        schema:
+          type: string
+          enum:
+          - FOOD
+          - BEVERAGE
+          - DESSERT
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseListProductResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseListProductResponse"
   /api/orders/my-orders:
     get:
       tags:
-        - "주문"
-      summary: "내 주문 조회"
-      description: "로그인한 사용자의 모든 주문을 조회합니다."
-      operationId: "getMyOrders"
+      - 주문
+      summary: 내 주문 조회
+      description: 로그인한 사용자의 모든 주문을 조회합니다.
+      operationId: getMyOrders
       responses:
-        200:
-          description: "OK"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseListOrderResponse"
-        500:
-          description: "Internal Server Error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
   /api/deliveries/{deliveryId}:
     get:
       tags:
-        - "배달"
-      summary: "배달 조회"
-      description: "배달 ID로 배달 정보를 조회합니다. (라이더용)"
-      operationId: "getDeliveryById"
+      - 배달
+      summary: 배달 조회
+      description: 배달 ID로 배달 정보를 조회합니다. (라이더용)
+      operationId: getDeliveryById
       parameters:
-        - name: "deliveryId"
-          in: "path"
-          description: "배달 ID"
-          required: "true"
-          schema:
-            type: "integer"
-            format: "int64"
+      - name: deliveryId
+        in: path
+        description: 배달 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseDeliveryResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseDeliveryResponse"
   /api/deliveries/order/{deliveryId}:
     get:
       tags:
-        - "배달"
-      summary: "배달 주문 조회"
-      description: "배달에 해당하는 주문 정보를 조회합니다. (라이더용)"
-      operationId: "getOrderForDelivery"
+      - 배달
+      summary: 배달 주문 조회
+      description: 배달에 해당하는 주문 정보를 조회합니다. (라이더용)
+      operationId: getOrderForDelivery
       parameters:
-        - name: "deliveryId"
-          in: "path"
-          description: "배달 ID"
-          required: "true"
-          schema:
-            type: "integer"
-            format: "int64"
+      - name: deliveryId
+        in: path
+        description: 배달 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
-        200:
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseDeliveryResponse"
-        500:
-          description: "Internal Server Error"
+        "500":
+          description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseDeliveryResponse"
   /api/products/{id}:
     delete:
       tags:
-        - "상품"
-      summary: "상품 삭제"
-      description: "상품을 삭제합니다."
-      operationId: "deleteProduct"
+      - 상품
+      summary: 상품 삭제
+      description: 상품을 삭제합니다.
+      operationId: deleteProduct
       parameters:
-        - name: "id"
-          in: "path"
-          description: "상품 ID"
-          required: "true"
-          schema:
-            type: "integer"
-            format: "int64"
+      - name: id
+        in: path
+        description: 상품 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
-        200:
-          description: "OK"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseVoid"
-        500:
-          description: "Internal Server Error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     ErrorResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "string"
+          type: string
         message:
-          type: "string"
+          type: string
         validation:
-          type: "object"
+          type: object
           additionalProperties:
-            type: "string"
+            type: string
     UserCreate:
       required:
-        - "address"
-        - "name"
-        - "password"
-        - "username"
-      type: "object"
+      - address
+      - name
+      - password
+      - username
+      type: object
       properties:
         name:
-          maxLength: "4"
-          minLength: "0"
-          type: "string"
+          maxLength: 4
+          minLength: 0
+          type: string
         username:
-          maxLength: "20"
-          minLength: "5"
-          type: "string"
+          maxLength: 20
+          minLength: 5
+          type: string
         password:
-          maxLength: "20"
-          minLength: "8"
-          type: "string"
+          maxLength: 20
+          minLength: 8
+          type: string
         address:
-          type: "string"
+          type: string
     ApiResponseUserResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
           $ref: "#/components/schemas/UserResponse"
     UserResponse:
-      type: "object"
+      type: object
       properties:
         id:
-          type: "integer"
-          format: "int64"
+          type: integer
+          format: int64
         name:
-          type: "string"
+          type: string
         username:
-          type: "string"
+          type: string
         address:
-          type: "string"
+          type: string
     Login:
       required:
-        - "password"
-        - "username"
-      type: "object"
+      - password
+      - username
+      type: object
       properties:
         username:
-          type: "string"
+          type: string
         password:
-          type: "string"
+          type: string
+    LocalTime:
+      type: object
+      properties:
+        hour:
+          type: integer
+          format: int32
+        minute:
+          type: integer
+          format: int32
+        second:
+          type: integer
+          format: int32
+        nano:
+          type: integer
+          format: int32
     ProductCreate:
       required:
-        - "name"
-        - "price"
-        - "storeName"
-        - "type"
-      type: "object"
+      - name
+      - price
+      - storeName
+      - type
+      type: object
       properties:
         storeName:
-          type: "string"
+          type: string
         name:
-          type: "string"
+          type: string
         price:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         type:
-          type: "string"
+          type: string
           enum:
-            - "FOOD"
-            - "BEVERAGE"
-            - "DESSERT"
+          - FOOD
+          - BEVERAGE
+          - DESSERT
+        stock:
+          type: integer
+          format: int32
     StoreCreate:
       required:
-        - "storeName"
-        - "storeType"
-      type: "object"
+      - closeTime
+      - openTime
+      - storeName
+      - storeType
+      type: object
       properties:
         storeName:
-          type: "string"
+          type: string
         storeType:
-          type: "string"
+          type: string
           enum:
-            - "CAFE"
-            - "KOREAN_FOOD"
-            - "WESTERN_FOOD"
-            - "CHINESE_FOOD"
-            - "JAPANESE_FOOD"
-            - "SNACK"
-            - "FAST_FOOD"
-            - "DESSERT"
+          - CAFE
+          - KOREAN_FOOD
+          - WESTERN_FOOD
+          - CHINESE_FOOD
+          - JAPANESE_FOOD
+          - SNACK
+          - FAST_FOOD
+          - DESSERT
         products:
-          type: "array"
+          type: array
           items:
             $ref: "#/components/schemas/ProductCreate"
+        openTime:
+          $ref: "#/components/schemas/LocalTime"
+        closeTime:
+          $ref: "#/components/schemas/LocalTime"
     ApiResponseStoreOwnerResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
           $ref: "#/components/schemas/StoreOwnerResponse"
     StoreOwnerResponse:
-      type: "object"
+      type: object
       properties:
         id:
-          type: "integer"
-          format: "int64"
+          type: integer
+          format: int64
         name:
-          type: "string"
+          type: string
         storeType:
-          type: "string"
+          type: string
           enum:
-            - "CAFE"
-            - "KOREAN_FOOD"
-            - "WESTERN_FOOD"
-            - "CHINESE_FOOD"
-            - "JAPANESE_FOOD"
-            - "SNACK"
-            - "FAST_FOOD"
-            - "DESSERT"
+          - CAFE
+          - KOREAN_FOOD
+          - WESTERN_FOOD
+          - CHINESE_FOOD
+          - JAPANESE_FOOD
+          - SNACK
+          - FAST_FOOD
+          - DESSERT
         totalSales:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         owner:
           $ref: "#/components/schemas/UserResponse"
     RiderCreate:
       required:
-        - "name"
-        - "phone"
-      type: "object"
+      - name
+      - phone
+      type: object
       properties:
         name:
-          type: "string"
+          type: string
         phone:
-          type: "string"
+          type: string
     ApiResponseRiderResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
           $ref: "#/components/schemas/RiderResponse"
     RiderResponse:
-      type: "object"
+      type: object
       properties:
         id:
-          type: "integer"
-          format: "int64"
+          type: integer
+          format: int64
         name:
-          type: "string"
+          type: string
         phone:
-          type: "string"
+          type: string
         status:
-          type: "string"
+          type: string
           enum:
-            - "OFFLINE"
-            - "AVAILABLE"
-            - "DELIVERING"
+          - OFFLINE
+          - AVAILABLE
+          - DELIVERING
     RiderLogin:
       required:
-        - "phone"
-      type: "object"
+      - phone
+      type: object
       properties:
         phone:
-          type: "string"
+          type: string
     ApiResponseProductResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
           $ref: "#/components/schemas/ProductResponse"
     ProductResponse:
-      type: "object"
+      type: object
       properties:
         id:
-          type: "integer"
-          format: "int64"
+          type: integer
+          format: int64
         name:
-          type: "string"
+          type: string
         price:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         type:
-          type: "string"
+          type: string
         sellingStatus:
-          type: "string"
+          type: string
         storeId:
-          type: "integer"
-          format: "int64"
+          type: integer
+          format: int64
         storeName:
-          type: "string"
+          type: string
     ApiResponseListProductResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
-          type: "array"
+          type: array
           items:
             $ref: "#/components/schemas/ProductResponse"
     OrderCreate:
       required:
-        - "address"
-        - "orderProducts"
-        - "storeName"
-      type: "object"
+      - address
+      - orderProducts
+      - storeName
+      type: object
       properties:
         storeName:
-          type: "string"
+          type: string
         orderProducts:
-          type: "array"
+          type: array
           items:
             $ref: "#/components/schemas/OrderProductRequest"
         address:
-          type: "string"
+          type: string
     OrderProductRequest:
       required:
-        - "productName"
-        - "quantity"
-      type: "object"
+      - productName
+      - quantity
+      type: object
       properties:
         productName:
-          type: "string"
+          type: string
         quantity:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
     ApiResponseOrderResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
           $ref: "#/components/schemas/OrderResponse"
     OrderProductResponse:
-      type: "object"
+      type: object
       properties:
         productId:
-          type: "integer"
-          format: "int64"
+          type: integer
+          format: int64
         productName:
-          type: "string"
+          type: string
         quantity:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         price:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         totalPrice:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
     OrderResponse:
-      type: "object"
+      type: object
       properties:
         id:
-          type: "integer"
-          format: "int64"
+          type: integer
+          format: int64
         storeId:
-          type: "integer"
-          format: "int64"
+          type: integer
+          format: int64
         totalPrice:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         address:
-          type: "string"
+          type: string
         storeName:
-          type: "string"
+          type: string
+        orderStatus:
+          type: string
         orderedAt:
-          type: "string"
-          format: "date-time"
+          type: string
+          format: date-time
         orderProducts:
-          type: "array"
+          type: array
           items:
             $ref: "#/components/schemas/OrderProductResponse"
     PasswordUpdate:
-      type: "object"
+      type: object
       properties:
         password:
-          maxLength: "20"
-          minLength: "8"
-          type: "string"
+          maxLength: 20
+          minLength: 8
+          type: string
     AddressUpdate:
       required:
-        - "address"
-      type: "object"
+      - address
+      type: object
       properties:
         address:
-          type: "string"
+          type: string
     RiderStatusUpdate:
       required:
-        - "status"
-      type: "object"
+      - status
+      type: object
       properties:
         status:
-          type: "string"
+          type: string
           enum:
-            - "OFFLINE"
-            - "AVAILABLE"
-            - "DELIVERING"
+          - OFFLINE
+          - AVAILABLE
+          - DELIVERING
     ProductStatusUpdate:
-      type: "object"
+      type: object
       properties:
         status:
-          type: "string"
+          type: string
           enum:
-            - "SELLING"
-            - "STOP_SELLING"
+          - SELLING
+          - STOP_SELLING
+          - SOLD_OUT
     ApiResponseDeliveryResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
           $ref: "#/components/schemas/DeliveryResponse"
     DeliveryResponse:
-      type: "object"
+      type: object
       properties:
         deliveryId:
-          type: "integer"
-          format: "int64"
+          type: integer
+          format: int64
         orderId:
-          type: "integer"
-          format: "int64"
+          type: integer
+          format: int64
         status:
-          type: "string"
+          type: string
           enum:
-            - "PENDING"
-            - "ASSIGNED"
-            - "PICKED_UP"
-            - "DELIVERED"
+          - PENDING
+          - ASSIGNED
+          - PICKED_UP
+          - DELIVERED
         address:
-          type: "string"
+          type: string
         startedAt:
-          type: "string"
-          format: "date-time"
+          type: string
+          format: date-time
         completedAt:
-          type: "string"
-          format: "date-time"
+          type: string
+          format: date-time
     ApiResponseListStoreCustomerResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
-          type: "array"
+          type: array
           items:
             $ref: "#/components/schemas/StoreCustomerResponse"
     StoreCustomerResponse:
-      type: "object"
+      type: object
       properties:
         id:
-          type: "integer"
-          format: "int64"
+          type: integer
+          format: int64
         name:
-          type: "string"
+          type: string
         storeType:
-          type: "string"
+          type: string
           enum:
-            - "CAFE"
-            - "KOREAN_FOOD"
-            - "WESTERN_FOOD"
-            - "CHINESE_FOOD"
-            - "JAPANESE_FOOD"
-            - "SNACK"
-            - "FAST_FOOD"
-            - "DESSERT"
+          - CAFE
+          - KOREAN_FOOD
+          - WESTERN_FOOD
+          - CHINESE_FOOD
+          - JAPANESE_FOOD
+          - SNACK
+          - FAST_FOOD
+          - DESSERT
         address:
-          type: "string"
+          type: string
+        openTime:
+          $ref: "#/components/schemas/LocalTime"
+        closeTime:
+          $ref: "#/components/schemas/LocalTime"
+        open:
+          type: boolean
     ApiResponseStoreCustomerResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
           $ref: "#/components/schemas/StoreCustomerResponse"
     ApiResponseListStoreOwnerResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
-          type: "array"
+          type: array
           items:
             $ref: "#/components/schemas/StoreOwnerResponse"
     ApiResponseListRiderResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
-          type: "array"
+          type: array
           items:
             $ref: "#/components/schemas/RiderResponse"
     ApiResponseListOrderResponse:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
-          type: "array"
+          type: array
           items:
             $ref: "#/components/schemas/OrderResponse"
     ApiResponseVoid:
-      type: "object"
+      type: object
       properties:
         code:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
         status:
-          type: "string"
+          type: string
           enum:
-            - "100 CONTINUE"
-            - "101 SWITCHING_PROTOCOLS"
-            - "102 PROCESSING"
-            - "103 EARLY_HINTS"
-            - "103 CHECKPOINT"
-            - "200 OK"
-            - "201 CREATED"
-            - "202 ACCEPTED"
-            - "203 NON_AUTHORITATIVE_INFORMATION"
-            - "204 NO_CONTENT"
-            - "205 RESET_CONTENT"
-            - "206 PARTIAL_CONTENT"
-            - "207 MULTI_STATUS"
-            - "208 ALREADY_REPORTED"
-            - "226 IM_USED"
-            - "300 MULTIPLE_CHOICES"
-            - "301 MOVED_PERMANENTLY"
-            - "302 FOUND"
-            - "302 MOVED_TEMPORARILY"
-            - "303 SEE_OTHER"
-            - "304 NOT_MODIFIED"
-            - "305 USE_PROXY"
-            - "307 TEMPORARY_REDIRECT"
-            - "308 PERMANENT_REDIRECT"
-            - "400 BAD_REQUEST"
-            - "401 UNAUTHORIZED"
-            - "402 PAYMENT_REQUIRED"
-            - "403 FORBIDDEN"
-            - "404 NOT_FOUND"
-            - "405 METHOD_NOT_ALLOWED"
-            - "406 NOT_ACCEPTABLE"
-            - "407 PROXY_AUTHENTICATION_REQUIRED"
-            - "408 REQUEST_TIMEOUT"
-            - "409 CONFLICT"
-            - "410 GONE"
-            - "411 LENGTH_REQUIRED"
-            - "412 PRECONDITION_FAILED"
-            - "413 PAYLOAD_TOO_LARGE"
-            - "413 REQUEST_ENTITY_TOO_LARGE"
-            - "414 URI_TOO_LONG"
-            - "414 REQUEST_URI_TOO_LONG"
-            - "415 UNSUPPORTED_MEDIA_TYPE"
-            - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-            - "417 EXPECTATION_FAILED"
-            - "418 I_AM_A_TEAPOT"
-            - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-            - "420 METHOD_FAILURE"
-            - "421 DESTINATION_LOCKED"
-            - "422 UNPROCESSABLE_ENTITY"
-            - "423 LOCKED"
-            - "424 FAILED_DEPENDENCY"
-            - "425 TOO_EARLY"
-            - "426 UPGRADE_REQUIRED"
-            - "428 PRECONDITION_REQUIRED"
-            - "429 TOO_MANY_REQUESTS"
-            - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-            - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-            - "500 INTERNAL_SERVER_ERROR"
-            - "501 NOT_IMPLEMENTED"
-            - "502 BAD_GATEWAY"
-            - "503 SERVICE_UNAVAILABLE"
-            - "504 GATEWAY_TIMEOUT"
-            - "505 HTTP_VERSION_NOT_SUPPORTED"
-            - "506 VARIANT_ALSO_NEGOTIATES"
-            - "507 INSUFFICIENT_STORAGE"
-            - "508 LOOP_DETECTED"
-            - "509 BANDWIDTH_LIMIT_EXCEEDED"
-            - "510 NOT_EXTENDED"
-            - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
         message:
-          type: "string"
+          type: string
         data:
-          type: "object"
+          type: object

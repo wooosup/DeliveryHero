@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,27 @@ public class OrderController implements OrderControllerDocs {
     public ApiResponse<OrderResponse> order(@LoginUser Long userId,
                                             @Valid @RequestBody OrderCreate request) {
         Order order = orderService.order(userId, request);
+        return ApiResponse.ok(OrderResponse.of(order));
+    }
+
+    @Override
+    @PostMapping("/accept/{orderId}")
+    public ApiResponse<OrderResponse> accept(@LoginUser Long userId, @PathVariable Long orderId) {
+        Order order = orderService.accept(userId, orderId);
+        return ApiResponse.ok(OrderResponse.of(order));
+    }
+
+    @Override
+    @PostMapping("/cancel/{orderId}")
+    public ApiResponse<OrderResponse> cancel(@LoginUser Long userId, @PathVariable Long orderId) {
+        Order order = orderService.cancel(orderId);
+        return ApiResponse.ok(OrderResponse.of(order));
+    }
+
+    @Override
+    @PostMapping("/complete/{orderId}")
+    public ApiResponse<OrderResponse> complete(@PathVariable Long orderId) {
+        Order order = orderService.complete(orderId);
         return ApiResponse.ok(OrderResponse.of(order));
     }
 

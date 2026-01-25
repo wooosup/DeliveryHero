@@ -99,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
         Product decreasedProduct = product.decreaseStock(request.getQuantity());
         productRepository.save(decreasedProduct);
 
-        return OrderProduct.create(product, request.getQuantity());
+        return OrderProduct.create(decreasedProduct, request.getQuantity());
     }
 
 }

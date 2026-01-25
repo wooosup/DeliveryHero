@@ -1,14 +1,12 @@
 package hello.delivery.mock;
 
 import hello.delivery.common.exception.DeliveryNotFound;
-import hello.delivery.common.exception.OrderNotFound;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.exception.RiderNotFound;
 import hello.delivery.common.exception.StoreNotFound;
 import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.common.service.port.FinderPort;
 import hello.delivery.delivery.domain.Delivery;
-import hello.delivery.order.domain.Order;
 import hello.delivery.product.domain.Product;
 import hello.delivery.rider.domain.Rider;
 import hello.delivery.store.domain.Store;
@@ -23,7 +21,6 @@ public class FakeFinder implements FinderPort {
     private final List<Product> products = new ArrayList<>();
     private final List<Delivery> deliveries = new ArrayList<>();
     private final List<Rider> riders = new ArrayList<>();
-    private final List<Order> orders = new ArrayList<>();
 
     public void addUser(User user) {
         users.add(user);
@@ -47,11 +44,6 @@ public class FakeFinder implements FinderPort {
         riders.add(rider);
     }
 
-    public void addOrder(Order order) {
-        orders.removeIf(o -> o.getId().equals(order.getId()));
-        orders.add(order);
-    }
-
     public User findByUser(Long userId) {
         return users.stream()
                 .filter(user -> user.getId().equals(userId))
@@ -73,14 +65,6 @@ public class FakeFinder implements FinderPort {
                 .filter(rider -> rider.getId().equals(id))
                 .findFirst()
                 .orElseThrow(RiderNotFound::new);
-    }
-
-    @Override
-    public Order findByOrder(Long id) {
-        return orders.stream()
-                .filter(order -> order.getId().equals(id))
-                .findFirst()
-                .orElseThrow(OrderNotFound::new);
     }
 
     public Store findByStoreName(String storeName) {

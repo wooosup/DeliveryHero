@@ -56,6 +56,30 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(acceptedOrder);
     }
 
+    @Override
+    public Order cancel(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(OrderNotFound::new);
+        Order cancelledOrder = order.cancel();
+
+        for (OrderProduct op : cancelledOrder.getOrderProducts()) {
+            Product product = op.getProduct();
+            Product restoredProduct = product.increaseStock(op.getQuantity());
+            productRepository.save(restoredProduct);
+        }
+
+        return orderRepository.save(cancelledOrder);
+    }
+
+    @Override
+    public Order complete(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(OrderNotFound::new);
+        Order completedOrder = order.complete();
+
+        return orderRepository.save(completedOrder);
+    }
+
     @Transactional(readOnly = true)
     public List<Order> findOrdersByUserId(Long userId) {
         User user = finder.findByUser(userId);

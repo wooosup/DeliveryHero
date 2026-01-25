@@ -98,6 +98,61 @@ class OrderTest {
     }
 
     @Test
+    @DisplayName("주문을 취소할 수 있다.")
+    void cancel() throws Exception {
+        //given
+        User owner = buildOwner();
+        User user = buildUser();
+        Store store = buildStore(owner);
+        Product product = buildProduct(store);
+        OrderProduct orderProduct = OrderProduct.create(product, 2);
+        Order order = Order.order(user, store, List.of(orderProduct), "주소", ORDERED_AT);
+        Order acceptedOrder = order.accept();
+
+        //when
+        Order cancelledOrder = acceptedOrder.cancel();
+
+        //then
+        assertThat(cancelledOrder.getOrderStatus()).isEqualTo(CANCELLED);
+    }
+
+    @Test
+    @DisplayName("주문을 완료할 수 있다.")
+    void complete() throws Exception {
+        //given
+        User owner = buildOwner();
+        User user = buildUser();
+        Store store = buildStore(owner);
+        Product product = buildProduct(store);
+        OrderProduct orderProduct = OrderProduct.create(product, 2);
+        Order order = Order.order(user, store, List.of(orderProduct), "주소", ORDERED_AT);
+        Order acceptedOrder = order.accept();
+
+        //when
+        Order completedOrder = acceptedOrder.complete();
+
+        //then
+        assertThat(completedOrder.getOrderStatus()).isEqualTo(COMPLETED);
+    }
+
+    @Test
+    @DisplayName("ACCEPTED 상태가 아닌 주문은 완료할 수 없다.")
+    void validateComplete() throws Exception {
+        //given
+        User owner = buildOwner();
+        User user = buildUser();
+        Store store = buildStore(owner);
+        Product product = buildProduct(store);
+        OrderProduct orderProduct = OrderProduct.create(product, 2);
+        Order order = Order.order(user, store, List.of(orderProduct), "주소", ORDERED_AT);
+
+        //expect
+        assertThatThrownBy(order::complete)
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("수락된 주문만 완료 처리할 수 있습니다.");
+    }
+
+    @Test
     @DisplayName("사용자가 null이면 예외를 던진다.")
     void validateOrderNotUser() throws Exception {
         // given

@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "name" : "없을무",
-  "phone": "010-1234-5678"
+  "phone": "01012345678"
 }
 
 ### 라이더 로그인
@@ -12,7 +12,7 @@ POST localhost:8080/api/riders/login
 Content-Type: application/json
 
 {
-  "phone": "010-1234-5678"
+  "phone": "01012345678"
 }
 
 ### 라이더 상태변경

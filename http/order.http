@@ -13,6 +13,18 @@ Content-Type: application/json
   ]
 }
 
+### 주문 승인
+POST localhost:8080/api/orders/accept/1
+Content-Type: application/json
+
+### 주문 거절
+POST localhost:8080/api/orders/cancel/1
+Content-Type: application/json
+
+### 완료
+POST localhost:8080/api/orders/complete/1
+Content-Type: application/json
+
 ### 사용자 주문내역 조회
 GET localhost:8080/api/orders/my-orders
 Content-Type: application/json

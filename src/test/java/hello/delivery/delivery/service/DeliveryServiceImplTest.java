@@ -17,9 +17,11 @@ import hello.delivery.delivery.domain.Delivery;
 import hello.delivery.delivery.domain.DeliveryAddress;
 import hello.delivery.mock.FakeDeliveryRepository;
 import hello.delivery.mock.FakeFinder;
+import hello.delivery.mock.FakeOrderRepository;
 import hello.delivery.mock.FakeRiderRepository;
 import hello.delivery.mock.TestClockHolder;
 import hello.delivery.order.domain.Order;
+import hello.delivery.order.domain.OrderStatus;
 import hello.delivery.order.domain.OrderProduct;
 import hello.delivery.product.domain.Product;
 import hello.delivery.rider.domain.Rider;
@@ -40,17 +42,20 @@ class DeliveryServiceImplTest {
 
     private DeliveryService deliveryService;
     private FakeDeliveryRepository fakeDeliveryRepository;
+    private FakeOrderRepository fakeOrderRepository;
     private FakeFinder fakeFinder;
     private TestClockHolder testClockHolder;
 
     @BeforeEach
     void setUp() {
         fakeDeliveryRepository = new FakeDeliveryRepository();
+        fakeOrderRepository = new FakeOrderRepository();
         FakeRiderRepository fakeRiderRepository = new FakeRiderRepository();
         fakeFinder = new FakeFinder();
         testClockHolder = new TestClockHolder();
         deliveryService = new DeliveryServiceImpl(
                 fakeDeliveryRepository,
+                fakeOrderRepository,
                 fakeRiderRepository,
                 fakeFinder,
                 testClockHolder
@@ -58,11 +63,15 @@ class DeliveryServiceImplTest {
     }
 
     private Order setUpOrder() {
+        return setUpOrder(OrderStatus.ACCEPTED);
+    }
+
+    private Order setUpOrder(OrderStatus orderStatus) {
         User owner = buildOwner();
         User user = buildUser();
         Store store = buildStore(owner);
         Product product = buildProduct(store);
-        return buildOrder(user, store, product);
+        return fakeOrderRepository.save(buildOrder(user, store, product, orderStatus));
     }
 
     @Test
@@ -80,6 +89,18 @@ class DeliveryServiceImplTest {
         assertThat(delivery.getOrderId()).isEqualTo(order.getId());
         assertThat(delivery.getStatus()).isEqualTo(PENDING);
         assertThat(delivery.getAddress().getAddress()).isEqualTo("대구시 달서구");
+    }
+
+    @Test
+    @DisplayName("수락되지 않은 주문으로는 배달을 생성할 수 없다.")
+    void validateCreateDeliveryForPendingOrder() {
+        // given
+        Order order = setUpOrder(OrderStatus.PENDING);
+
+        // expect
+        assertThatThrownBy(() -> deliveryService.createDeliveryForOrder(order))
+                .isInstanceOf(DeliveryException.class)
+                .hasMessageContaining("수락된 주문만 배달을 생성할 수 있습니다.");
     }
 
     @Test
@@ -154,6 +175,8 @@ class DeliveryServiceImplTest {
         // then
         assertThat(result.getStatus()).isEqualTo(DELIVERED);
         assertThat(result.getCompletedAt()).isEqualTo(testClockHolder.nowDateTime());
+        Order completedOrder = fakeOrderRepository.findById(order.getId()).orElseThrow();
+        assertThat(completedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETED);
     }
 
     @Test
@@ -263,7 +286,7 @@ class DeliveryServiceImplTest {
         return product;
     }
 
-    private Order buildOrder(User user, Store store, Product product) {
+    private Order buildOrder(User user, Store store, Product product, OrderStatus orderStatus) {
         OrderProduct orderProduct = OrderProduct.builder()
                 .product(product)
                 .quantity(2)
@@ -276,6 +299,7 @@ class DeliveryServiceImplTest {
                 .address(DeliveryAddress.of("대구시 달서구"))
                 .orderedAt(testClockHolder.nowDateTime())
                 .orderProducts(List.of(orderProduct))
+                .orderStatus(orderStatus)
                 .build();
     }
 

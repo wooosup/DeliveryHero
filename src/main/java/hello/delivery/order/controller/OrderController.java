@@ -3,7 +3,6 @@ package hello.delivery.order.controller;
 
 import hello.delivery.common.annotation.LoginCustomerId;
 import hello.delivery.common.annotation.LoginOwnerId;
-import hello.delivery.common.annotation.LoginUser;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.order.controller.docs.OrderControllerDocs;
 import hello.delivery.order.controller.port.OrderService;
@@ -43,16 +42,16 @@ public class OrderController implements OrderControllerDocs {
     }
 
     @Override
-    @PostMapping("/cancel/{orderId}")
-    public ApiResponse<OrderResponse> cancel(@LoginCustomerId Long customerId, @PathVariable Long orderId) {
-        Order order = orderService.cancel(customerId, orderId);
+    @PostMapping("/reject/{orderId}")
+    public ApiResponse<OrderResponse> reject(@LoginOwnerId Long ownerId, @PathVariable Long orderId) {
+        Order order = orderService.reject(ownerId, orderId);
         return ApiResponse.ok(OrderResponse.of(order));
     }
 
     @Override
-    @PostMapping("/complete/{orderId}")
-    public ApiResponse<OrderResponse> complete(@PathVariable Long orderId) {
-        Order order = orderService.complete(orderId);
+    @PostMapping("/cancel/{orderId}")
+    public ApiResponse<OrderResponse> cancel(@LoginCustomerId Long customerId, @PathVariable Long orderId) {
+        Order order = orderService.cancel(customerId, orderId);
         return ApiResponse.ok(OrderResponse.of(order));
     }
 

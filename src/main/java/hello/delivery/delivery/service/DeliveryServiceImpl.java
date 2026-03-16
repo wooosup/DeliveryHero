@@ -4,12 +4,14 @@ import static hello.delivery.rider.domain.RiderStatus.*;
 
 import hello.delivery.common.exception.ForbiddenException;
 import hello.delivery.common.exception.DeliveryException;
+import hello.delivery.common.exception.OrderNotFound;
 import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.common.service.port.FinderPort;
 import hello.delivery.delivery.controller.port.DeliveryService;
 import hello.delivery.delivery.domain.Delivery;
 import hello.delivery.delivery.service.port.DeliveryRepository;
 import hello.delivery.order.domain.Order;
+import hello.delivery.order.service.port.OrderRepository;
 import hello.delivery.rider.domain.Rider;
 import hello.delivery.rider.domain.RiderStatus;
 import hello.delivery.rider.domain.RiderStatusUpdate;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeliveryServiceImpl implements DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
+    private final OrderRepository orderRepository;
     private final RiderRepository riderRepository;
     private final FinderPort finderPort;
     private final ClockHolder clockHolder;
@@ -71,7 +74,9 @@ public class DeliveryServiceImpl implements DeliveryService {
         changeRiderStatus(rider, AVAILABLE);
 
         delivery = delivery.complete(rider.getId(), clockHolder);
-        return deliveryRepository.save(delivery);
+        Delivery completedDelivery = deliveryRepository.save(delivery);
+        completeOrder(completedDelivery.getOrderId());
+        return completedDelivery;
     }
 
     @Override
@@ -99,6 +104,12 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (delivery.getRiderId() == null || !delivery.getRiderId().equals(riderId)) {
             throw new ForbiddenException("해당 배달의 담당 라이더만 접근할 수 있습니다.");
         }
+    }
+
+    private void completeOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(OrderNotFound::new);
+        orderRepository.save(order.complete());
     }
 
 }

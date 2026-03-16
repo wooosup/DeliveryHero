@@ -3,6 +3,7 @@ package hello.delivery.order.service;
 import static hello.delivery.order.domain.OrderStatus.ACCEPTED;
 import static hello.delivery.order.domain.OrderStatus.CANCELLED;
 import static hello.delivery.order.domain.OrderStatus.COMPLETED;
+import static hello.delivery.order.domain.OrderStatus.REJECTED;
 import static hello.delivery.user.domain.UserRole.CUSTOMER;
 import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,7 +62,13 @@ class OrderServiceTest {
         FakeDeliveryRepository fakeDeliveryRepository = new FakeDeliveryRepository();
         FakeRiderRepository fakeRiderRepository = new FakeRiderRepository();
         StoreServiceImpl storeService = new StoreServiceImpl(new FakeStoreRepository(), fakeFinder, testClockHolder);
-        DeliveryServiceImpl deliveryService = new DeliveryServiceImpl(fakeDeliveryRepository, fakeRiderRepository, fakeFinder, testClockHolder);
+        DeliveryServiceImpl deliveryService = new DeliveryServiceImpl(
+                fakeDeliveryRepository,
+                fakeOrderRepository,
+                fakeRiderRepository,
+                fakeFinder,
+                testClockHolder
+        );
 
         orderService = new OrderServiceImpl(
                 fakeOrderRepository,
@@ -175,6 +182,22 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("사장님이 주문을 거절하면 상태가 REJECTED가 되고 재고가 복구된다.")
+    void reject() {
+        // given
+        OrderCreate orderCreate = createOrderCreate(store, productWithStock, ORDER_QUANTITY);
+        Order order = orderService.order(customer.getId(), orderCreate);
+
+        // when
+        Order rejectedOrder = orderService.reject(store.getOwner().getId(), order.getId());
+
+        // then
+        assertThat(rejectedOrder.getOrderStatus()).isEqualTo(REJECTED);
+        Product result = fakeProductRepository.findById(productWithStock.getId()).orElseThrow();
+        assertThat(result.getStock().getQuantity()).isEqualTo(10);
+    }
+
+    @Test
     @DisplayName("상태가 완료된 주문을 취소하면 예외를 던진다.")
     void validateCancel() throws Exception {
         //given
@@ -185,6 +208,20 @@ class OrderServiceTest {
 
         // expect
         assertThatThrownBy(() -> orderService.cancel(customer.getId(), completedOrder.getId()))
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("주문을 취소할 수 없는 상태입니다.");
+    }
+
+    @Test
+    @DisplayName("수락된 주문은 고객이 취소할 수 없다.")
+    void validateCancelAfterAccepted() {
+        // given
+        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        Order order = orderService.order(customer.getId(), orderCreate);
+        Order acceptedOrder = orderService.accept(store.getOwner().getId(), order.getId());
+
+        // expect
+        assertThatThrownBy(() -> orderService.cancel(customer.getId(), acceptedOrder.getId()))
                 .isInstanceOf(OrderException.class)
                 .hasMessageContaining("주문을 취소할 수 없는 상태입니다.");
     }

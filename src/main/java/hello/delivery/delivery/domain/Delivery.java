@@ -1,6 +1,7 @@
 package hello.delivery.delivery.domain;
 
 import static hello.delivery.delivery.domain.DeliveryStatus.*;
+import static hello.delivery.order.domain.OrderStatus.ACCEPTED;
 
 import hello.delivery.common.exception.DeliveryException;
 import hello.delivery.common.service.port.ClockHolder;
@@ -94,6 +95,9 @@ public class Delivery {
     private static void validate(Order order) {
         if (order == null) {
             throw new DeliveryException("배달에 필요한 주문 정보가 없습니다.");
+        }
+        if (order.getOrderStatus() != ACCEPTED) {
+            throw new DeliveryException("수락된 주문만 배달을 생성할 수 있습니다.");
         }
         if (order.getAddress() == null) {
             throw new DeliveryException("배달에 필요한 주소 정보가 없습니다.");

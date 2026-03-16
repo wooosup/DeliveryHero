@@ -25,13 +25,14 @@ public interface OrderControllerDocs {
             @Parameter(hidden = true) @LoginOwnerId Long ownerId,
             @Parameter(description = "주문 ID") @PathVariable Long orderId);
 
-    @Operation(summary = "주문 취소", description = "사장님이 주문을 거절하거나, 특정 조건에서 주문을 취소합니다.")
-    ApiResponse<OrderResponse> cancel(
-            @Parameter(hidden = true) @LoginCustomerId Long customerId,
+    @Operation(summary = "주문 거절", description = "사장님이 대기 중인 주문을 거절합니다.")
+    ApiResponse<OrderResponse> reject(
+            @Parameter(hidden = true) @LoginOwnerId Long ownerId,
             @Parameter(description = "주문 ID") @PathVariable Long orderId);
 
-    @Operation(summary = "주문 완료", description = "배달이 완료되어 주문 상태를 완료로 변경합니다.")
-    ApiResponse<OrderResponse> complete(
+    @Operation(summary = "주문 취소", description = "고객이 대기 중인 주문을 취소합니다.")
+    ApiResponse<OrderResponse> cancel(
+            @Parameter(hidden = true) @LoginCustomerId Long customerId,
             @Parameter(description = "주문 ID") @PathVariable Long orderId);
 
     @Operation(summary = "내 주문 조회", description = "로그인한 사용자의 모든 주문을 조회합니다.")

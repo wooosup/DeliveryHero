@@ -4,6 +4,7 @@ import static hello.delivery.user.domain.UserRole.CUSTOMER;
 import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -96,6 +97,31 @@ class AuthorizationIntegrationTest {
     }
 
     @Test
+    @DisplayName("인증 없이 주문 생성 요청을 보내면 401을 반환한다.")
+    void unauthenticatedOrderRequestReturnsUnauthorized() throws Exception {
+        // given
+        User owner = createOwner("owner-0");
+        createStoreWithProduct(owner.getId(), "스토어-0", "상품-0");
+
+        // when & then
+        mockMvc.perform(post("/api/orders/new")
+                        .contentType(APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "storeName": "스토어-0",
+                                  "address": "서울시 강남구",
+                                  "orderProducts": [
+                                    {
+                                      "productName": "상품-0",
+                                      "quantity": 1
+                                    }
+                                  ]
+                                }
+                                """))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     @DisplayName("고객 세션으로 주문 수락 요청을 보내면 403을 반환한다.")
     void acceptEndpointRequiresOwnerRole() throws Exception {
         // given
@@ -146,6 +172,19 @@ class AuthorizationIntegrationTest {
 
         // when & then
         mockMvc.perform(get("/api/deliveries/{deliveryId}", delivery.getId())
+                        .session(riderSession(otherRider.getId())))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("다른 라이더가 남의 배달을 완료하려고 하면 403을 반환한다.")
+    void anotherRiderCannotCompleteOthersDelivery() throws Exception {
+        // given
+        Delivery delivery = createAssignedDelivery("owner-6", "customer-6", "스토어-6", "상품-6", "010-4444-4444");
+        Rider otherRider = createAvailableRider("010-5555-5555");
+
+        // when & then
+        mockMvc.perform(patch("/api/deliveries/{deliveryId}/complete", delivery.getId())
                         .session(riderSession(otherRider.getId())))
                 .andExpect(status().isForbidden());
     }

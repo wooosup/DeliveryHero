@@ -43,6 +43,16 @@
 - 해결: 상품 조회 구간에 `PESSIMISTIC_WRITE`를 적용하고, MySQL Testcontainers 기반 `OrderConcurrencyIntegrationTest`로 동시 주문을 검증했음.
 - 결과: 재고 1개 상품에 주문 2건이 동시에 들어와도 1건만 성공하고 최종 재고가 0으로 유지되는 것을 확인했음.
 
+### 5. API 계약 정리
+- 문제: 주문 생성 요청이 `storeName`, `productName` 기반이면 식별자와 표시값이 섞이고, 이름 변경이나 중복 이름에 취약할 수 있었음.
+- 해결: 주문 요청을 `storeId`, `productId` 기반으로 바꾸고, 서버에서 상품이 요청한 가게 소속인지 다시 검증했음.
+- 결과: API 계약이 더 production-oriented 하게 정리됐고, 잘못된 store-product 조합도 서버에서 바로 차단할 수 있게 됐음.
+
+### 6. 실행 환경과 검증 기준 정리
+- 문제: 로컬 실행에 필요한 설정 파일, MySQL 준비 방법, PR 검증 기준이 흩어져 있어 처음 실행하거나 변경을 검증하기 어려울 수 있었음.
+- 해결: `application-secret.properties.example`, `docker-compose.yml`, README 실행 절차, GitHub Actions `test` 워크플로우를 추가했음.
+- 결과: 로컬 실행 절차가 재현 가능해졌고, PR에서도 최소한의 자동 검증 기준을 갖출 수 있게 됐음.
+
 ## Architecture Diagram
 <div align="center">
     <img src="src/main/resources/static/architecture.png" width="700">

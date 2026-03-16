@@ -17,6 +17,7 @@ public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long>
 
     List<ProductEntity> findByStoreIdAndProductSellingStatus(Long storeId, ProductSellingStatus productSellingStatus);
 
+    // Hold a row lock through order creation so concurrent decrements cannot oversell the same product.
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from ProductEntity p where p.store = :store and p.name = :name")
     Optional<ProductEntity> findByStoreAndNameWithLock(@Param("store") StoreEntity store, String name);

@@ -10,7 +10,7 @@ public interface OrderService {
 
     Order accept(Long ownerId, Long orderId);
 
-    Order cancel(Long orderId);
+    Order cancel(Long customerId, Long orderId);
 
     Order complete(Long orderId);
 

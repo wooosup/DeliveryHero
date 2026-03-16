@@ -13,8 +13,8 @@ public interface DeliveryService {
 
     Delivery complete(Long id, Long riderId);
 
-    Delivery findById(Long id);
+    Delivery findById(Long riderId, Long id);
 
-    Delivery findByOrderId(Long id);
+    Delivery findByOrderId(Long riderId, Long id);
 
 }

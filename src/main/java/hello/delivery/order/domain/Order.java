@@ -6,6 +6,7 @@ import static hello.delivery.order.domain.OrderStatus.COMPLETED;
 import static hello.delivery.order.domain.OrderStatus.PENDING;
 import static hello.delivery.user.domain.UserRole.CUSTOMER;
 
+import hello.delivery.common.exception.ForbiddenException;
 import hello.delivery.common.exception.OrderException;
 import hello.delivery.delivery.domain.DeliveryAddress;
 import hello.delivery.store.domain.Store;
@@ -87,7 +88,13 @@ public class Order {
 
     public void validateOwner(Long ownerId) {
         if (!this.store.getOwner().getId().equals(ownerId)) {
-            throw new OrderException("가게 소유자만 접근할 수 있습니다.");
+            throw new ForbiddenException("가게 소유자만 접근할 수 있습니다.");
+        }
+    }
+
+    public void validateCustomer(Long customerId) {
+        if (!this.user.getId().equals(customerId)) {
+            throw new ForbiddenException("주문한 고객만 접근할 수 있습니다.");
         }
     }
 

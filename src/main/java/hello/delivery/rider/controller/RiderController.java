@@ -1,5 +1,7 @@
 package hello.delivery.rider.controller;
 
+import static hello.delivery.common.config.AuthSessionAttributes.RIDER_ID;
+
 import hello.delivery.common.annotation.LoginUser;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.rider.controller.docs.RiderControllerDocs;
@@ -39,9 +41,13 @@ public class RiderController implements RiderControllerDocs {
     @PostMapping("/login")
     public ApiResponse<RiderResponse> login(@Valid @RequestBody RiderLogin request, HttpServletRequest httpServletRequest) {
         Rider rider = riderService.login(request);
-        HttpSession session = httpServletRequest.getSession(true);
+        HttpSession currentSession = httpServletRequest.getSession(false);
+        if (currentSession != null) {
+            currentSession.invalidate();
+        }
 
-        session.setAttribute("riderId", rider.getId());
+        HttpSession session = httpServletRequest.getSession(true);
+        session.setAttribute(RIDER_ID, rider.getId());
         return ApiResponse.ok(RiderResponse.of(rider));
     }
 

@@ -1,6 +1,8 @@
 package hello.delivery.order.controller;
 
 
+import hello.delivery.common.annotation.LoginCustomerId;
+import hello.delivery.common.annotation.LoginOwnerId;
 import hello.delivery.common.annotation.LoginUser;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.order.controller.docs.OrderControllerDocs;
@@ -27,23 +29,23 @@ public class OrderController implements OrderControllerDocs {
 
     @Override
     @PostMapping("/new")
-    public ApiResponse<OrderResponse> order(@LoginUser Long userId,
+    public ApiResponse<OrderResponse> order(@LoginCustomerId Long customerId,
                                             @Valid @RequestBody OrderCreate request) {
-        Order order = orderService.order(userId, request);
+        Order order = orderService.order(customerId, request);
         return ApiResponse.ok(OrderResponse.of(order));
     }
 
     @Override
     @PostMapping("/accept/{orderId}")
-    public ApiResponse<OrderResponse> accept(@LoginUser Long userId, @PathVariable Long orderId) {
-        Order order = orderService.accept(userId, orderId);
+    public ApiResponse<OrderResponse> accept(@LoginOwnerId Long ownerId, @PathVariable Long orderId) {
+        Order order = orderService.accept(ownerId, orderId);
         return ApiResponse.ok(OrderResponse.of(order));
     }
 
     @Override
     @PostMapping("/cancel/{orderId}")
-    public ApiResponse<OrderResponse> cancel(@LoginUser Long userId, @PathVariable Long orderId) {
-        Order order = orderService.cancel(orderId);
+    public ApiResponse<OrderResponse> cancel(@LoginCustomerId Long customerId, @PathVariable Long orderId) {
+        Order order = orderService.cancel(customerId, orderId);
         return ApiResponse.ok(OrderResponse.of(order));
     }
 
@@ -56,10 +58,9 @@ public class OrderController implements OrderControllerDocs {
 
     @Override
     @GetMapping("/my-orders")
-    public ApiResponse<List<OrderResponse>> getMyOrders(@LoginUser Long userId) {
-        List<Order> orders = orderService.findOrdersByUserId(userId);
+    public ApiResponse<List<OrderResponse>> getMyOrders(@LoginCustomerId Long customerId) {
+        List<Order> orders = orderService.findOrdersByUserId(customerId);
         return ApiResponse.ok(OrderResponse.of(orders));
     }
 
 }
-

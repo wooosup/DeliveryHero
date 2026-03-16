@@ -27,12 +27,16 @@ import hello.delivery.rider.domain.RiderStatus;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class DeliveryServiceImplTest {
+
+    private static final LocalTime OPEN_TIME = LocalTime.of(12, 0);
+    private static final LocalTime CLOSE_TIME = LocalTime.of(23, 0);
 
     private DeliveryService deliveryService;
     private FakeDeliveryRepository fakeDeliveryRepository;
@@ -157,17 +161,19 @@ class DeliveryServiceImplTest {
     void findById() {
         // given
         Order order = setUpOrder();
+        Rider rider = buildRider(AVAILABLE);
 
         Delivery delivery = Delivery.builder()
                 .id(1L)
                 .orderId(order.getId())
+                .riderId(rider.getId())
                 .address(DeliveryAddress.of("대구시 달서구"))
-                .status(PENDING)
+                .status(ASSIGNED)
                 .build();
         fakeFinder.addDelivery(delivery);
 
         // when
-        Delivery result = deliveryService.findById(delivery.getId());
+        Delivery result = deliveryService.findById(rider.getId(), delivery.getId());
 
         // then
         assertThat(result).isNotNull();
@@ -180,17 +186,19 @@ class DeliveryServiceImplTest {
     void findByOrderId() {
         // given
         Order order = setUpOrder();
+        Rider rider = buildRider(AVAILABLE);
         Delivery delivery = Delivery.builder()
                 .id(1L)
                 .orderId(order.getId())
+                .riderId(rider.getId())
                 .address(DeliveryAddress.of("대구시 달서구"))
-                .status(PENDING)
+                .status(ASSIGNED)
                 .build();
         fakeDeliveryRepository.save(delivery);
         fakeFinder.addDelivery(delivery);
 
         // when
-        Delivery result = deliveryService.findByOrderId(order.getId());
+        Delivery result = deliveryService.findByOrderId(rider.getId(), order.getId());
 
         // then
         assertThat(result).isNotNull();
@@ -201,7 +209,7 @@ class DeliveryServiceImplTest {
     @DisplayName("존재하지 않는 주문 ID로 배달 정보를 조회하면 예외가 발생한다.")
     void validateFindOrderId() {
         // expect
-        assertThatThrownBy(() -> deliveryService.findByOrderId(999L))
+        assertThatThrownBy(() -> deliveryService.findByOrderId(1L, 999L))
                 .isInstanceOf(DeliveryException.class)
                 .hasMessage("해당 주문의 배달 정보를 찾을 수 없습니다.");
     }
@@ -237,6 +245,8 @@ class DeliveryServiceImplTest {
                 .id(1L)
                 .name("BBQ")
                 .owner(owner)
+                .openTime(OPEN_TIME)
+                .closeTime(CLOSE_TIME)
                 .build();
         fakeFinder.addStore(store);
         return store;

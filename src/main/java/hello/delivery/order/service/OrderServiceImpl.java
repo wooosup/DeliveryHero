@@ -57,9 +57,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order cancel(Long orderId) {
+    public Order cancel(Long customerId, Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(OrderNotFound::new);
+        order.validateCustomer(customerId);
         Order cancelledOrder = order.cancel();
 
         for (OrderProduct op : cancelledOrder.getOrderProducts()) {

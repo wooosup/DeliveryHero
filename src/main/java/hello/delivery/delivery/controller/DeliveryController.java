@@ -1,6 +1,6 @@
 package hello.delivery.delivery.controller;
 
-import hello.delivery.common.annotation.LoginUser;
+import hello.delivery.common.annotation.LoginRiderId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.delivery.controller.docs.DeliveryControllerDocs;
 import hello.delivery.delivery.controller.port.DeliveryService;
@@ -22,36 +22,36 @@ public class DeliveryController implements DeliveryControllerDocs {
 
     @Override
     @PatchMapping("/{deliveryId}/assign")
-    public ApiResponse<DeliveryResponse> assign(@LoginUser Long riderId, @PathVariable Long deliveryId) {
+    public ApiResponse<DeliveryResponse> assign(@LoginRiderId Long riderId, @PathVariable Long deliveryId) {
         Delivery delivery = deliveryService.assign(deliveryId, riderId);
         return ApiResponse.ok(DeliveryResponse.of(delivery));
     }
 
     @Override
     @PatchMapping("/{deliveryId}/start")
-    public ApiResponse<DeliveryResponse> start(@LoginUser Long riderId, @PathVariable Long deliveryId) {
+    public ApiResponse<DeliveryResponse> start(@LoginRiderId Long riderId, @PathVariable Long deliveryId) {
         Delivery delivery = deliveryService.start(deliveryId, riderId);
         return ApiResponse.ok(DeliveryResponse.of(delivery));
     }
 
     @Override
     @PatchMapping("/{deliveryId}/complete")
-    public ApiResponse<DeliveryResponse> complete(@LoginUser Long riderId, @PathVariable Long deliveryId) {
+    public ApiResponse<DeliveryResponse> complete(@LoginRiderId Long riderId, @PathVariable Long deliveryId) {
         Delivery delivery = deliveryService.complete(deliveryId, riderId);
         return ApiResponse.ok(DeliveryResponse.of(delivery));
     }
 
     @Override
     @GetMapping("/{deliveryId}")
-    public ApiResponse<DeliveryResponse> getDeliveryById(Long riderId, @PathVariable Long deliveryId) {
-        Delivery delivery = deliveryService.findById(deliveryId);
+    public ApiResponse<DeliveryResponse> getDeliveryById(@LoginRiderId Long riderId, @PathVariable Long deliveryId) {
+        Delivery delivery = deliveryService.findById(riderId, deliveryId);
         return ApiResponse.ok(DeliveryResponse.of(delivery));
     }
 
     @Override
     @GetMapping("/order/{deliveryId}")
-    public ApiResponse<DeliveryResponse> getOrderForDelivery(Long riderId, @PathVariable Long deliveryId) {
-        Delivery delivery = deliveryService.findByOrderId(deliveryId);
+    public ApiResponse<DeliveryResponse> getOrderForDelivery(@LoginRiderId Long riderId, @PathVariable Long deliveryId) {
+        Delivery delivery = deliveryService.findByOrderId(riderId, deliveryId);
         return ApiResponse.ok(DeliveryResponse.of(delivery));
     }
 

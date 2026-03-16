@@ -5,6 +5,7 @@
 ## Project Overview
 - 주문, 재고, 배달 흐름에서 자주 깨지는 지점(인가, 상태 전이, 동시성)을 도메인 규칙과 테스트로 고정한 백엔드 포트폴리오 프로젝트입니다.
 - [API 문서 바로가기](https://wooosup.github.io/DeliveryHero/)
+- [DB 리뷰 문서](docs/db-review.md)
 
 ## One-line Summary
 - DeliveryHero는 주문-재고-배달 흐름의 인가, 상태 전이, 동시성 문제를 해결한 Spring Boot 백엔드 프로젝트입니다.

@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import hello.delivery.common.exception.ForbiddenException;
 import hello.delivery.common.exception.OrderException;
+import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.StockException;
 import hello.delivery.delivery.service.DeliveryServiceImpl;
 import hello.delivery.mock.FakeDeliveryRepository;
@@ -267,6 +268,36 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("주문한 가게에 속하지 않은 상품을 주문하면 예외를 던진다.")
+    void validateProductBelongsToStore() {
+        // given
+        Store anotherStore = Store.builder()
+                .id(2L)
+                .name("교촌")
+                .owner(store.getOwner())
+                .openTime(OPEN_TIME)
+                .closeTime(CLOSE_TIME)
+                .build();
+        fakeFinder.addStore(anotherStore);
+
+        Product anotherStoreProduct = fakeProductRepository.save(Product.builder()
+                .id(3L)
+                .name("허니콤보")
+                .price(PRODUCT_PRICE)
+                .store(anotherStore)
+                .stock(Stock.of(10))
+                .build());
+        fakeFinder.addProduct(anotherStoreProduct);
+
+        OrderCreate orderCreate = createOrderCreate(store, anotherStoreProduct, ORDER_QUANTITY);
+
+        // expect
+        assertThatThrownBy(() -> orderService.order(customer.getId(), orderCreate))
+                .isInstanceOf(ProductException.class)
+                .hasMessageContaining("주문한 가게의 상품만 주문할 수 있습니다.");
+    }
+
+    @Test
     @DisplayName("사용자 아이디로 주문 내역을 조회할 수 있다.")
     void findOrdersByUserId() {
         // given
@@ -285,12 +316,12 @@ class OrderServiceTest {
 
     private OrderCreate createOrderCreate(Store store, Product product, int quantity) {
         OrderProductRequest orderProduct = OrderProductRequest.builder()
-                .productName(product.getName())
+                .productId(product.getId())
                 .quantity(quantity)
                 .build();
 
         return OrderCreate.builder()
-                .storeName(store.getName())
+                .storeId(store.getId())
                 .orderProducts(List.of(orderProduct))
                 .address(ADDRESS)
                 .build();

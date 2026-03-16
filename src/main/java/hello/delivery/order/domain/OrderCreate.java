@@ -2,7 +2,9 @@ package hello.delivery.order.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,8 +12,9 @@ import lombok.Getter;
 @Getter
 public class OrderCreate {
 
-    @NotBlank(message = "가게 이름은 필수 입력 값입니다.")
-    private final String storeName;
+    @NotNull(message = "가게 ID는 필수 입력 값입니다.")
+    @Positive(message = "가게 ID는 양수여야 합니다.")
+    private final Long storeId;
 
     @NotEmpty(message = "주문 상품은 필수 입력 값입니다.")
     private final List<OrderProductRequest> orderProducts;
@@ -21,10 +24,10 @@ public class OrderCreate {
 
     @Builder
     private OrderCreate(
-            @JsonProperty("storeName") String storeName,
+            @JsonProperty("storeId") Long storeId,
             @JsonProperty("orderProducts") List<OrderProductRequest> orderProducts,
             @JsonProperty("address") String address) {
-        this.storeName = storeName;
+        this.storeId = storeId;
         this.orderProducts = orderProducts;
         this.address = address;
     }

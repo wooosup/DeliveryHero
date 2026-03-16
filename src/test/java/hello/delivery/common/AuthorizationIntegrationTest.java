@@ -15,6 +15,7 @@ import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderCreate;
 import hello.delivery.order.domain.OrderProductRequest;
 import hello.delivery.product.controller.port.ProductService;
+import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.domain.ProductType;
 import hello.delivery.rider.controller.port.RiderService;
@@ -22,6 +23,7 @@ import hello.delivery.rider.domain.Rider;
 import hello.delivery.rider.domain.RiderCreate;
 import hello.delivery.rider.domain.RiderLogin;
 import hello.delivery.store.controller.port.StoreService;
+import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.domain.StoreType;
 import hello.delivery.user.controller.port.UserService;
@@ -75,24 +77,25 @@ class AuthorizationIntegrationTest {
     void orderEndpointRequiresCustomerRole() throws Exception {
         // given
         User owner = createOwner("owner-1");
-        createStoreWithProduct(owner.getId(), "스토어-1", "상품-1");
+        Product product = createStoreWithProduct(owner.getId(), "스토어-1", "상품-1");
+        Store store = product.getStore();
 
         // when & then
         mockMvc.perform(post("/api/orders/new")
                         .session(userSession(owner.getId(), OWNER))
                         .contentType(APPLICATION_JSON)
-                        .content("""
+                        .content(String.format("""
                                 {
-                                  "storeName": "스토어-1",
+                                  "storeId": %d,
                                   "address": "서울시 강남구",
                                   "orderProducts": [
                                     {
-                                      "productName": "상품-1",
+                                      "productId": %d,
                                       "quantity": 1
                                     }
                                   ]
                                 }
-                                """))
+                                """, store.getId(), product.getId())))
                 .andExpect(status().isForbidden());
     }
 
@@ -101,23 +104,24 @@ class AuthorizationIntegrationTest {
     void unauthenticatedOrderRequestReturnsUnauthorized() throws Exception {
         // given
         User owner = createOwner("owner-0");
-        createStoreWithProduct(owner.getId(), "스토어-0", "상품-0");
+        Product product = createStoreWithProduct(owner.getId(), "스토어-0", "상품-0");
+        Store store = product.getStore();
 
         // when & then
         mockMvc.perform(post("/api/orders/new")
                         .contentType(APPLICATION_JSON)
-                        .content("""
+                        .content(String.format("""
                                 {
-                                  "storeName": "스토어-0",
+                                  "storeId": %d,
                                   "address": "서울시 강남구",
                                   "orderProducts": [
                                     {
-                                      "productName": "상품-0",
+                                      "productId": %d,
                                       "quantity": 1
                                     }
                                   ]
                                 }
-                                """))
+                                """, store.getId(), product.getId())))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -127,8 +131,9 @@ class AuthorizationIntegrationTest {
         // given
         User owner = createOwner("owner-2");
         User customer = createCustomer("customer-1");
-        createStoreWithProduct(owner.getId(), "스토어-2", "상품-2");
-        Order order = createOrder(customer.getId(), "스토어-2", "상품-2");
+        Product product = createStoreWithProduct(owner.getId(), "스토어-2", "상품-2");
+        Store store = product.getStore();
+        Order order = createOrder(customer.getId(), store, product);
 
         // when & then
         mockMvc.perform(post("/api/orders/accept/{orderId}", order.getId())
@@ -143,8 +148,9 @@ class AuthorizationIntegrationTest {
         User owner = createOwner("owner-3");
         User customerA = createCustomer("customer-2");
         User customerB = createCustomer("customer-3");
-        createStoreWithProduct(owner.getId(), "스토어-3", "상품-3");
-        Order order = createOrder(customerA.getId(), "스토어-3", "상품-3");
+        Product product = createStoreWithProduct(owner.getId(), "스토어-3", "상품-3");
+        Store store = product.getStore();
+        Order order = createOrder(customerA.getId(), store, product);
 
         // when & then
         mockMvc.perform(post("/api/orders/cancel/{orderId}", order.getId())
@@ -189,16 +195,16 @@ class AuthorizationIntegrationTest {
                 .andExpect(status().isForbidden());
     }
 
-    private void createStoreWithProduct(Long ownerId, String storeName, String productName) {
-        storeService.create(ownerId, StoreCreate.builder()
+    private Product createStoreWithProduct(Long ownerId, String storeName, String productName) {
+        Store store = storeService.create(ownerId, StoreCreate.builder()
                 .storeName(storeName)
                 .storeType(StoreType.KOREAN_FOOD)
                 .openTime(OPEN_TIME)
                 .closeTime(CLOSE_TIME)
                 .build());
 
-        productService.create(ownerId, ProductCreate.builder()
-                .storeName(storeName)
+        return productService.create(ownerId, ProductCreate.builder()
+                .storeName(store.getName())
                 .name(productName)
                 .price(10000)
                 .type(ProductType.FOOD)
@@ -206,12 +212,12 @@ class AuthorizationIntegrationTest {
                 .build());
     }
 
-    private Order createOrder(Long customerId, String storeName, String productName) {
+    private Order createOrder(Long customerId, Store store, Product product) {
         return orderService.order(customerId, OrderCreate.builder()
-                .storeName(storeName)
+                .storeId(store.getId())
                 .address("서울시 강남구")
                 .orderProducts(List.of(OrderProductRequest.builder()
-                        .productName(productName)
+                        .productId(product.getId())
                         .quantity(1)
                         .build()))
                 .build());
@@ -224,8 +230,9 @@ class AuthorizationIntegrationTest {
                                             String riderPhone) {
         User owner = createOwner(ownerUsername);
         User customer = createCustomer(customerUsername);
-        createStoreWithProduct(owner.getId(), storeName, productName);
-        Order order = createOrder(customer.getId(), storeName, productName);
+        Product product = createStoreWithProduct(owner.getId(), storeName, productName);
+        Store store = product.getStore();
+        Order order = createOrder(customer.getId(), store, product);
         orderService.accept(owner.getId(), order.getId());
 
         Rider rider = createAvailableRider(riderPhone);

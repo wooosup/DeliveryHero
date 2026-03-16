@@ -1,6 +1,7 @@
 package hello.delivery.order.service;
 
 import hello.delivery.common.exception.OrderNotFound;
+import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.common.service.port.FinderPort;
@@ -35,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
 
     public Order order(Long userId, OrderCreate request) {
         User user = finder.findByUser(userId);
-        Store store = finder.findByStoreName(request.getStoreName());
+        Store store = finder.findByStore(request.getStoreId());
 
         List<OrderProduct> orderProducts = createOrderProducts(store, request.getOrderProducts());
         Order order = Order.order(user, store, orderProducts, request.getAddress(), clockHolder.nowDateTime());
@@ -101,13 +102,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderProduct createOrderProduct(Store store, OrderProductRequest request) {
-        Product product = productRepository.findByStoreAndNameWithLock(store, request.getProductName())
+        Product product = productRepository.findByIdWithLock(request.getProductId())
                 .orElseThrow(ProductNotFound::new);
+        validateProductBelongsToStore(store, product);
 
         Product decreasedProduct = product.decreaseStock(request.getQuantity());
         productRepository.save(decreasedProduct);
 
         return OrderProduct.create(decreasedProduct, request.getQuantity());
+    }
+
+    private void validateProductBelongsToStore(Store store, Product product) {
+        if (!product.getStore().getId().equals(store.getId())) {
+            throw new ProductException("주문한 가게의 상품만 주문할 수 있습니다.");
+        }
     }
 
     private void restoreStock(Order order) {

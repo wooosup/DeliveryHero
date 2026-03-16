@@ -8,6 +8,7 @@ import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import hello.delivery.common.exception.ForbiddenException;
 import hello.delivery.common.exception.OrderException;
 import hello.delivery.common.exception.StockException;
 import hello.delivery.delivery.service.DeliveryServiceImpl;
@@ -139,7 +140,7 @@ class OrderServiceTest {
 
         // expect
         assertThatThrownBy(() -> orderService.accept(customer.getId(), order.getId()))
-                .isInstanceOf(OrderException.class)
+                .isInstanceOf(ForbiddenException.class)
                 .hasMessageContaining("가게 소유자만 접근할 수 있습니다.");
     }
 
@@ -151,7 +152,7 @@ class OrderServiceTest {
         Order order = orderService.order(customer.getId(), orderCreate);
 
         //when
-        Order cancelledOrder = orderService.cancel(order.getId());
+        Order cancelledOrder = orderService.cancel(customer.getId(), order.getId());
 
         //then
         assertThat(cancelledOrder.getOrderStatus()).isEqualTo(CANCELLED);
@@ -165,7 +166,7 @@ class OrderServiceTest {
         Order order = orderService.order(customer.getId(), orderCreate);
 
         //when
-        Order cancelledOrder = orderService.cancel(order.getId());
+        Order cancelledOrder = orderService.cancel(customer.getId(), order.getId());
 
         //then
         assertThat(cancelledOrder.getOrderStatus()).isEqualTo(CANCELLED);
@@ -183,7 +184,7 @@ class OrderServiceTest {
         Order completedOrder = orderService.complete(acceptedOrder.getId());
 
         // expect
-        assertThatThrownBy(() -> orderService.cancel(completedOrder.getId()))
+        assertThatThrownBy(() -> orderService.cancel(customer.getId(), completedOrder.getId()))
                 .isInstanceOf(OrderException.class)
                 .hasMessageContaining("주문을 취소할 수 없는 상태입니다.");
     }

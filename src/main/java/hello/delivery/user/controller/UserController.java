@@ -1,5 +1,8 @@
 package hello.delivery.user.controller;
 
+import static hello.delivery.common.config.AuthSessionAttributes.USER_ID;
+import static hello.delivery.common.config.AuthSessionAttributes.USER_ROLE;
+
 import hello.delivery.common.annotation.LoginUser;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.user.controller.docs.UserControllerDocs;
@@ -45,8 +48,14 @@ public class UserController implements UserControllerDocs {
     @PostMapping("/login")
     public ApiResponse<UserResponse> login(@Valid @RequestBody Login request, HttpServletRequest httpServletRequest) {
         User user = userService.login(request);
+        HttpSession currentSession = httpServletRequest.getSession(false);
+        if (currentSession != null) {
+            currentSession.invalidate();
+        }
+
         HttpSession session = httpServletRequest.getSession(true);
-        session.setAttribute("userId", user.getId());
+        session.setAttribute(USER_ID, user.getId());
+        session.setAttribute(USER_ROLE, user.getRole());
 
         return ApiResponse.ok(UserResponse.of(user));
     }

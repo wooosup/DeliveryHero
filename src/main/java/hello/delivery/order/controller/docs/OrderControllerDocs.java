@@ -1,6 +1,7 @@
 package hello.delivery.order.controller.docs;
 
-import hello.delivery.common.annotation.LoginUser;
+import hello.delivery.common.annotation.LoginCustomerId;
+import hello.delivery.common.annotation.LoginOwnerId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.order.controller.response.OrderResponse;
 import hello.delivery.order.domain.OrderCreate;
@@ -16,17 +17,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface OrderControllerDocs {
 
     @Operation(summary = "주문 생성", description = "새로운 주문을 생성합니다.")
-    ApiResponse<OrderResponse> order(@Parameter(hidden = true) @LoginUser Long userId,
+    ApiResponse<OrderResponse> order(@Parameter(hidden = true) @LoginCustomerId Long customerId,
                                      @Valid @RequestBody OrderCreate request);
 
     @Operation(summary = "주문 승인", description = "사장님이 들어온 주문을 승인하고 조리를 시작합니다.")
     ApiResponse<OrderResponse> accept(
-            @Parameter(hidden = true) @LoginUser Long userId,
+            @Parameter(hidden = true) @LoginOwnerId Long ownerId,
             @Parameter(description = "주문 ID") @PathVariable Long orderId);
 
     @Operation(summary = "주문 취소", description = "사장님이 주문을 거절하거나, 특정 조건에서 주문을 취소합니다.")
     ApiResponse<OrderResponse> cancel(
-            @Parameter(hidden = true) @LoginUser Long userId,
+            @Parameter(hidden = true) @LoginCustomerId Long customerId,
             @Parameter(description = "주문 ID") @PathVariable Long orderId);
 
     @Operation(summary = "주문 완료", description = "배달이 완료되어 주문 상태를 완료로 변경합니다.")
@@ -34,6 +35,6 @@ public interface OrderControllerDocs {
             @Parameter(description = "주문 ID") @PathVariable Long orderId);
 
     @Operation(summary = "내 주문 조회", description = "로그인한 사용자의 모든 주문을 조회합니다.")
-    ApiResponse<List<OrderResponse>> getMyOrders(@Parameter(hidden = true) @LoginUser Long userId);
+    ApiResponse<List<OrderResponse>> getMyOrders(@Parameter(hidden = true) @LoginCustomerId Long customerId);
 
 }

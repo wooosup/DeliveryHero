@@ -1,0 +1,20 @@
+services:
+  mysql:
+    image: mysql:8.4.6
+    container_name: deliveryhero-mysql
+    ports:
+      - "3310:3306"
+    environment:
+      MYSQL_DATABASE: delivery
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD before running docker compose}
+      TZ: Asia/Seoul
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - deliveryhero-mysql-data:/var/lib/mysql
+
+volumes:
+  deliveryhero-mysql-data:

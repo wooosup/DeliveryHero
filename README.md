@@ -5,6 +5,7 @@
 ## Project Overview
 - 주문, 재고, 배달 흐름에서 자주 깨지는 지점(인가, 상태 전이, 동시성)을 도메인 규칙과 테스트로 고정한 백엔드 포트폴리오 프로젝트입니다.
 - [API 문서 바로가기](https://wooosup.github.io/DeliveryHero/)
+- [DB 리뷰 문서](docs/db-review.md)
 
 ## One-line Summary
 - DeliveryHero는 주문-재고-배달 흐름의 인가, 상태 전이, 동시성 문제를 해결한 Spring Boot 백엔드 프로젝트입니다.
@@ -54,7 +55,43 @@
 
 ## How to run
 
-- build: ./gradlew build
-- run: ./gradlew bootRun
-- test: ./gradlew test
-- swagger: http://localhost:8080/swagger-ui/index.html
+### 1. 로컬 설정 파일 준비
+
+```bash
+cp application-secret.properties.example application-secret.properties
+```
+
+### 2. MySQL 비밀번호 환경 변수 설정
+
+```bash
+export MYSQL_ROOT_PASSWORD=<your-local-password>
+```
+
+`application-secret.properties`는 위 환경 변수를 참조한다.
+
+### 3. 로컬 MySQL 실행
+
+```bash
+docker compose up -d
+```
+
+기본 포트는 `3310`, DB 이름은 `delivery`다.
+
+### 4. 애플리케이션 실행
+
+```bash
+./gradlew bootRun
+```
+
+### 5. 테스트 실행
+
+```bash
+./gradlew test
+```
+
+- 일반 통합 테스트는 `src/test/resources/application-test.properties`의 H2 설정을 사용한다.
+- `OrderConcurrencyIntegrationTest`는 Testcontainers를 사용하므로 Docker가 켜져 있어야 한다.
+
+### 6. Swagger 확인
+
+- URL: `http://localhost:8080/swagger-ui/index.html`

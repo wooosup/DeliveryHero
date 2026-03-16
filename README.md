@@ -54,7 +54,43 @@
 
 ## How to run
 
-- build: ./gradlew build
-- run: ./gradlew bootRun
-- test: ./gradlew test
-- swagger: http://localhost:8080/swagger-ui/index.html
+### 1. 로컬 설정 파일 준비
+
+```bash
+cp application-secret.properties.example application-secret.properties
+```
+
+### 2. MySQL 비밀번호 환경 변수 설정
+
+```bash
+export MYSQL_ROOT_PASSWORD=<your-local-password>
+```
+
+`application-secret.properties`는 위 환경 변수를 참조한다.
+
+### 3. 로컬 MySQL 실행
+
+```bash
+docker compose up -d
+```
+
+기본 포트는 `3310`, DB 이름은 `delivery`다.
+
+### 4. 애플리케이션 실행
+
+```bash
+./gradlew bootRun
+```
+
+### 5. 테스트 실행
+
+```bash
+./gradlew test
+```
+
+- 일반 통합 테스트는 `src/test/resources/application-test.properties`의 H2 설정을 사용한다.
+- `OrderConcurrencyIntegrationTest`는 Testcontainers를 사용하므로 Docker가 켜져 있어야 한다.
+
+### 6. Swagger 확인
+
+- URL: `http://localhost:8080/swagger-ui/index.html`

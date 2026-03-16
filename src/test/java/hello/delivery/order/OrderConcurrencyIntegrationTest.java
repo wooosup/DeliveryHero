@@ -87,7 +87,7 @@ class OrderConcurrencyIntegrationTest {
                 .openTime(OPEN_TIME)
                 .closeTime(CLOSE_TIME)
                 .build());
-        productService.create(owner.getId(), ProductCreate.builder()
+        Product product = productService.create(owner.getId(), ProductCreate.builder()
                 .storeName(store.getName())
                 .name("치킨")
                 .price(15000)
@@ -98,10 +98,10 @@ class OrderConcurrencyIntegrationTest {
         User customerA = createCustomer("custc1");
         User customerB = createCustomer("custc2");
         OrderCreate request = OrderCreate.builder()
-                .storeName(store.getName())
+                .storeId(store.getId())
                 .address("서울시 강남구")
                 .orderProducts(List.of(OrderProductRequest.builder()
-                        .productName("치킨")
+                        .productId(product.getId())
                         .quantity(1)
                         .build()))
                 .build();
@@ -127,7 +127,7 @@ class OrderConcurrencyIntegrationTest {
             executorService.shutdownNow();
         }
 
-        Product product = productService.findByStoreId(store.getId()).stream()
+        Product resultProduct = productService.findByStoreId(store.getId()).stream()
                 .filter(savedProduct -> savedProduct.getName().equals("치킨"))
                 .findFirst()
                 .orElseThrow();
@@ -136,7 +136,7 @@ class OrderConcurrencyIntegrationTest {
         assertThat(failCount.get()).isEqualTo(1);
         assertThat(failureMessages).anyMatch(message ->
                 message.contains("재고가 부족합니다.") || message.contains("품절된 상품입니다."));
-        assertThat(product.getStock().getQuantity()).isZero();
+        assertThat(resultProduct.getStock().getQuantity()).isZero();
     }
 
     private void submitOrder(ExecutorService executorService,

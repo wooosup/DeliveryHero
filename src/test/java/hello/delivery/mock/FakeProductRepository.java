@@ -96,4 +96,9 @@ public class FakeProductRepository implements ProductRepository {
                 .toList();
     }
 
+    @Override
+    public Optional<Product> findByIdWithLock(Long productId) {
+        return findById(productId);
+    }
+
 }

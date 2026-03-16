@@ -23,6 +23,8 @@ public interface ProductRepository {
 
     List<Product> findByProductSellingStatusIs(Long id, ProductSellingStatus status);
 
+    Optional<Product> findByIdWithLock(Long id);
+
     Optional<Product> findByStoreAndNameWithLock(Store store, String name);
 
     boolean existsByStoreAndName(Store store, String name);

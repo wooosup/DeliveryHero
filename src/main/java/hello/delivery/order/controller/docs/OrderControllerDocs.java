@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Tag(name = "주문")
 public interface OrderControllerDocs {
 
-    @Operation(summary = "주문 생성", description = "새로운 주문을 생성합니다.")
+    @Operation(summary = "주문 생성", description = "새로운 주문을 생성합니다. 요청 본문은 storeId, productId 기반입니다.")
     ApiResponse<OrderResponse> order(@Parameter(hidden = true) @LoginCustomerId Long customerId,
                                      @Valid @RequestBody OrderCreate request);
 

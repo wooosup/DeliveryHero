@@ -80,7 +80,7 @@ class OrderConcurrencyIntegrationTest {
     @DisplayName("재고가 1개인 상품에 대한 동시 주문은 1건만 성공하고 재고는 0이 된다.")
     void concurrentOrdersDoNotOversellStock() throws Exception {
         // given
-        User owner = createOwner("ownerc1");
+        User owner = createOwner("owner1");
         Store store = storeService.create(owner.getId(), StoreCreate.builder()
                 .storeName("동시성-스토어")
                 .storeType(KOREAN_FOOD)
@@ -89,7 +89,7 @@ class OrderConcurrencyIntegrationTest {
                 .build());
         productService.create(owner.getId(), ProductCreate.builder()
                 .storeName(store.getName())
-                .name("한정수량-치킨")
+                .name("치킨")
                 .price(15000)
                 .type(FOOD)
                 .stock(1)
@@ -101,7 +101,7 @@ class OrderConcurrencyIntegrationTest {
                 .storeName(store.getName())
                 .address("서울시 강남구")
                 .orderProducts(List.of(OrderProductRequest.builder()
-                        .productName("한정수량-치킨")
+                        .productName("치킨")
                         .quantity(1)
                         .build()))
                 .build();
@@ -120,7 +120,6 @@ class OrderConcurrencyIntegrationTest {
 
             assertThat(ready.await(5, TimeUnit.SECONDS)).isTrue();
 
-            // Release both workers together so the lock contention happens inside the order flow.
             start.countDown();
 
             assertThat(done.await(10, TimeUnit.SECONDS)).isTrue();
@@ -129,7 +128,7 @@ class OrderConcurrencyIntegrationTest {
         }
 
         Product product = productService.findByStoreId(store.getId()).stream()
-                .filter(savedProduct -> savedProduct.getName().equals("한정수량-치킨"))
+                .filter(savedProduct -> savedProduct.getName().equals("치킨"))
                 .findFirst()
                 .orElseThrow();
 

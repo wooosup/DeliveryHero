@@ -57,17 +57,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order reject(Long ownerId, Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(OrderNotFound::new);
+
+        order.validateOwner(ownerId);
+        Order rejectedOrder = order.reject();
+        restoreStock(rejectedOrder);
+
+        return orderRepository.save(rejectedOrder);
+    }
+
+    @Override
     public Order cancel(Long customerId, Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(OrderNotFound::new);
         order.validateCustomer(customerId);
         Order cancelledOrder = order.cancel();
-
-        for (OrderProduct op : cancelledOrder.getOrderProducts()) {
-            Product product = op.getProduct();
-            Product restoredProduct = product.increaseStock(op.getQuantity());
-            productRepository.save(restoredProduct);
-        }
+        restoreStock(cancelledOrder);
 
         return orderRepository.save(cancelledOrder);
     }
@@ -101,6 +108,14 @@ public class OrderServiceImpl implements OrderService {
         productRepository.save(decreasedProduct);
 
         return OrderProduct.create(decreasedProduct, request.getQuantity());
+    }
+
+    private void restoreStock(Order order) {
+        for (OrderProduct op : order.getOrderProducts()) {
+            Product product = op.getProduct();
+            Product restoredProduct = product.increaseStock(op.getQuantity());
+            productRepository.save(restoredProduct);
+        }
     }
 
 }

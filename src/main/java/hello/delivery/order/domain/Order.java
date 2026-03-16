@@ -4,6 +4,7 @@ import static hello.delivery.order.domain.OrderStatus.ACCEPTED;
 import static hello.delivery.order.domain.OrderStatus.CANCELLED;
 import static hello.delivery.order.domain.OrderStatus.COMPLETED;
 import static hello.delivery.order.domain.OrderStatus.PENDING;
+import static hello.delivery.order.domain.OrderStatus.REJECTED;
 import static hello.delivery.user.domain.UserRole.CUSTOMER;
 
 import hello.delivery.common.exception.ForbiddenException;
@@ -69,11 +70,20 @@ public class Order {
     }
 
     public Order cancel() {
-        if (orderStatus == COMPLETED || orderStatus == CANCELLED) {
+        if (orderStatus != PENDING) {
             throw new OrderException("주문을 취소할 수 없는 상태입니다.");
         }
         return copyWithBuilder()
                 .orderStatus(CANCELLED)
+                .build();
+    }
+
+    public Order reject() {
+        if (this.orderStatus != PENDING) {
+            throw new OrderException("주문을 거절할 수 없는 상태입니다.");
+        }
+        return copyWithBuilder()
+                .orderStatus(REJECTED)
                 .build();
     }
 

@@ -107,13 +107,66 @@ class OrderTest {
         Product product = buildProduct(store);
         OrderProduct orderProduct = OrderProduct.create(product, 2);
         Order order = Order.order(user, store, List.of(orderProduct), "주소", ORDERED_AT);
-        Order acceptedOrder = order.accept();
 
         //when
-        Order cancelledOrder = acceptedOrder.cancel();
+        Order cancelledOrder = order.cancel();
 
         //then
         assertThat(cancelledOrder.getOrderStatus()).isEqualTo(CANCELLED);
+    }
+
+    @Test
+    @DisplayName("주문을 거절할 수 있다.")
+    void reject() {
+        // given
+        User owner = buildOwner();
+        User user = buildUser();
+        Store store = buildStore(owner);
+        Product product = buildProduct(store);
+        OrderProduct orderProduct = OrderProduct.create(product, 2);
+        Order order = Order.order(user, store, List.of(orderProduct), "주소", ORDERED_AT);
+
+        // when
+        Order rejectedOrder = order.reject();
+
+        // then
+        assertThat(rejectedOrder.getOrderStatus()).isEqualTo(REJECTED);
+    }
+
+    @Test
+    @DisplayName("ACCEPTED 상태의 주문은 고객이 취소할 수 없다.")
+    void validateCancelAfterAccepted() {
+        // given
+        User owner = buildOwner();
+        User user = buildUser();
+        Store store = buildStore(owner);
+        Product product = buildProduct(store);
+        OrderProduct orderProduct = OrderProduct.create(product, 2);
+        Order order = Order.order(user, store, List.of(orderProduct), "주소", ORDERED_AT);
+        Order acceptedOrder = order.accept();
+
+        // expect
+        assertThatThrownBy(acceptedOrder::cancel)
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("주문을 취소할 수 없는 상태입니다.");
+    }
+
+    @Test
+    @DisplayName("PENDING 상태가 아닌 주문은 거절할 수 없다.")
+    void validateReject() {
+        // given
+        User owner = buildOwner();
+        User user = buildUser();
+        Store store = buildStore(owner);
+        Product product = buildProduct(store);
+        OrderProduct orderProduct = OrderProduct.create(product, 2);
+        Order order = Order.order(user, store, List.of(orderProduct), "주소", ORDERED_AT);
+        Order acceptedOrder = order.accept();
+
+        // expect
+        assertThatThrownBy(acceptedOrder::reject)
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("주문을 거절할 수 없는 상태입니다.");
     }
 
     @Test

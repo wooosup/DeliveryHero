@@ -1,7 +1,7 @@
 
 package hello.delivery.product.controller.docs;
 
-import hello.delivery.common.annotation.LoginUser;
+import hello.delivery.common.annotation.LoginOwnerId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.product.domain.ProductCreate;
@@ -21,26 +21,26 @@ public interface ProductControllerDocs {
 
     @Operation(summary = "상품 등록", description = "사장의 권한으로 새로운 상품을 등록합니다.")
     ApiResponse<ProductResponse> createProduct(
-            @Parameter(hidden = true) @LoginUser Long userId,
+            @Parameter(hidden = true) @LoginOwnerId Long userId,
             @Valid @RequestBody ProductCreate request
     );
 
     @Operation(summary = "상품 일괄 등록", description = "사장의 권한으로 여러 상품을 한 번에 등록합니다.")
     ApiResponse<List<ProductResponse>> createProducts(
-            @Parameter(hidden = true) @LoginUser Long userId,
+            @Parameter(hidden = true) @LoginOwnerId Long userId,
             @Valid @RequestBody List<ProductCreate> request
     );
 
     @Operation(summary = "상품 판매 상태 변경", description = "상품의 판매 상태(SELLING, STOP_SELLING)를 변경합니다.")
     ApiResponse<ProductResponse> changeStatus(
-            @Parameter(hidden = true) @LoginUser Long userId,
+            @Parameter(hidden = true) @LoginOwnerId Long userId,
             @Parameter(description = "상품 ID") @PathVariable Long id,
             @Valid @RequestBody ProductStatusUpdate request
     );
 
     @Operation(summary = "상품 삭제", description = "상품을 삭제합니다.")
     ApiResponse<Void> deleteProduct(
-            @Parameter(hidden = true) @LoginUser Long userId,
+            @Parameter(hidden = true) @LoginOwnerId Long userId,
             @Parameter(description = "상품 ID") @PathVariable Long id
     );
 

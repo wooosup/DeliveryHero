@@ -12,6 +12,6 @@ public interface DeliveryRepository {
 
     Optional<Delivery> findByOrderId(Long orderId);
 
-    Optional<Delivery> findByIdWithinLock(Long id);
+    Optional<Delivery> findByIdWithLock(Long id);
 
 }

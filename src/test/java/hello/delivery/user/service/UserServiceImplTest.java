@@ -136,7 +136,7 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("현재 비밀번호와 같은 비밀번호로 변경하면 예외를 던진다.")
-    void validateSamePassword() {
+    void rejectCurrentPassword() {
         User user = userService.signupCustomer(createUserCreate());
         PasswordUpdate passwordUpdate = createPasswordUpdate(DEFAULT_PASSWORD);
 

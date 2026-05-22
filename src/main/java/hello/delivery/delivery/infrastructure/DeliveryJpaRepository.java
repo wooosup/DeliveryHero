@@ -13,6 +13,6 @@ public interface DeliveryJpaRepository extends JpaRepository<DeliveryEntity, Lon
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select d from DeliveryEntity d where d.id = :id")
-    Optional<DeliveryEntity> findByIdWithinLock(Long id);
+    Optional<DeliveryEntity> findByIdWithLock(Long id);
 
 }

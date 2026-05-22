@@ -47,7 +47,7 @@ public class User {
                 .build();
     }
 
-    public User changeEncodePassword(String encodedPassword) {
+    public User changeEncodedPassword(String encodedPassword) {
         return User.builder()
                 .id(id)
                 .name(name)
@@ -105,12 +105,6 @@ public class User {
     private static void validatePasswordLength(String password) {
         if (password.length() < 8 || password.length() > 20) {
             throw new UserException("비밀번호는 8자 이상 20자 이하로 입력 가능합니다.");
-        }
-    }
-
-    private void validateSamePassword(String newPassword) {
-        if (this.password.equals(newPassword)) {
-            throw new UserException("기존 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.");
         }
     }
 

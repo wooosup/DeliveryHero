@@ -35,4 +35,10 @@ public class DeliveryRepositoryImpl implements DeliveryRepository {
     public Optional<Delivery> findByOrderId(Long orderId) {
         return deliveryJpaRepository.findByOrderId(orderId).map(DeliveryEntity::toDomain);
     }
+
+    @Override
+    public Optional<Delivery> findByIdWithinLock(Long id) {
+        return deliveryJpaRepository.findByIdWithinLock(id).map(DeliveryEntity::toDomain);
+    }
+
 }

@@ -2,6 +2,7 @@ package hello.delivery.delivery.service;
 
 import static hello.delivery.rider.domain.RiderStatus.*;
 
+import hello.delivery.common.exception.DeliveryNotFound;
 import hello.delivery.common.exception.ForbiddenException;
 import hello.delivery.common.exception.DeliveryException;
 import hello.delivery.common.exception.OrderNotFound;
@@ -40,7 +41,9 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Transactional
     public Delivery assign(Long id, Long riderId) {
-        Delivery delivery = finderPort.findByDelivery(id);
+        Delivery delivery = deliveryRepository.findByIdWithinLock(id)
+                .orElseThrow(DeliveryNotFound::new);
+
         Rider rider = finderPort.findByRider(riderId);
 
         rider.validateAvailable();
@@ -51,7 +54,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Transactional
     public Delivery start(Long id, Long riderId) {
-        Delivery delivery = finderPort.findByDelivery(id);
+        Delivery delivery = deliveryRepository.findByIdWithinLock(id)
+                .orElseThrow(DeliveryNotFound::new);
         Rider rider = finderPort.findByRider(riderId);
         validateAssignedRider(delivery, rider.getId());
 
@@ -65,7 +69,9 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Transactional
     public Delivery complete(Long id, Long riderId) {
-        Delivery delivery = finderPort.findByDelivery(id);
+        Delivery delivery = deliveryRepository.findByIdWithinLock(id)
+                .orElseThrow(DeliveryNotFound::new);
+
         Rider rider = finderPort.findByRider(riderId);
         validateAssignedRider(delivery, rider.getId());
 

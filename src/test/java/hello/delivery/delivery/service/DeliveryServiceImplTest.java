@@ -104,7 +104,7 @@ class DeliveryServiceImplTest {
     }
 
     @Test
-    @DisplayName("배달을 라이더에게 할당하면 ASSIGNED 상태가 된다.")
+    @DisplayName("배달을 라이더에게 할당하면 배정 상태가 된다.")
     void assign() throws Exception {
         // given
         Order order = setUpOrder();
@@ -117,6 +117,7 @@ class DeliveryServiceImplTest {
                 .address(DeliveryAddress.of("대구시 달서구"))
                 .status(PENDING)
                 .build();
+        fakeDeliveryRepository.save(delivery);
         fakeFinder.addDelivery(delivery);
 
         // when
@@ -128,7 +129,7 @@ class DeliveryServiceImplTest {
 
 
     @Test
-    @DisplayName("배달을 시작하면 PICKED_UP 상태가 되고 시작 시간이 기록된다.")
+    @DisplayName("배달을 시작하면 픽업 완료 상태가 되고 시작 시간이 기록된다.")
     void start() {
         // given
         Order order = setUpOrder();
@@ -141,6 +142,7 @@ class DeliveryServiceImplTest {
                 .address(DeliveryAddress.of("대구시 달서구"))
                 .status(ASSIGNED)
                 .build();
+        fakeDeliveryRepository.save(delivery);
         fakeFinder.addDelivery(delivery);
 
         // when
@@ -152,7 +154,7 @@ class DeliveryServiceImplTest {
     }
 
     @Test
-    @DisplayName("배달을 완료하면 DELIVERED 상태가 되고 완료 시간이 기록된다.")
+    @DisplayName("배달을 완료하면 배달 완료 상태가 되고 완료 시간이 기록된다.")
     void complete() {
         // given
         LocalDateTime startTime = testClockHolder.nowDateTime().minusMinutes(30);
@@ -167,6 +169,7 @@ class DeliveryServiceImplTest {
                 .status(PICKED_UP)
                 .startedAt(startTime)
                 .build();
+        fakeDeliveryRepository.save(delivery);
         fakeFinder.addDelivery(delivery);
 
         // when
@@ -180,7 +183,7 @@ class DeliveryServiceImplTest {
     }
 
     @Test
-    @DisplayName("ID로 배달 정보를 조회할 수 있다.")
+    @DisplayName("아이디로 배달 정보를 조회할 수 있다.")
     void findById() {
         // given
         Order order = setUpOrder();
@@ -205,7 +208,7 @@ class DeliveryServiceImplTest {
     }
 
     @Test
-    @DisplayName("주문 ID로 배달 정보를 조회할 수 있다.")
+    @DisplayName("주문 아이디로 배달 정보를 조회할 수 있다.")
     void findByOrderId() {
         // given
         Order order = setUpOrder();
@@ -229,7 +232,7 @@ class DeliveryServiceImplTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 주문 ID로 배달 정보를 조회하면 예외가 발생한다.")
+    @DisplayName("존재하지 않는 주문 아이디로 배달 정보를 조회하면 예외가 발생한다.")
     void validateFindOrderId() {
         // expect
         assertThatThrownBy(() -> deliveryService.findByOrderId(1L, 999L))

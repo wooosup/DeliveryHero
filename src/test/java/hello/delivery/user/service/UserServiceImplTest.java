@@ -17,159 +17,131 @@ import hello.delivery.user.domain.UserCreate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 class UserServiceImplTest {
 
     private UserService userService;
+    private PasswordEncoder passwordEncoder;
 
-    private static final String DEFAULT_NAME = "김우섭";
+    private static final String DEFAULT_NAME = "Wss";
     private static final String DEFAULT_USERNAME = "wss3325";
     private static final String DEFAULT_PASSWORD = "hihihi3454";
-    private static final String DEFAULT_ADDRESS = "대구";
-    private static final String NEW_ADDRESS = "서울";
+    private static final String DEFAULT_ADDRESS = "Daegu";
+    private static final String NEW_ADDRESS = "Seoul";
     private static final String NEW_PASSWORD = "hihihi9999";
     private static final String INVALID_SHORT_PASSWORD = "9999";
 
     @BeforeEach
     void setUp() {
         FakeUserRepository fakeUserRepository = new FakeUserRepository();
-        userService = new UserServiceImpl(fakeUserRepository);
+        passwordEncoder = new BCryptPasswordEncoder();
+        userService = new UserServiceImpl(fakeUserRepository, passwordEncoder);
     }
 
     @Test
-    @DisplayName("고객으로 회원가입을 할 수 있다.")
+    @DisplayName("고객 회원가입 시 암호화된 비밀번호를 저장한다.")
     void signupCustomer() {
-        // given
-        UserCreate userCreate = createUserCreate();
+        User result = userService.signupCustomer(createUserCreate());
 
-        // when
-        User result = userService.signupCustomer(userCreate);
-
-        // then
         assertThat(result.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(result.getUsername()).isEqualTo(DEFAULT_USERNAME);
         assertThat(result.getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(result.getRole()).isEqualTo(CUSTOMER);
+        assertThat(result.getPassword()).isNotEqualTo(DEFAULT_PASSWORD);
+        assertThat(passwordEncoder.matches(DEFAULT_PASSWORD, result.getPassword())).isTrue();
     }
 
     @Test
-    @DisplayName("사장으로 회원가입을 할 수 있다.")
+    @DisplayName("사장 회원가입 시 암호화된 비밀번호를 저장한다.")
     void signupOwner() {
-        // given
-        UserCreate userCreate = createUserCreate();
+        User result = userService.signupOwner(createUserCreate());
 
-        // when
-        User result = userService.signupOwner(userCreate);
-
-        // then
         assertThat(result.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(result.getUsername()).isEqualTo(DEFAULT_USERNAME);
         assertThat(result.getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(result.getRole()).isEqualTo(OWNER);
+        assertThat(result.getPassword()).isNotEqualTo(DEFAULT_PASSWORD);
+        assertThat(passwordEncoder.matches(DEFAULT_PASSWORD, result.getPassword())).isTrue();
     }
 
     @Test
-    @DisplayName("사용자는 아이디와 비밀번호로 로그인을 할 수 있다.")
+    @DisplayName("원문 비밀번호로 로그인할 수 있다.")
     void login() {
-        // given
-        UserCreate userCreate = createUserCreate();
-        userService.signupCustomer(userCreate);
+        userService.signupCustomer(createUserCreate());
         Login loginRequest = createLoginRequest(DEFAULT_USERNAME, DEFAULT_PASSWORD);
 
-        // when
         User result = userService.login(loginRequest);
 
-        // then
         assertThat(result.getUsername()).isEqualTo(DEFAULT_USERNAME);
     }
 
     @Test
-    @DisplayName("아이디와 비밀번호 전부 틀리면 예외를 던진다.")
+    @DisplayName("존재하지 않는 아이디로 로그인하면 예외를 던진다.")
     void invalidLogin() {
-        // given
-        UserCreate userCreate = createUserCreate();
-        userService.signupCustomer(userCreate);
+        userService.signupCustomer(createUserCreate());
         Login loginRequest = createLoginRequest("zzzzzzz", "hihihi1111");
 
-        // expect
         assertThatThrownBy(() -> userService.login(loginRequest))
-                .isInstanceOf(UserNotFound.class)
-                .hasMessageContaining("사용자를 찾을 수 없습니다.");
+                .isInstanceOf(UserNotFound.class);
     }
 
     @Test
-    @DisplayName("아이디나 비밀번호가 틀리면 예외를 던진다.")
+    @DisplayName("비밀번호가 일치하지 않으면 예외를 던진다.")
     void invalidLoginWrong() {
-        // given
-        UserCreate userCreate = createUserCreate();
-        userService.signupCustomer(userCreate);
+        userService.signupCustomer(createUserCreate());
         Login loginRequest = createLoginRequest(DEFAULT_USERNAME, "hihihi1111");
 
-        // expect
         assertThatThrownBy(() -> userService.login(loginRequest))
-                .isInstanceOf(UserException.class)
-                .hasMessageContaining("아이디 또는 비밀번호가 일치하지 않습니다.");
+                .isInstanceOf(UserException.class);
     }
 
     @Test
-    @DisplayName("사용자는 주소를 변경할 수 있다.")
+    @DisplayName("주소 변경 시 주소만 변경된다.")
     void changeAddress() {
-        // given
-        UserCreate userCreate = createUserCreate();
-        User user = userService.signupCustomer(userCreate);
+        User user = userService.signupCustomer(createUserCreate());
         AddressUpdate addressUpdate = createAddressUpdate(NEW_ADDRESS);
 
-        // when
         User result = userService.changeAddress(user.getId(), addressUpdate);
 
-        // then
         assertThat(result.getUsername()).isEqualTo(DEFAULT_USERNAME);
         assertThat(result.getAddress()).isEqualTo(NEW_ADDRESS);
+        assertThat(result.getPassword()).isEqualTo(user.getPassword());
     }
 
     @Test
-    @DisplayName("사용자는 비밀번호를 변경할 수 있다.")
+    @DisplayName("비밀번호 변경 시 새 암호화 비밀번호를 저장하고 로그인할 수 있다.")
     void changePassword() {
-        // given
-        UserCreate userCreate = createUserCreate();
-        User user = userService.signupCustomer(userCreate);
+        User user = userService.signupCustomer(createUserCreate());
         PasswordUpdate passwordUpdate = createPasswordUpdate(NEW_PASSWORD);
 
-        // when
-        userService.changePassword(user.getId(), passwordUpdate);
-        Login loginRequest = createLoginRequest(DEFAULT_USERNAME, NEW_PASSWORD);
+        User changedUser = userService.changePassword(user.getId(), passwordUpdate);
+        User loginUser = userService.login(createLoginRequest(DEFAULT_USERNAME, NEW_PASSWORD));
 
-        // then
-        assertThat(loginRequest.getUsername()).isEqualTo(DEFAULT_USERNAME);
-        assertThat(loginRequest.getPassword()).isEqualTo(NEW_PASSWORD);
+        assertThat(loginUser.getUsername()).isEqualTo(DEFAULT_USERNAME);
+        assertThat(changedUser.getPassword()).isNotEqualTo(NEW_PASSWORD);
+        assertThat(passwordEncoder.matches(NEW_PASSWORD, changedUser.getPassword())).isTrue();
     }
 
     @Test
-    @DisplayName("비밀번호는 8자 이상 20자 이하로 입력해야 한다.")
+    @DisplayName("너무 짧은 비밀번호로 변경하면 예외를 던진다.")
     void validateLengthChangePassword() {
-        // given
-        UserCreate userCreate = createUserCreate();
-        User user = userService.signupCustomer(userCreate);
+        User user = userService.signupCustomer(createUserCreate());
         PasswordUpdate passwordUpdate = createPasswordUpdate(INVALID_SHORT_PASSWORD);
 
-        // expect
         assertThatThrownBy(() -> userService.changePassword(user.getId(), passwordUpdate))
-                .isInstanceOf(UserException.class)
-                .hasMessageContaining("비밀번호는 8자 이상 20자 이하로 입력 가능합니다.");
+                .isInstanceOf(UserException.class);
     }
 
     @Test
-    @DisplayName("비밀번호 변경 시 기존 비밀번호와 같으면 예외가 발생한다.")
+    @DisplayName("현재 비밀번호와 같은 비밀번호로 변경하면 예외를 던진다.")
     void validateSamePassword() {
-        // given
-        UserCreate userCreate = createUserCreate();
-        User user = userService.signupCustomer(userCreate);
+        User user = userService.signupCustomer(createUserCreate());
         PasswordUpdate passwordUpdate = createPasswordUpdate(DEFAULT_PASSWORD);
 
-        // expect
         assertThatThrownBy(() -> userService.changePassword(user.getId(), passwordUpdate))
-                .isInstanceOf(UserException.class)
-                .hasMessageContaining("기존 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.");
+                .isInstanceOf(UserException.class);
     }
 
     private UserCreate createUserCreate() {

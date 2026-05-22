@@ -9,59 +9,53 @@ import org.junit.jupiter.api.Test;
 
 class UserTest {
 
+    private static final String RAW_PASSWORD = "hihihi3454";
+    private static final String ENCODED_PASSWORD = "$2a$10$123456789012345678901u9s9T2hYj2S9lYj2S9lYj2S9lYj2S9lY";
+
     @Test
-    @DisplayName("사용자는 회원가입을 할 수 있다.")
-    void signup() throws Exception {
-        // given
-        UserCreate userCreate = UserCreate.builder()
-                .name("김우섭")
-                .username("wss3325")
-                .password("hihihi3454")
-                .address("대구")
-                .build();
+    @DisplayName("회원가입 시 서비스가 전달한 암호화 비밀번호를 저장한다.")
+    void signupStoresEncodedPassword() {
+        UserCreate userCreate = createUserCreate();
 
-        // when
-        User signupUser = User.signup(userCreate, UserRole.CUSTOMER);
+        User signupUser = User.signup(userCreate, UserRole.CUSTOMER, ENCODED_PASSWORD);
 
-        // then
-        assertThat(signupUser.getName()).isEqualTo("김우섭");
+        assertThat(signupUser.getName()).isEqualTo("wss");
         assertThat(signupUser.getUsername()).isEqualTo("wss3325");
-        assertThat(signupUser.getPassword()).isEqualTo("hihihi3454");
-        assertThat(signupUser.getAddress()).isEqualTo("대구");
+        assertThat(signupUser.getPassword()).isEqualTo(ENCODED_PASSWORD);
+        assertThat(signupUser.getPassword()).isNotEqualTo(RAW_PASSWORD);
+        assertThat(signupUser.getAddress()).isEqualTo("Daegu");
     }
 
     @Test
-    @DisplayName("비밀번호가 일치하지 않으면 예외를 던진다.")
-    void checkPassword() throws Exception {
-        // given
+    @DisplayName("주소 변경 시 암호화 비밀번호를 유지한다.")
+    void changeAddressKeepsEncodedPassword() {
         User user = User.builder()
-                .name("김우섭")
+                .name("wss")
                 .username("wss3325")
-                .password("hihihi3454")
-                .address("대구")
+                .password(ENCODED_PASSWORD)
+                .address("Daegu")
+                .role(UserRole.CUSTOMER)
                 .build();
 
-        // expect
-        assertThatThrownBy(() -> user.checkPassword("1111"))
-                .isInstanceOf(UserException.class)
-                .hasMessageContaining("아이디 또는 비밀번호가 일치하지 않습니다.");
+        User changedUser = user.changeAddress("Seoul");
+
+        assertThat(changedUser.getAddress()).isEqualTo("Seoul");
+        assertThat(changedUser.getPassword()).isEqualTo(ENCODED_PASSWORD);
     }
 
     @Test
-    @DisplayName("비밀변호 변경 시 기존 비밀번호와 같으면 예외가 발생한다.")
-    void validateChangePassword() throws Exception {
-        // given
-        User user = User.builder()
-                .name("김우섭")
-                .username("wss3325")
-                .password("hihihi3454")
-                .address("대구")
-                .build();
-
-        // expect
-        assertThatThrownBy(() -> user.changePassword("hihihi3454"))
-                .isInstanceOf(UserException.class)
-                .hasMessageContaining("기존 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.");
+    @DisplayName("너무 짧은 비밀번호는 검증에서 예외를 던진다.")
+    void validatePasswordRejectsTooShortPasswords() {
+        assertThatThrownBy(() -> User.validatePassword("1234"))
+                .isInstanceOf(UserException.class);
     }
 
+    private UserCreate createUserCreate() {
+        return UserCreate.builder()
+                .name("wss")
+                .username("wss3325")
+                .password(RAW_PASSWORD)
+                .address("Daegu")
+                .build();
+    }
 }

@@ -6,13 +6,10 @@ import static hello.delivery.user.domain.UserRole.OWNER;
 import hello.delivery.common.exception.UserException;
 import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.user.controller.port.UserService;
-import hello.delivery.user.domain.AddressUpdate;
-import hello.delivery.user.domain.Login;
-import hello.delivery.user.domain.PasswordUpdate;
-import hello.delivery.user.domain.User;
-import hello.delivery.user.domain.UserCreate;
+import hello.delivery.user.domain.*;
 import hello.delivery.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,23 +19,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User signupCustomer(UserCreate userCreate) {
-        validateUsernameNotExists(userCreate.getUsername());
-        User user = User.signup(userCreate, CUSTOMER);
-        return userRepository.save(user);
+        return signup(userCreate, CUSTOMER);
     }
 
     public User signupOwner(UserCreate userCreate) {
-        validateUsernameNotExists(userCreate.getUsername());
-        User user = User.signup(userCreate, OWNER);
-        return userRepository.save(user);
+        return signup(userCreate, OWNER);
     }
 
     public User login(Login login) {
         User user = userRepository.findByUsername(login.getUsername())
                 .orElseThrow(UserNotFound::new);
-        user.checkPassword(login.getPassword());
+        checkPassword(login, user);
 
         return user;
     }
@@ -54,7 +48,15 @@ public class UserServiceImpl implements UserService {
     public User changePassword(Long userId, PasswordUpdate passwordUpdate) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
-        user = user.changePassword(passwordUpdate.getPassword());
+        String rawPassword = passwordUpdate.getPassword();
+        User.validatePassword(rawPassword);
+
+        if (passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new UserException("이전 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.");
+        }
+
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        user = user.changeEncodePassword(encodedPassword);
 
         return userRepository.save(user);
     }
@@ -64,4 +66,18 @@ public class UserServiceImpl implements UserService {
             throw new UserException("이미 존재하는 아이디입니다.");
         }
     }
+
+    private void checkPassword(Login login, User user) {
+        if (!passwordEncoder.matches(login.getPassword(), user.getPassword())) {
+            throw new UserException("비밀번호가 일치하지 않습니다.");
+        }
+    }
+
+    private User signup(UserCreate userCreate, UserRole role) {
+        validateUsernameNotExists(userCreate.getUsername());
+        String encodedPassword = passwordEncoder.encode(userCreate.getPassword());
+        User user = User.signup(userCreate, role, encodedPassword);
+        return userRepository.save(user);
+    }
+
 }

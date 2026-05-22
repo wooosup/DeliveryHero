@@ -61,7 +61,7 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("PENDING 상태의 주문을 수락할 수 있다.")
+    @DisplayName("대기 상태의 주문을 수락할 수 있다.")
     void accept() throws Exception {
         //given
         User owner = buildOwner();
@@ -79,7 +79,7 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("PENDING 상태가 아닌 주문은 수락할 수 없다.")
+    @DisplayName("대기 상태가 아닌 주문은 수락할 수 없다.")
     void notAccept() throws Exception {
         //given
         User owner = buildOwner();
@@ -134,7 +134,7 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("ACCEPTED 상태의 주문은 고객이 취소할 수 없다.")
+    @DisplayName("수락된 주문은 고객이 취소할 수 없다.")
     void validateCancelAfterAccepted() {
         // given
         User owner = buildOwner();
@@ -152,7 +152,7 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("PENDING 상태가 아닌 주문은 거절할 수 없다.")
+    @DisplayName("대기 상태가 아닌 주문은 거절할 수 없다.")
     void validateReject() {
         // given
         User owner = buildOwner();
@@ -189,7 +189,7 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("ACCEPTED 상태가 아닌 주문은 완료할 수 없다.")
+    @DisplayName("수락된 상태가 아닌 주문은 완료할 수 없다.")
     void validateComplete() throws Exception {
         //given
         User owner = buildOwner();
@@ -206,7 +206,7 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("사용자가 null이면 예외를 던진다.")
+    @DisplayName("사용자가 없으면 예외를 던진다.")
     void validateOrderNotUser() throws Exception {
         // given
         User owner = buildOwner();
@@ -220,7 +220,7 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("가게가 null이면 예외를 던진다.")
+    @DisplayName("가게가 없으면 예외를 던진다.")
     void validateOrderNotStore() throws Exception {
         // given
         User owner = buildOwner();
@@ -236,7 +236,7 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("삼품들이 null이면 예외를 던진다.")
+    @DisplayName("상품 목록이 없으면 예외를 던진다.")
     void validateOrderNotOrderProducts() throws Exception {
         // given
         User owner = buildOwner();

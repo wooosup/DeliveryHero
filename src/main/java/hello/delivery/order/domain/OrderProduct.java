@@ -14,11 +14,18 @@ public class OrderProduct {
 
     @Builder
     private OrderProduct(Long id, Order order, Product product, int price, int quantity) {
+        validateQuantity(quantity);
         this.id = id;
         this.order = order;
         this.product = product;
         this.price = price;
         this.quantity = quantity;
+    }
+
+    private void validateQuantity(int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("수량은 1 이상이어야 합니다.");
+        }
     }
 
     public static OrderProduct create(Product product, int quantity) {

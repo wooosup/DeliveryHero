@@ -24,12 +24,12 @@ public class User {
         this.role = role;
     }
 
-    public static User signup(UserCreate userCreate, UserRole role) {
+    public static User signup(UserCreate userCreate, UserRole role, String encodedPassword) {
         validate(userCreate);
         return User.builder()
                 .name(userCreate.getName())
                 .username(userCreate.getUsername())
-                .password(userCreate.getPassword())
+                .password(encodedPassword)
                 .address(userCreate.getAddress())
                 .role(role)
                 .build();
@@ -47,23 +47,22 @@ public class User {
                 .build();
     }
 
-    public User changePassword(String newPassword) {
-        validatePasswordLength(newPassword);
-        validateSamePassword(newPassword);
+    public User changeEncodePassword(String encodedPassword) {
         return User.builder()
                 .id(id)
                 .name(name)
                 .username(username)
-                .password(newPassword)
+                .password(encodedPassword)
                 .address(address)
                 .role(role)
                 .build();
     }
 
-    public void checkPassword(String password) {
-        if (isNotSamePassword(password)) {
-            throw new UserException("아이디 또는 비밀번호가 일치하지 않습니다.");
+    public static void validatePassword(String password) {
+        if (password == null || password.isBlank()) {
+            throw new UserException("비밀번호는 필수입니다.");
         }
+        validatePasswordLength(password);
     }
 
     public boolean isNotOwner(Long anotherId) {
@@ -121,7 +120,4 @@ public class User {
         }
     }
 
-    private boolean isNotSamePassword(String password) {
-        return !this.password.equals(password);
-    }
 }

@@ -18,6 +18,7 @@ public class FakeDeliveryRepository implements DeliveryRepository {
             Delivery newDelivery = Delivery.builder()
                     .id(autoIncrement.getAndIncrement())
                     .orderId(delivery.getOrderId())
+                    .riderId(delivery.getRiderId())
                     .address(delivery.getAddress())
                     .status(delivery.getStatus())
                     .startedAt(delivery.getStartedAt())
@@ -44,5 +45,10 @@ public class FakeDeliveryRepository implements DeliveryRepository {
         return data.stream()
                 .filter(delivery -> delivery.getOrderId().equals(orderId))
                 .findFirst();
+    }
+
+    @Override
+    public Optional<Delivery> findByIdWithinLock(Long id) {
+        return findById(id);
     }
 }

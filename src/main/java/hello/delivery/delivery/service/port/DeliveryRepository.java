@@ -1,6 +1,7 @@
 package hello.delivery.delivery.service.port;
 
 import hello.delivery.delivery.domain.Delivery;
+
 import java.util.Optional;
 
 public interface DeliveryRepository {
@@ -10,4 +11,7 @@ public interface DeliveryRepository {
     Optional<Delivery> findById(Long id);
 
     Optional<Delivery> findByOrderId(Long orderId);
+
+    Optional<Delivery> findByIdWithinLock(Long id);
+
 }

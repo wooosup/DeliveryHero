@@ -183,7 +183,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("사장님이 주문을 거절하면 상태가 REJECTED가 되고 재고가 복구된다.")
+    @DisplayName("사장님이 주문을 거절하면 거절 상태가 되고 재고가 복구된다.")
     void reject() {
         // given
         OrderCreate orderCreate = createOrderCreate(store, productWithStock, ORDER_QUANTITY);

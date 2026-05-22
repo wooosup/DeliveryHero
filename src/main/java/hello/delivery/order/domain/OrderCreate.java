@@ -1,6 +1,7 @@
 package hello.delivery.order.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotEmpty;
@@ -17,7 +18,7 @@ public class OrderCreate {
     private final Long storeId;
 
     @NotEmpty(message = "주문 상품은 필수 입력 값입니다.")
-    private final List<OrderProductRequest> orderProducts;
+    private final List<@Valid OrderProductRequest> orderProducts;
 
     @NotBlank(message = "배달 주소는 필수 입력 값입니다.")
     private final String address;

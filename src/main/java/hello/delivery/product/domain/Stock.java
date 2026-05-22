@@ -27,6 +27,9 @@ public class Stock {
     }
 
     public Stock decrease(int amount) {
+        if (amount <= 0) {
+            throw new StockException("차감 수량은 1 이상이어야 합니다.");
+        }
         if (this.quantity < amount) {
             throw new StockException("재고가 부족합니다. 현재 재고: " + this.quantity);
         }

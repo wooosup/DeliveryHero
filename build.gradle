@@ -50,6 +50,8 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+    // passwordEncoder
+    implementation 'org.springframework.security:spring-security-crypto'
 }
 
 tasks.named('test') {

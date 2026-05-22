@@ -1,6 +1,6 @@
 package hello.delivery.rider.controller.docs;
 
-import hello.delivery.common.annotation.LoginUser;
+import hello.delivery.common.annotation.LoginRiderId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.rider.controller.response.RiderResponse;
 import hello.delivery.rider.domain.RiderCreate;
@@ -27,7 +27,7 @@ public interface RiderControllerDocs {
 
     @Operation(summary = "라이더 상태 변경", description = "라이더의 상태(출근/퇴근/배달중)를 변경합니다.")
     ApiResponse<RiderResponse> changeStatus(
-            @Parameter(hidden = true) @LoginUser Long riderId,
+            @Parameter(hidden = true) @LoginRiderId Long riderId,
             @Valid @RequestBody RiderStatusUpdate request);
 
     @Operation(summary = "배차 가능 라이더 조회", description = "현재 배차 가능한(AVAILABLE) 상태의 라이더 목록을 조회합니다.")

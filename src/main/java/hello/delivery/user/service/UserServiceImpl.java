@@ -6,7 +6,12 @@ import static hello.delivery.user.domain.UserRole.OWNER;
 import hello.delivery.common.exception.UserException;
 import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.user.controller.port.UserService;
-import hello.delivery.user.domain.*;
+import hello.delivery.user.domain.AddressUpdate;
+import hello.delivery.user.domain.Login;
+import hello.delivery.user.domain.PasswordUpdate;
+import hello.delivery.user.domain.User;
+import hello.delivery.user.domain.UserCreate;
+import hello.delivery.user.domain.UserRole;
 import hello.delivery.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,7 +61,7 @@ public class UserServiceImpl implements UserService {
         }
 
         String encodedPassword = passwordEncoder.encode(rawPassword);
-        user = user.changeEncodePassword(encodedPassword);
+        user = user.changeEncodedPassword(encodedPassword);
 
         return userRepository.save(user);
     }

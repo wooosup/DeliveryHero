@@ -37,8 +37,8 @@ public class DeliveryRepositoryImpl implements DeliveryRepository {
     }
 
     @Override
-    public Optional<Delivery> findByIdWithinLock(Long id) {
-        return deliveryJpaRepository.findByIdWithinLock(id).map(DeliveryEntity::toDomain);
+    public Optional<Delivery> findByIdWithLock(Long id) {
+        return deliveryJpaRepository.findByIdWithLock(id).map(DeliveryEntity::toDomain);
     }
 
 }

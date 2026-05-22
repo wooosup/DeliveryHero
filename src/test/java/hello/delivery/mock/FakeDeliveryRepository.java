@@ -48,7 +48,7 @@ public class FakeDeliveryRepository implements DeliveryRepository {
     }
 
     @Override
-    public Optional<Delivery> findByIdWithinLock(Long id) {
+    public Optional<Delivery> findByIdWithLock(Long id) {
         return findById(id);
     }
 }

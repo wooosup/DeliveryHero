@@ -2,7 +2,7 @@ package hello.delivery.rider.controller;
 
 import static hello.delivery.common.config.AuthSessionAttributes.RIDER_ID;
 
-import hello.delivery.common.annotation.LoginUser;
+import hello.delivery.common.annotation.LoginRiderId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.rider.controller.docs.RiderControllerDocs;
 import hello.delivery.rider.controller.port.RiderService;
@@ -53,7 +53,7 @@ public class RiderController implements RiderControllerDocs {
 
     @Override
     @PatchMapping("/status")
-    public ApiResponse<RiderResponse> changeStatus(@LoginUser Long riderId,
+    public ApiResponse<RiderResponse> changeStatus(@LoginRiderId Long riderId,
                                                    @Valid @RequestBody RiderStatusUpdate request) {
         Rider rider = riderService.changeStatus(riderId, request);
         return ApiResponse.ok(RiderResponse.of(rider));

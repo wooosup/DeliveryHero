@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 class StoreTest {
 
     @Test
-    @DisplayName("owner와 StoreCreate로 Store를 생성한다.")
+    @DisplayName("사장과 가게 생성 요청으로 가게를 생성한다.")
     void create() throws Exception {
         // given
         LocalDate now = new TestClockHolder().now();

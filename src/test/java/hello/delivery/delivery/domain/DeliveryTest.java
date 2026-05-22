@@ -69,7 +69,7 @@ class DeliveryTest {
     }
 
     @Test
-    @DisplayName("ASSIGNED 상태에서 배달을 시작하면 PICKED_UP 상태가 되고 시작 시간이 기록된다.")
+    @DisplayName("배정 상태에서 배달을 시작하면 픽업 완료 상태가 되고 시작 시간이 기록된다.")
     void start() throws Exception {
         // given
         TestClockHolder testClockHolder = new TestClockHolder();
@@ -93,7 +93,7 @@ class DeliveryTest {
     }
 
     @Test
-    @DisplayName("ASSIGNED 상태가 아니면 배달을 시작할 수 없다.")
+    @DisplayName("배정 상태가 아니면 배달을 시작할 수 없다.")
     void validateStart() {
         // given
         TestClockHolder testClockHolder = new TestClockHolder();
@@ -112,7 +112,7 @@ class DeliveryTest {
     }
 
     @Test
-    @DisplayName("PICKED_UP 상태에서 배달을 완료하면 DELIVERED 상태가 되고 완료 시간이 기록된다.")
+    @DisplayName("픽업 완료 상태에서 배달을 완료하면 배달 완료 상태가 되고 완료 시간이 기록된다.")
     void complete() {
         // given
         LocalDateTime startTime = LocalDateTime.of(2025, 11, 23, 14, 30);
@@ -137,7 +137,7 @@ class DeliveryTest {
     }
 
     @Test
-    @DisplayName("PICKED_UP 상태가 아니면 배달을 완료할 수 없다.")
+    @DisplayName("픽업 완료 상태가 아니면 배달을 완료할 수 없다.")
     void validateComplete() {
         // given
         TestClockHolder testClockHolder = new TestClockHolder();
@@ -162,6 +162,8 @@ class DeliveryTest {
     private OrderProduct buildOrderProduct() {
         return OrderProduct.builder()
                 .id(1L)
+                .price(10000)
+                .quantity(1)
                 .build();
     }
 

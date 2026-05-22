@@ -1,6 +1,6 @@
 package hello.delivery.product.controller;
 
-import hello.delivery.common.annotation.LoginUser;
+import hello.delivery.common.annotation.LoginOwnerId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.product.controller.docs.ProductControllerDocs;
 import hello.delivery.product.controller.port.ProductService;
@@ -31,7 +31,7 @@ public class ProductController implements ProductControllerDocs {
 
     @Override
     @PostMapping("/new")
-    public ApiResponse<ProductResponse> createProduct(@LoginUser Long userId,
+    public ApiResponse<ProductResponse> createProduct(@LoginOwnerId Long userId,
                                                       @Valid @RequestBody ProductCreate request) {
         Product product = productService.create(userId, request);
         return ApiResponse.ok(ProductResponse.of(product));
@@ -39,7 +39,7 @@ public class ProductController implements ProductControllerDocs {
 
     @Override
     @PostMapping("/new/batch")
-    public ApiResponse<List<ProductResponse>> createProducts(@LoginUser Long userId,
+    public ApiResponse<List<ProductResponse>> createProducts(@LoginOwnerId Long userId,
                                                              @Valid @RequestBody List<ProductCreate> request) {
         List<Product> products = productService.creates(userId, request);
         return ApiResponse.ok(ProductResponse.of(products));
@@ -47,7 +47,7 @@ public class ProductController implements ProductControllerDocs {
 
     @Override
     @PatchMapping("/{id}/status")
-    public ApiResponse<ProductResponse> changeStatus(@LoginUser Long userId, @PathVariable Long id,
+    public ApiResponse<ProductResponse> changeStatus(@LoginOwnerId Long userId, @PathVariable Long id,
                                                      @Valid @RequestBody ProductStatusUpdate request) {
         Product product = productService.changeSellingStatus(id, userId, request.getStatus());
         return ApiResponse.ok(ProductResponse.of(product));
@@ -55,7 +55,7 @@ public class ProductController implements ProductControllerDocs {
 
     @Override
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteProduct(@LoginUser Long userId, @PathVariable Long id) {
+    public ApiResponse<Void> deleteProduct(@LoginOwnerId Long userId, @PathVariable Long id) {
         productService.deleteById(userId, id);
         return ApiResponse.ok(null);
     }

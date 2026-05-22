@@ -32,25 +32,16 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
         }
 
         HttpSession session = request.getSession(false);
-
         if (session == null) {
             throw new UnauthorizedException("로그인을 해주세요.");
         }
 
-        Long riderId = (Long) session.getAttribute("riderId");
         Long userId = (Long) session.getAttribute("userId");
-
-        return getSessionUserId(riderId, userId);
-    }
-
-    private static long getSessionUserId(Long riderId, Long userId) {
-        if (riderId != null) {
-            return riderId;
+        if (userId == null) {
+            throw new UnauthorizedException("로그인을 해주세요.");
         }
-        if (userId != null) {
-            return userId;
-        }
-        throw new UnauthorizedException("로그인을 해주세요.");
+
+        return userId;
     }
 
 }

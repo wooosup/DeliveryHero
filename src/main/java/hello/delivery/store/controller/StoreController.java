@@ -1,6 +1,6 @@
 package hello.delivery.store.controller;
 
-import hello.delivery.common.annotation.LoginUser;
+import hello.delivery.common.annotation.LoginOwnerId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.product.controller.port.ProductService;
@@ -39,7 +39,7 @@ public class StoreController implements StoreControllerDocs {
 
     @Override
     @PostMapping("/new")
-    public ApiResponse<StoreOwnerResponse> createStore(@LoginUser Long userId,
+    public ApiResponse<StoreOwnerResponse> createStore(@LoginOwnerId Long userId,
                                                        @Valid @RequestBody StoreCreate request) {
         Store store = storeService.create(userId, request);
         return ApiResponse.ok(StoreOwnerResponse.of(store));
@@ -54,7 +54,7 @@ public class StoreController implements StoreControllerDocs {
 
     @Override
     @GetMapping("/owner")
-    public ApiResponse<List<StoreOwnerResponse>> getMyStores(@LoginUser Long userId) {
+    public ApiResponse<List<StoreOwnerResponse>> getMyStores(@LoginOwnerId Long userId) {
         List<Store> stores = storeService.findByOwnerId(userId);
         return ApiResponse.ok(StoreOwnerResponse.of(stores));
     }
@@ -97,7 +97,7 @@ public class StoreController implements StoreControllerDocs {
 
     @Override
     @PatchMapping("/{storeId}/open-time")
-    public ApiResponse<StoreOwnerResponse> changeOpenTime(@LoginUser Long userId,
+    public ApiResponse<StoreOwnerResponse> changeOpenTime(@LoginOwnerId Long userId,
                                                           @PathVariable Long storeId,
                                                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime newOpenTime) {
         Store store = storeService.changeOpenTime(userId, storeId, newOpenTime);
@@ -106,7 +106,7 @@ public class StoreController implements StoreControllerDocs {
 
     @Override
     @PatchMapping("/{storeId}/close-time")
-    public ApiResponse<StoreOwnerResponse> changeCloseTime(@LoginUser Long userId,
+    public ApiResponse<StoreOwnerResponse> changeCloseTime(@LoginOwnerId Long userId,
                                                            @PathVariable Long storeId,
                                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime newCloseTime) {
         Store store = storeService.changeCloseTime(userId, storeId, newCloseTime);

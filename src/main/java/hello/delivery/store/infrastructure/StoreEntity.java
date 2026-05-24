@@ -16,6 +16,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -27,6 +29,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "uk_store_name", columnNames = "name")
+})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StoreEntity extends BaseEntity {
 

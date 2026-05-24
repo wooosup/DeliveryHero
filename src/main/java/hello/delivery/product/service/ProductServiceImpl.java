@@ -12,7 +12,9 @@ import hello.delivery.product.domain.ProductType;
 import hello.delivery.product.service.port.ProductRepository;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
         validateList(requests);
         String storeName = requests.get(0).getStoreName();
         validateSameStore(requests, storeName);
+        validateDuplicateNamesInRequest(requests);
 
         User owner = finder.findByUser(userId);
         owner.validateOwnerRole();
@@ -103,6 +106,18 @@ public class ProductServiceImpl implements ProductService {
 
     private void validateProductDuplicate(Store store, String name) {
         if (productRepository.existsByStoreAndName(store, name)) {
+            throw new ProductException("이미 존재하는 상품입니다.");
+        }
+    }
+
+    private static void validateDuplicateNamesInRequest(List<ProductCreate> requests) {
+        Set<String> names = new HashSet<>();
+        boolean hasDuplicateName = requests.stream()
+                .map(ProductCreate::getName)
+                .filter(name -> name != null && !name.isBlank())
+                .anyMatch(name -> !names.add(name));
+
+        if (hasDuplicateName) {
             throw new ProductException("이미 존재하는 상품입니다.");
         }
     }

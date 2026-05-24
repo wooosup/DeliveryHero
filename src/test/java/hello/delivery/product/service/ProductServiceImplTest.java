@@ -119,6 +119,19 @@ class ProductServiceImplTest {
     }
 
     @Test
+    @DisplayName("한 번에 등록하는 상품 목록에 중복 상품명이 있으면 예외를 던진다.")
+    void validateDuplicateProductNamesInSameRequest() {
+        // given
+        ProductCreate product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreate product2 = createProductCreate(ICED_AMERICANO, DESSERT, CHEESE_CAKE_PRICE);
+
+        // expect
+        assertThatThrownBy(() -> productService.creates(owner.getId(), List.of(product1, product2)))
+                .isInstanceOf(ProductException.class)
+                .hasMessageContaining("이미 존재하는 상품입니다.");
+    }
+
+    @Test
     @DisplayName("상품의 판매 상태를 변경할 수 있다.")
     void changeSellingStatus() {
         // given

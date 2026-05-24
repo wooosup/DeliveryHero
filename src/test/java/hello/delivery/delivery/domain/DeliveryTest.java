@@ -8,6 +8,7 @@ import static hello.delivery.user.domain.UserRole.CUSTOMER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import hello.delivery.common.domain.Address;
 import hello.delivery.common.exception.DeliveryException;
 import hello.delivery.mock.TestClockHolder;
 import hello.delivery.order.domain.Order;
@@ -33,7 +34,7 @@ class DeliveryTest {
     @DisplayName("배달을 생성 할 수 있다.")
     void create() throws Exception {
         // given
-        DeliveryAddress address = createAddress();
+        Address address = createAddress();
         Order order = buildOrder(address, OrderStatus.ACCEPTED);
 
         // when
@@ -155,8 +156,8 @@ class DeliveryTest {
                 .hasMessage("배달을 완료할 수 없는 상태입니다.");
     }
 
-    private DeliveryAddress createAddress() {
-        return DeliveryAddress.of("서울시 강남구");
+    private Address createAddress() {
+        return Address.of("서울시 강남구");
     }
 
     private OrderProduct buildOrderProduct() {
@@ -167,7 +168,7 @@ class DeliveryTest {
                 .build();
     }
 
-    private Order buildOrder(DeliveryAddress address, OrderStatus orderStatus) {
+    private Order buildOrder(Address address, OrderStatus orderStatus) {
         User user = buildUser();
         Store store = buildStore();
 
@@ -188,7 +189,7 @@ class DeliveryTest {
                 .name("김우섭")
                 .username("wss3454")
                 .password("hihihi3454")
-                .address("대구")
+                .address(Address.of("대구"))
                 .role(CUSTOMER)
                 .build();
     }

@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import hello.delivery.common.exception.DeliveryException;
 import hello.delivery.delivery.controller.port.DeliveryService;
 import hello.delivery.delivery.domain.Delivery;
-import hello.delivery.delivery.domain.DeliveryAddress;
+import hello.delivery.common.domain.Address;
 import hello.delivery.mock.FakeDeliveryRepository;
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeOrderRepository;
@@ -114,7 +114,7 @@ class DeliveryServiceImplTest {
                 .id(1L)
                 .orderId(order.getId())
                 .riderId(rider.getId())
-                .address(DeliveryAddress.of("대구시 달서구"))
+                .address(Address.of("대구시 달서구"))
                 .status(PENDING)
                 .build();
         fakeDeliveryRepository.save(delivery);
@@ -139,7 +139,7 @@ class DeliveryServiceImplTest {
                 .id(1L)
                 .orderId(order.getId())
                 .riderId(rider.getId())
-                .address(DeliveryAddress.of("대구시 달서구"))
+                .address(Address.of("대구시 달서구"))
                 .status(ASSIGNED)
                 .build();
         fakeDeliveryRepository.save(delivery);
@@ -165,7 +165,7 @@ class DeliveryServiceImplTest {
                 .id(1L)
                 .orderId(order.getId())
                 .riderId(rider.getId())
-                .address(DeliveryAddress.of("대구시 달서구"))
+                .address(Address.of("대구시 달서구"))
                 .status(PICKED_UP)
                 .startedAt(startTime)
                 .build();
@@ -193,7 +193,7 @@ class DeliveryServiceImplTest {
                 .id(1L)
                 .orderId(order.getId())
                 .riderId(rider.getId())
-                .address(DeliveryAddress.of("대구시 달서구"))
+                .address(Address.of("대구시 달서구"))
                 .status(ASSIGNED)
                 .build();
         fakeFinder.addDelivery(delivery);
@@ -217,7 +217,7 @@ class DeliveryServiceImplTest {
                 .id(1L)
                 .orderId(order.getId())
                 .riderId(rider.getId())
-                .address(DeliveryAddress.of("대구시 달서구"))
+                .address(Address.of("대구시 달서구"))
                 .status(ASSIGNED)
                 .build();
         fakeDeliveryRepository.save(delivery);
@@ -246,7 +246,7 @@ class DeliveryServiceImplTest {
                 .name("차상훈")
                 .username("wss3325")
                 .password("hihihi3454")
-                .address("대구")
+                .address(Address.of("대구"))
                 .role(OWNER)
                 .build();
         fakeFinder.addUser(owner);
@@ -259,7 +259,7 @@ class DeliveryServiceImplTest {
                 .name("김우섭")
                 .username("wss3454")
                 .password("hihihi3454")
-                .address("대구")
+                .address(Address.of("대구"))
                 .role(CUSTOMER)
                 .build();
         fakeFinder.addUser(user);
@@ -299,7 +299,7 @@ class DeliveryServiceImplTest {
                 .id(1L)
                 .user(user)
                 .store(store)
-                .address(DeliveryAddress.of("대구시 달서구"))
+                .address(Address.of("대구시 달서구"))
                 .orderedAt(testClockHolder.nowDateTime())
                 .orderProducts(List.of(orderProduct))
                 .orderStatus(orderStatus)

@@ -47,7 +47,7 @@ class UserServiceImplTest {
 
         assertThat(result.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(result.getUsername()).isEqualTo(DEFAULT_USERNAME);
-        assertThat(result.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(result.getAddress().getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(result.getRole()).isEqualTo(CUSTOMER);
         assertThat(result.getPassword()).isNotEqualTo(DEFAULT_PASSWORD);
         assertThat(passwordEncoder.matches(DEFAULT_PASSWORD, result.getPassword())).isTrue();
@@ -60,7 +60,7 @@ class UserServiceImplTest {
 
         assertThat(result.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(result.getUsername()).isEqualTo(DEFAULT_USERNAME);
-        assertThat(result.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(result.getAddress().getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(result.getRole()).isEqualTo(OWNER);
         assertThat(result.getPassword()).isNotEqualTo(DEFAULT_PASSWORD);
         assertThat(passwordEncoder.matches(DEFAULT_PASSWORD, result.getPassword())).isTrue();
@@ -106,7 +106,7 @@ class UserServiceImplTest {
         User result = userService.changeAddress(user.getId(), addressUpdate);
 
         assertThat(result.getUsername()).isEqualTo(DEFAULT_USERNAME);
-        assertThat(result.getAddress()).isEqualTo(NEW_ADDRESS);
+        assertThat(result.getAddress().getAddress()).isEqualTo(NEW_ADDRESS);
         assertThat(result.getPassword()).isEqualTo(user.getPassword());
     }
 

@@ -24,7 +24,7 @@ public class UserResponse {
                 .id(user.getId())
                 .name(user.getName())
                 .username(user.getUsername())
-                .address(user.getAddress())
+                .address(user.getAddress().getAddress())
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package hello.delivery.user.service;
 import static hello.delivery.user.domain.UserRole.CUSTOMER;
 import static hello.delivery.user.domain.UserRole.OWNER;
 
+import hello.delivery.common.domain.Address;
 import hello.delivery.common.exception.UserException;
 import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.user.controller.port.UserService;
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
     public User changeAddress(Long userId, AddressUpdate addressUpdate) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
-        user = user.changeAddress(addressUpdate.getAddress());
+        user = user.changeAddress(Address.of(addressUpdate.getAddress()));
 
         return userRepository.save(user);
     }

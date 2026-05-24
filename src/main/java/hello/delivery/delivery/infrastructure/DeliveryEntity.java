@@ -2,7 +2,7 @@ package hello.delivery.delivery.infrastructure;
 
 import hello.delivery.common.infrastructure.BaseEntity;
 import hello.delivery.delivery.domain.Delivery;
-import hello.delivery.delivery.domain.DeliveryAddress;
+import hello.delivery.common.domain.Address;
 import hello.delivery.delivery.domain.DeliveryStatus;
 import hello.delivery.order.infrastructure.OrderEntity;
 import jakarta.persistence.AttributeOverride;
@@ -44,13 +44,13 @@ public class DeliveryEntity extends BaseEntity {
 
     @Embedded
     @AttributeOverride(name = "address", column = @Column(name = "delivery_address"))
-    private DeliveryAddress address;
+    private Address address;
 
     private LocalDateTime startedAt;
     private LocalDateTime completedAt;
 
     @Builder
-    private DeliveryEntity(Long id, OrderEntity order, Long riderId, DeliveryStatus status, DeliveryAddress address,
+    private DeliveryEntity(Long id, OrderEntity order, Long riderId, DeliveryStatus status, Address address,
                            LocalDateTime startedAt, LocalDateTime completedAt) {
         this.id = id;
         this.order = order;

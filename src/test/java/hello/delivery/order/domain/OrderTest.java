@@ -6,6 +6,7 @@ import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import hello.delivery.common.domain.Address;
 import hello.delivery.common.exception.OrderException;
 import hello.delivery.product.domain.Product;
 import hello.delivery.store.domain.Store;
@@ -255,7 +256,7 @@ class OrderTest {
                 .name("차상훈")
                 .username("wss3325")
                 .password("hihihi3454")
-                .address("대구")
+                .address(Address.of("대구"))
                 .role(OWNER)
                 .build();
     }
@@ -266,7 +267,7 @@ class OrderTest {
                 .name("김우섭")
                 .username("wss3325")
                 .password("3454")
-                .address("대구")
+                .address(Address.of("대구"))
                 .role(CUSTOMER)
                 .build();
     }

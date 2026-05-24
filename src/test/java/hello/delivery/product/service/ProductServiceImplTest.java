@@ -7,6 +7,7 @@ import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import hello.delivery.common.domain.Address;
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.exception.StoreException;
@@ -217,7 +218,7 @@ class ProductServiceImplTest {
                 .name("차상훈")
                 .username("wss3325")
                 .password("hihihi3454")
-                .address("대구")
+                .address(Address.of("대구"))
                 .role(OWNER)
                 .build();
         fakeFinder.addUser(owner);
@@ -230,7 +231,7 @@ class ProductServiceImplTest {
                 .name("저녁뭐먹지")
                 .username("흠..")
                 .password("41215153")
-                .address("서울")
+                .address(Address.of("서울"))
                 .role(OWNER)
                 .build();
         fakeFinder.addUser(anotherOwner);

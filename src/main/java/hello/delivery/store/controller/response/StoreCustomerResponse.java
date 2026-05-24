@@ -36,7 +36,7 @@ public class StoreCustomerResponse {
                 .id(store.getId())
                 .name(store.getName())
                 .storeType(store.getStoreType())
-                .address(store.getOwner().getAddress())
+                .address(store.getOwner().getAddress().getAddress())
                 .isOpen(store.isOpening(clockHolder.nowTime()))
                 .openTime(store.getOpenTime())
                 .closeTime(store.getCloseTime())

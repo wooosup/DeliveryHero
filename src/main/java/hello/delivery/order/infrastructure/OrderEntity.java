@@ -1,7 +1,7 @@
 package hello.delivery.order.infrastructure;
 
 import hello.delivery.common.infrastructure.BaseEntity;
-import hello.delivery.delivery.domain.DeliveryAddress;
+import hello.delivery.common.domain.Address;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderStatus;
 import hello.delivery.store.infrastructure.StoreEntity;
@@ -47,7 +47,7 @@ public class OrderEntity extends BaseEntity {
 
     @Embedded
     @AttributeOverride(name = "address", column = @Column(name = "delivery_address"))
-    private DeliveryAddress address;
+    private Address address;
 
     private LocalDateTime orderedAt;
 

@@ -5,6 +5,7 @@ import static hello.delivery.store.domain.StoreType.KOREAN_FOOD;
 import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import hello.delivery.common.domain.Address;
 import hello.delivery.mock.FakeStoreRepository;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
@@ -54,7 +55,7 @@ class StoreRepositoryTest {
                 .name("차상훈")
                 .username("wss3325")
                 .password("hihihi3454")
-                .address("대구")
+                .address(Address.of("대구"))
                 .role(OWNER)
                 .build();
     }

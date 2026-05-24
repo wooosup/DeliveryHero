@@ -3,6 +3,7 @@ package hello.delivery.delivery.domain;
 import static hello.delivery.delivery.domain.DeliveryStatus.*;
 import static hello.delivery.order.domain.OrderStatus.ACCEPTED;
 
+import hello.delivery.common.domain.Address;
 import hello.delivery.common.exception.DeliveryException;
 import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.order.domain.Order;
@@ -17,12 +18,12 @@ public class Delivery {
     private final Long orderId;
     private final Long riderId;
     private final DeliveryStatus status;
-    private final DeliveryAddress address;
+    private final Address address;
     private final LocalDateTime startedAt;
     private final LocalDateTime completedAt;
 
     @Builder
-    private Delivery(Long id, Long orderId, Long riderId, DeliveryStatus status, DeliveryAddress address,
+    private Delivery(Long id, Long orderId, Long riderId, DeliveryStatus status, Address address,
                      LocalDateTime startedAt, LocalDateTime completedAt) {
         this.id = id;
         this.orderId = orderId;

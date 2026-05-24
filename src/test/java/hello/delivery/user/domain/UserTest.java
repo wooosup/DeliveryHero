@@ -3,6 +3,7 @@ package hello.delivery.user.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import hello.delivery.common.domain.Address;
 import hello.delivery.common.exception.UserException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ class UserTest {
         assertThat(signupUser.getUsername()).isEqualTo("wss3325");
         assertThat(signupUser.getPassword()).isEqualTo(ENCODED_PASSWORD);
         assertThat(signupUser.getPassword()).isNotEqualTo(RAW_PASSWORD);
-        assertThat(signupUser.getAddress()).isEqualTo("Daegu");
+        assertThat(signupUser.getAddress().getAddress()).isEqualTo("Daegu");
     }
 
     @Test
@@ -33,13 +34,13 @@ class UserTest {
                 .name("wss")
                 .username("wss3325")
                 .password(ENCODED_PASSWORD)
-                .address("Daegu")
+                .address(Address.of("Daegu"))
                 .role(UserRole.CUSTOMER)
                 .build();
 
-        User changedUser = user.changeAddress("Seoul");
+        User changedUser = user.changeAddress(Address.of("Seoul"));
 
-        assertThat(changedUser.getAddress()).isEqualTo("Seoul");
+        assertThat(changedUser.getAddress().getAddress()).isEqualTo("Seoul");
         assertThat(changedUser.getPassword()).isEqualTo(ENCODED_PASSWORD);
     }
 

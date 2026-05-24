@@ -1,5 +1,6 @@
 package hello.delivery.user.domain;
 
+import hello.delivery.common.domain.Address;
 import hello.delivery.common.exception.UserException;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,11 +12,11 @@ public class User {
     private final String name;
     private final String username;
     private final String password;
-    private final String address;
+    private final Address address;
     private final UserRole role;
 
     @Builder
-    private User(Long id, String name, String username, String password, String address, UserRole role) {
+    private User(Long id, String name, String username, String password, Address address, UserRole role) {
         this.id = id;
         this.name = name;
         this.username = username;
@@ -30,12 +31,12 @@ public class User {
                 .name(userCreate.getName())
                 .username(userCreate.getUsername())
                 .password(encodedPassword)
-                .address(userCreate.getAddress())
+                .address(Address.of(userCreate.getAddress()))
                 .role(role)
                 .build();
     }
 
-    public User changeAddress(String newAddress) {
+    public User changeAddress(Address newAddress) {
         validateAddress(newAddress);
         return User.builder()
                 .id(id)
@@ -96,8 +97,8 @@ public class User {
         validatePasswordLength(userCreate.getPassword());
     }
 
-    private void validateAddress(String newAddress) {
-        if (newAddress == null || newAddress.isBlank()) {
+    private void validateAddress(Address newAddress) {
+        if (newAddress == null) {
             throw new UserException("주소는 비어 있을 수 없습니다.");
         }
     }

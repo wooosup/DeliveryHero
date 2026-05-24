@@ -9,7 +9,7 @@ import static hello.delivery.user.domain.UserRole.CUSTOMER;
 
 import hello.delivery.common.exception.ForbiddenException;
 import hello.delivery.common.exception.OrderException;
-import hello.delivery.delivery.domain.DeliveryAddress;
+import hello.delivery.common.domain.Address;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
 import java.time.LocalDateTime;
@@ -24,13 +24,13 @@ public class Order {
     private final int totalPrice;
     private final User user;
     private final Store store;
-    private final DeliveryAddress address;
+    private final Address address;
     private final LocalDateTime orderedAt;
     private final List<OrderProduct> orderProducts;
     private final OrderStatus orderStatus;
 
     @Builder
-    private Order(Long id, User user, Store store, DeliveryAddress address, LocalDateTime orderedAt,
+    private Order(Long id, User user, Store store, Address address, LocalDateTime orderedAt,
                   List<OrderProduct> orderProducts,
                   OrderStatus orderStatus) {
         validateUserAndStore(user, store);
@@ -53,7 +53,7 @@ public class Order {
         return Order.builder()
                 .user(user)
                 .store(store)
-                .address(DeliveryAddress.of(address))
+                .address(Address.of(address))
                 .orderedAt(orderedAt)
                 .orderProducts(orderProducts)
                 .orderStatus(PENDING)

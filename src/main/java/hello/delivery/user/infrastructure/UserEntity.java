@@ -1,7 +1,9 @@
 package hello.delivery.user.infrastructure;
 
+import hello.delivery.common.domain.Address;
 import hello.delivery.user.domain.User;
 import hello.delivery.user.domain.UserRole;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -30,12 +32,13 @@ public class UserEntity {
     private String name;
     private String username;
     private String password;
-    private String address;
+    @Embedded
+    private Address address;
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @Builder
-    private UserEntity(Long id, String name, String username, String password, String address, UserRole role) {
+    private UserEntity(Long id, String name, String username, String password, Address address, UserRole role) {
         this.id = id;
         this.name = name;
         this.username = username;

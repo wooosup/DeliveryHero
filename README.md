@@ -100,7 +100,12 @@ docker compose up -d
 ```
 
 - 일반 통합 테스트는 `src/test/resources/application-test.properties`의 H2 설정을 사용한다.
-- `OrderConcurrencyIntegrationTest`는 Testcontainers를 사용하므로 Docker가 켜져 있어야 한다.
+- `OrderConcurrencyIntegrationTest`는 기본 테스트에서 제외된다.
+- Docker 기반 동시성 테스트가 필요하면 아래 명령을 따로 실행한다.
+
+```bash
+./gradlew dockerTest
+```
 
 ### 6. Swagger 확인
 

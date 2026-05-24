@@ -11,10 +11,11 @@ import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import hello.delivery.common.domain.Address;
+import hello.delivery.common.domain.Money;
 import hello.delivery.common.exception.DeliveryException;
 import hello.delivery.delivery.controller.port.DeliveryService;
 import hello.delivery.delivery.domain.Delivery;
-import hello.delivery.common.domain.Address;
 import hello.delivery.mock.FakeDeliveryRepository;
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeOrderRepository;
@@ -282,7 +283,7 @@ class DeliveryServiceImplTest {
         Product product = Product.builder()
                 .id(1L)
                 .name("치킨")
-                .price(20000)
+                .price(Money.of(20000))
                 .store(store)
                 .build();
         fakeFinder.addProduct(product);

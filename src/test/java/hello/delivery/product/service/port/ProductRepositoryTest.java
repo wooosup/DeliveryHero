@@ -6,6 +6,7 @@ import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import hello.delivery.common.domain.Address;
+import hello.delivery.common.domain.Money;
 import hello.delivery.mock.FakeProductRepository;
 import hello.delivery.product.domain.Product;
 import hello.delivery.store.domain.Store;
@@ -34,7 +35,7 @@ class ProductRepositoryTest {
                 .name("치킨")
                 .productType(FOOD)
                 .store(store)
-                .price(20000)
+                .price(Money.of(20000))
                 .build();
         Product savedProduct = fakeProductRepository.save(product);
 
@@ -44,7 +45,7 @@ class ProductRepositoryTest {
         // then
         assertThat(result.get(0).getId()).isEqualTo(savedProduct.getId());
         assertThat(result.get(0).getName()).isEqualTo("치킨");
-        assertThat(result.get(0).getPrice()).isEqualTo(20000);
+        assertThat(result.get(0).getPrice()).isEqualTo(Money.of(20000));
     }
 
     @Test
@@ -57,7 +58,7 @@ class ProductRepositoryTest {
                 .name("치킨")
                 .productType(FOOD)
                 .store(store)
-                .price(20000)
+                .price(Money.of(20000))
                 .productSellingStatus(STOP_SELLING)
                 .build();
         Product savedProduct = fakeProductRepository.save(product);
@@ -68,7 +69,7 @@ class ProductRepositoryTest {
         // then
         assertThat(result.get(0).getId()).isEqualTo(savedProduct.getId());
         assertThat(result.get(0).getName()).isEqualTo("치킨");
-        assertThat(result.get(0).getPrice()).isEqualTo(20000);
+        assertThat(result.get(0).getPrice()).isEqualTo(Money.of(20000));
     }
 
     private static User buildOwner() {

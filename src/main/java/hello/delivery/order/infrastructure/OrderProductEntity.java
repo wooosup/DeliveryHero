@@ -1,9 +1,18 @@
 package hello.delivery.order.infrastructure;
 
+import hello.delivery.common.domain.Money;
 import hello.delivery.common.infrastructure.BaseEntity;
 import hello.delivery.order.domain.OrderProduct;
 import hello.delivery.product.infrastructure.ProductEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,14 +36,17 @@ public class OrderProductEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private ProductEntity product;
 
-    private int price;
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "price"))
+    private Money price;
+
     private int quantity;
 
     @Builder
-    private OrderProductEntity(OrderEntity order, ProductEntity product, int price, int quantity) {
+    private OrderProductEntity(OrderEntity order, ProductEntity product, Money price, int quantity) {
         this.order = order;
         this.product = product;
-        this.price = price;
+        this.price = price == null ? Money.zero() : price;
         this.quantity = quantity;
     }
 

@@ -2,6 +2,7 @@ package hello.delivery.product.domain;
 
 import static hello.delivery.product.domain.ProductSellingStatus.*;
 
+import hello.delivery.common.domain.Money;
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.StoreException;
 import hello.delivery.store.domain.Store;
@@ -16,19 +17,19 @@ public class Product {
     private final Store store;
     private final User owner;
     private final String name;
-    private final int price;
+    private final Money price;
     private final ProductType productType;
     private final ProductSellingStatus productSellingStatus;
     private final Stock stock;
 
     @Builder
-    private Product(Long id, Store store, User owner, String name, int price, ProductType productType,
+    private Product(Long id, Store store, User owner, String name, Money price, ProductType productType,
                     ProductSellingStatus productSellingStatus, Stock stock) {
         this.id = id;
         this.store = store;
         this.owner = owner;
         this.name = name;
-        this.price = price;
+        this.price = price == null ? Money.zero() : price;
         this.productType = productType;
         this.productSellingStatus = productSellingStatus;
         this.stock = stock;
@@ -38,7 +39,7 @@ public class Product {
         validate(productCreate, store);
         return Product.builder()
                 .name(productCreate.getName())
-                .price(productCreate.getPrice())
+                .price(Money.of(productCreate.getPrice()))
                 .productType(productCreate.getType())
                 .productSellingStatus(determineSellingStatus(productCreate.getStock()))
                 .store(store)

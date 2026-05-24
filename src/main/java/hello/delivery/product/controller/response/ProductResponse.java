@@ -32,7 +32,7 @@ public class ProductResponse {
         return ProductResponse.builder()
                 .id(product.getId())
                 .name(product.getName())
-                .price(product.getPrice())
+                .price(product.getPrice().getAmount())
                 .type(product.getProductType().name())
                 .sellingStatus(product.getProductSellingStatus().name())
                 .storeId(product.getStore().getId())

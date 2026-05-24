@@ -26,8 +26,8 @@ public class OrderProductResponse {
                 .productId(orderProduct.getProduct().getId())
                 .productName(orderProduct.getProduct().getName())
                 .quantity(orderProduct.getQuantity())
-                .price(orderProduct.getPrice())
-                .totalPrice(orderProduct.calculatePrice())
+                .price(orderProduct.getPrice().getAmount())
+                .totalPrice(orderProduct.calculatePrice().getAmount())
                 .build();
     }
 }

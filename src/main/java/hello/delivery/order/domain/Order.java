@@ -10,6 +10,7 @@ import static hello.delivery.user.domain.UserRole.CUSTOMER;
 import hello.delivery.common.exception.ForbiddenException;
 import hello.delivery.common.exception.OrderException;
 import hello.delivery.common.domain.Address;
+import hello.delivery.common.domain.Money;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ import lombok.Getter;
 public class Order {
 
     private final Long id;
-    private final int totalPrice;
+    private final Money totalPrice;
     private final User user;
     private final Store store;
     private final Address address;
@@ -132,10 +133,10 @@ public class Order {
         }
     }
 
-    private int calculateTotalPrice() {
+    private Money calculateTotalPrice() {
         return orderProducts.stream()
-                .mapToInt(OrderProduct::calculatePrice)
-                .sum();
+                .map(OrderProduct::calculatePrice)
+                .reduce(Money.zero(), Money::plus);
     }
 
     private OrderBuilder copyWithBuilder() {

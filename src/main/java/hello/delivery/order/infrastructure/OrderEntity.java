@@ -2,6 +2,7 @@ package hello.delivery.order.infrastructure;
 
 import hello.delivery.common.infrastructure.BaseEntity;
 import hello.delivery.common.domain.Address;
+import hello.delivery.common.domain.Money;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderStatus;
 import hello.delivery.store.infrastructure.StoreEntity;
@@ -37,7 +38,9 @@ public class OrderEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int totalPrice;
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "total_price"))
+    private Money totalPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;

@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import hello.delivery.common.domain.Address;
+import hello.delivery.common.domain.Money;
 import hello.delivery.common.exception.OrderException;
 import hello.delivery.product.domain.Product;
 import hello.delivery.store.domain.Store;
@@ -41,7 +42,7 @@ class OrderTest {
         assertThat(order.getUser()).isEqualTo(user);
         assertThat(order.getStore()).isEqualTo(store);
         assertThat(order.getOrderProducts()).hasSize(1);
-        assertThat(order.getTotalPrice()).isEqualTo(40000);
+        assertThat(order.getTotalPrice()).isEqualTo(Money.of(40000));
         assertThat(order.getOrderStatus()).isEqualTo(PENDING);
     }
 
@@ -285,7 +286,7 @@ class OrderTest {
     private static Product buildProduct(Store store) {
         return Product.builder()
                 .name("치킨")
-                .price(20000)
+                .price(Money.of(20000))
                 .store(store)
                 .build();
     }

@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import hello.delivery.common.domain.Address;
+import hello.delivery.common.domain.Money;
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.exception.StoreException;
@@ -59,7 +60,7 @@ class ProductServiceImplTest {
 
         // then
         assertThat(product.getName()).isEqualTo(ICED_AMERICANO);
-        assertThat(product.getPrice()).isEqualTo(ICED_AMERICANO_PRICE);
+        assertThat(product.getPrice()).isEqualTo(Money.of(ICED_AMERICANO_PRICE));
         assertThat(product.getProductType()).isEqualTo(BEVERAGE);
         assertThat(product.getStore().getName()).isEqualTo(STORE_NAME);
         assertThat(product.getStore().getOwner()).isEqualTo(owner);
@@ -79,12 +80,12 @@ class ProductServiceImplTest {
         assertThat(products).hasSize(2);
 
         assertThat(products.get(0).getName()).isEqualTo(ICED_AMERICANO);
-        assertThat(products.get(0).getPrice()).isEqualTo(ICED_AMERICANO_PRICE);
+        assertThat(products.get(0).getPrice()).isEqualTo(Money.of(ICED_AMERICANO_PRICE));
         assertThat(products.get(0).getProductType()).isEqualTo(BEVERAGE);
         assertThat(products.get(0).getStore().getName()).isEqualTo(STORE_NAME);
 
         assertThat(products.get(1).getName()).isEqualTo(CHEESE_CAKE);
-        assertThat(products.get(1).getPrice()).isEqualTo(CHEESE_CAKE_PRICE);
+        assertThat(products.get(1).getPrice()).isEqualTo(Money.of(CHEESE_CAKE_PRICE));
         assertThat(products.get(1).getProductType()).isEqualTo(DESSERT);
         assertThat(products.get(1).getStore().getName()).isEqualTo(STORE_NAME);
     }

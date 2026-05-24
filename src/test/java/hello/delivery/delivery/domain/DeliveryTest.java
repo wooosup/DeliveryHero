@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import hello.delivery.common.domain.Address;
+import hello.delivery.common.domain.Money;
 import hello.delivery.common.exception.DeliveryException;
 import hello.delivery.mock.TestClockHolder;
 import hello.delivery.order.domain.Order;
@@ -163,7 +164,7 @@ class DeliveryTest {
     private OrderProduct buildOrderProduct() {
         return OrderProduct.builder()
                 .id(1L)
-                .price(10000)
+                .price(Money.of(10000))
                 .quantity(1)
                 .build();
     }

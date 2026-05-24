@@ -1,5 +1,6 @@
 package hello.delivery.order.domain;
 
+import hello.delivery.common.domain.Money;
 import hello.delivery.product.domain.Product;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,16 +10,16 @@ public class OrderProduct {
     private final Long id;
     private final Order order;
     private final Product product;
-    private final int price;
+    private final Money price;
     private final int quantity;
 
     @Builder
-    private OrderProduct(Long id, Order order, Product product, int price, int quantity) {
+    private OrderProduct(Long id, Order order, Product product, Money price, int quantity) {
         validateQuantity(quantity);
         this.id = id;
         this.order = order;
         this.product = product;
-        this.price = price;
+        this.price = price == null ? Money.zero() : price;
         this.quantity = quantity;
     }
 
@@ -36,8 +37,8 @@ public class OrderProduct {
                 .build();
     }
 
-    public int calculatePrice() {
-        return price * quantity;
+    public Money calculatePrice() {
+        return price.multiply(quantity);
     }
 
     public OrderProduct withOrder(Order order) {

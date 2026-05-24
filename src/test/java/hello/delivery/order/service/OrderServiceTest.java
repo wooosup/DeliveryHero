@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import hello.delivery.common.domain.Address;
+import hello.delivery.common.domain.Money;
 import hello.delivery.common.exception.ForbiddenException;
 import hello.delivery.common.exception.OrderException;
 import hello.delivery.common.exception.ProductException;
@@ -104,7 +105,7 @@ class OrderServiceTest {
         assertThat(order.getOrderProducts()).hasSize(1);
         assertThat(order.getOrderProducts().get(0).getProduct().getName()).isEqualTo("치킨");
         assertThat(order.getOrderProducts().get(0).getQuantity()).isEqualTo(ORDER_QUANTITY);
-        assertThat(order.getTotalPrice()).isEqualTo(PRODUCT_PRICE * ORDER_QUANTITY);
+        assertThat(order.getTotalPrice()).isEqualTo(Money.of(PRODUCT_PRICE * ORDER_QUANTITY));
     }
 
     @Test
@@ -120,7 +121,7 @@ class OrderServiceTest {
         assertThat(order.getOrderProducts()).hasSize(1);
         assertThat(order.getOrderProducts().get(0).getProduct().getName()).isEqualTo("콜라");
         assertThat(order.getOrderProducts().get(0).getQuantity()).isEqualTo(ORDER_QUANTITY);
-        assertThat(order.getTotalPrice()).isEqualTo(PRODUCT_PRICE * ORDER_QUANTITY);
+        assertThat(order.getTotalPrice()).isEqualTo(Money.of(PRODUCT_PRICE * ORDER_QUANTITY));
 
         Product result = fakeProductRepository.findById(productWithStock.getId()).get();
         assertThat(result.getStock().getQuantity()).isEqualTo(8);
@@ -284,7 +285,7 @@ class OrderServiceTest {
         Product anotherStoreProduct = fakeProductRepository.save(Product.builder()
                 .id(3L)
                 .name("허니콤보")
-                .price(PRODUCT_PRICE)
+                .price(Money.of(PRODUCT_PRICE))
                 .store(anotherStore)
                 .stock(Stock.of(10))
                 .build());
@@ -312,7 +313,7 @@ class OrderServiceTest {
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getUser().getName()).isEqualTo("김우섭");
         assertThat(result.get(0).getStore().getName()).isEqualTo("BBQ");
-        assertThat(result.get(0).getTotalPrice()).isEqualTo(PRODUCT_PRICE * ORDER_QUANTITY);
+        assertThat(result.get(0).getTotalPrice()).isEqualTo(Money.of(PRODUCT_PRICE * ORDER_QUANTITY));
     }
 
     private OrderCreate createOrderCreate(Store store, Product product, int quantity) {
@@ -370,7 +371,7 @@ class OrderServiceTest {
         Product savedProduct = fakeProductRepository.save(Product.builder()
                 .id(1L)
                 .name("치킨")
-                .price(PRODUCT_PRICE)
+                .price(Money.of(PRODUCT_PRICE))
                 .store(store)
                 .build());
         fakeFinder.addProduct(savedProduct);
@@ -381,7 +382,7 @@ class OrderServiceTest {
         Product savedProduct = fakeProductRepository.save(Product.builder()
                 .id(2L)
                 .name("콜라")
-                .price(PRODUCT_PRICE)
+                .price(Money.of(PRODUCT_PRICE))
                 .store(store)
                 .stock(Stock.of(10))
                 .build());

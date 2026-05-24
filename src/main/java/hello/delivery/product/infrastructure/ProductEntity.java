@@ -1,5 +1,6 @@
 package hello.delivery.product.infrastructure;
 
+import hello.delivery.common.domain.Money;
 import hello.delivery.common.infrastructure.BaseEntity;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductSellingStatus;
@@ -7,6 +8,9 @@ import hello.delivery.product.domain.ProductType;
 import hello.delivery.product.domain.Stock;
 import hello.delivery.store.infrastructure.StoreEntity;
 import hello.delivery.user.infrastructure.UserEntity;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -40,7 +44,9 @@ public class ProductEntity extends BaseEntity {
 
     private String name;
 
-    private int price;
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "price"))
+    private Money price;
 
     @Enumerated(EnumType.STRING)
     private ProductType productType;
@@ -51,13 +57,13 @@ public class ProductEntity extends BaseEntity {
     private Integer stock;
 
     @Builder
-    private ProductEntity(Long id, StoreEntity store, UserEntity owner, String name, int price, ProductType productType,
+    private ProductEntity(Long id, StoreEntity store, UserEntity owner, String name, Money price, ProductType productType,
                           ProductSellingStatus productSellingStatus, Integer stock) {
         this.id = id;
         this.store = store;
         this.owner = owner;
         this.name = name;
-        this.price = price;
+        this.price = price == null ? Money.zero() : price;
         this.productType = productType;
         this.productSellingStatus = productSellingStatus;
         this.stock = stock;

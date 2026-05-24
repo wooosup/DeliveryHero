@@ -35,7 +35,7 @@ public class OrderResponse {
         return OrderResponse.builder()
                 .id(order.getId())
                 .storeId(order.getStore().getId())
-                .totalPrice(order.getTotalPrice())
+                .totalPrice(order.getTotalPrice().getAmount())
                 .address(order.getAddress().getAddress())
                 .storeName(order.getStore().getName())
                 .orderStatus(order.getOrderStatus().getDescription())

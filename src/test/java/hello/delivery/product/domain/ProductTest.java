@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import hello.delivery.common.domain.Address;
+import hello.delivery.common.domain.Money;
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
@@ -36,7 +37,7 @@ class ProductTest {
 
         // then
         assertThat(product.getName()).isEqualTo("치킨");
-        assertThat(product.getPrice()).isEqualTo(20000);
+        assertThat(product.getPrice()).isEqualTo(Money.of(20000));
         assertThat(product.getProductType()).isEqualTo(FOOD);
         assertThat(product.getProductSellingStatus()).isEqualTo(SELLING);
     }
@@ -60,7 +61,7 @@ class ProductTest {
 
         // then
         assertThat(product.getName()).isEqualTo("콜라");
-        assertThat(product.getPrice()).isEqualTo(1500);
+        assertThat(product.getPrice()).isEqualTo(Money.of(1500));
         assertThat(product.getProductType()).isEqualTo(BEVERAGE);
         assertThat(product.getProductSellingStatus()).isEqualTo(SELLING);
         assertThat(product.getStock().getQuantity()).isEqualTo(5);
@@ -85,7 +86,7 @@ class ProductTest {
 
         // then
         assertThat(product.getName()).isEqualTo("콜라");
-        assertThat(product.getPrice()).isEqualTo(1500);
+        assertThat(product.getPrice()).isEqualTo(Money.of(1500));
         assertThat(product.getProductType()).isEqualTo(BEVERAGE);
         assertThat(product.getProductSellingStatus()).isEqualTo(SOLD_OUT);
         assertThat(product.getStock().getQuantity()).isEqualTo(0);

@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
         order.validateOwner(ownerId);
         Order acceptedOrder = order.accept();
 
-        storeService.addTotalSales(acceptedOrder.getStore().getId(), acceptedOrder.getTotalPrice());
+        storeService.addTotalSales(acceptedOrder.getStore().getId(), acceptedOrder.getTotalPrice().getAmount());
         deliveryService.createDeliveryForOrder(acceptedOrder);
 
         return orderRepository.save(acceptedOrder);

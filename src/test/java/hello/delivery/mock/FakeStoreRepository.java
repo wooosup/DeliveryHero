@@ -102,4 +102,18 @@ public class FakeStoreRepository implements StoreRepository {
                 .toList();
     }
 
+    @Override
+    public synchronized int addSales(Long storeId, int amount, LocalDate currentDate) {
+        return data.stream()
+                .filter(store -> store.getId().equals(storeId))
+                .findAny()
+                .map(store -> {
+                    Store updatedStore = store.addTotalSales(amount, currentDate);
+                    data.remove(store);
+                    data.add(updatedStore);
+                    return 1;
+                })
+                .orElse(0);
+    }
+
 }

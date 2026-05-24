@@ -19,6 +19,10 @@ import hello.delivery.store.domain.StoreType;
 import hello.delivery.user.domain.User;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,14 +34,16 @@ class StoreServiceImplTest {
 
     private StoreService storeService;
     private FakeFinder fakeFinder;
+    private FakeStoreRepository fakeStoreRepository;
+    private TestClockHolder testClockHolder;
 
     private User owner;
 
     @BeforeEach
     void setUp() {
-        FakeStoreRepository fakeStoreRepository = new FakeStoreRepository();
+        fakeStoreRepository = new FakeStoreRepository();
         fakeFinder = new FakeFinder();
-        TestClockHolder testClockHolder = new TestClockHolder();
+        testClockHolder = new TestClockHolder();
         storeService = new StoreServiceImpl(fakeStoreRepository, fakeFinder, testClockHolder);
 
         owner = buildOwner();
@@ -123,6 +129,47 @@ class StoreServiceImplTest {
         assertThat(stores).hasSize(1);
         assertThat(stores.get(0).getStoreType()).isEqualTo(KOREAN_FOOD);
         assertThat(stores.get(0).getName()).isEqualTo("한식당");
+    }
+
+    @Test
+    @DisplayName("동시에 매출을 추가해도 총 매출과 일일 매출이 누락 없이 누적된다.")
+    void addTotalSalesConcurrently() throws InterruptedException {
+        // given
+        Store store = storeService.create(owner.getId(), createStoreCreate("한식당", KOREAN_FOOD));
+        int workerCount = 20;
+        int amount = 1000;
+
+        ExecutorService executorService = Executors.newFixedThreadPool(workerCount);
+        CountDownLatch ready = new CountDownLatch(workerCount);
+        CountDownLatch start = new CountDownLatch(1);
+        CountDownLatch done = new CountDownLatch(workerCount);
+
+        // when
+        for (int i = 0; i < workerCount; i++) {
+            executorService.submit(() -> {
+                try {
+                    ready.countDown();
+                    start.await();
+                    storeService.addTotalSales(store.getId(), amount);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    done.countDown();
+                }
+            });
+        }
+
+        assertThat(ready.await(1, TimeUnit.SECONDS)).isTrue();
+        start.countDown();
+        assertThat(done.await(3, TimeUnit.SECONDS)).isTrue();
+        executorService.shutdown();
+        assertThat(executorService.awaitTermination(1, TimeUnit.SECONDS)).isTrue();
+
+        // then
+        Store result = fakeStoreRepository.findById(store.getId()).orElseThrow();
+        assertThat(result.getTotalSales()).isEqualTo(workerCount * amount);
+        assertThat(result.getDailySales()).isEqualTo(workerCount * amount);
+        assertThat(result.getLastSalesDate()).isEqualTo(testClockHolder.now());
     }
 
     private StoreCreate createStoreCreate(String storeName, StoreType storeType) {

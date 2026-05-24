@@ -61,10 +61,10 @@ public class StoreServiceImpl implements StoreService {
 
     @Transactional
     public void addTotalSales(Long storeId, int amount) {
-        Store store = finder.findByStore(storeId);
-        Store updatedStore = store.addTotalSales(amount, clockHolder.now());
-
-        repositoryUpdate(store, updatedStore);
+        int updated = storeRepository.addSales(storeId, amount, clockHolder.now());
+        if (updated == 0) {
+            throw new StoreNotFound();
+        }
     }
 
     public List<Store> findByStoreType(StoreType storeType) {

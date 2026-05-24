@@ -66,4 +66,9 @@ public class StoreRepositoryImpl implements StoreRepository {
                 .toList();
     }
 
+    @Override
+    public int addSales(Long storeId, int amount, LocalDate currentDate) {
+        return storeJpaRepository.addSales(storeId, amount, currentDate);
+    }
+
 }

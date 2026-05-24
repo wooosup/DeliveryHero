@@ -43,6 +43,7 @@ class OrderServiceTest {
     private OrderService orderService;
     private FakeFinder fakeFinder;
     private FakeProductRepository fakeProductRepository;
+    private FakeStoreRepository fakeStoreRepository;
 
     public static final int ORDER_QUANTITY = 2;
     private static final int PRODUCT_PRICE = 20000;
@@ -61,10 +62,11 @@ class OrderServiceTest {
         FakeOrderRepository fakeOrderRepository = new FakeOrderRepository();
         fakeFinder = new FakeFinder();
         fakeProductRepository = new FakeProductRepository();
+        fakeStoreRepository = new FakeStoreRepository();
         TestClockHolder testClockHolder = new TestClockHolder();
         FakeDeliveryRepository fakeDeliveryRepository = new FakeDeliveryRepository();
         FakeRiderRepository fakeRiderRepository = new FakeRiderRepository();
-        StoreServiceImpl storeService = new StoreServiceImpl(new FakeStoreRepository(), fakeFinder, testClockHolder);
+        StoreServiceImpl storeService = new StoreServiceImpl(fakeStoreRepository, fakeFinder, testClockHolder);
         DeliveryServiceImpl deliveryService = new DeliveryServiceImpl(
                 fakeDeliveryRepository,
                 fakeOrderRepository,
@@ -364,7 +366,7 @@ class OrderServiceTest {
                 .closeTime(CLOSE_TIME)
                 .build();
         fakeFinder.addStore(store);
-        return store;
+        return fakeStoreRepository.save(store);
     }
 
     private Product buildProduct(Store store) {

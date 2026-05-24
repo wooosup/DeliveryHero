@@ -35,4 +35,21 @@ public interface StoreJpaRepository extends JpaRepository<StoreEntity, Long> {
 
     @Query("select s from StoreEntity s where s.owner = :owner")
     List<StoreEntity> findByStoresForOwner(UserEntity owner);
+
+    @Modifying
+    @Query("""
+             update StoreEntity s
+             set  s.totalSales = s.totalSales + :amount,
+                 s.dailySales =
+                     case
+                         when s.lastSalesDate = :currentDate then s.dailySales + :amount
+                         else :amount
+                     end,
+                 s.lastSalesDate = :currentDate
+             where s.id = :storeId
+            """)
+    int addSales(@Param("storeId") Long storeId,
+                 @Param("amount") int amount,
+                 @Param("currentDate") LocalDate currentDate);
+
 }

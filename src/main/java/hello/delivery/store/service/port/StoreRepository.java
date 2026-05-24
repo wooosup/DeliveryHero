@@ -26,4 +26,6 @@ public interface StoreRepository {
 
     List<Store> findByOwner(User owner);
 
+    int addSales(Long storeId, int amount, LocalDate currentDate);
+
 }

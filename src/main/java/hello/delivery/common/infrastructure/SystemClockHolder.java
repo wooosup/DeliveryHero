@@ -1,6 +1,6 @@
 package hello.delivery.common.infrastructure;
 
-import hello.delivery.common.service.port.ClockHolder;
+import hello.delivery.common.service.port.out.ClockHolder;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -3,7 +3,7 @@ package hello.delivery.mock;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductSellingStatus;
 import hello.delivery.product.domain.ProductType;
-import hello.delivery.product.service.port.ProductRepository;
+import hello.delivery.product.service.port.out.ProductRepository;
 import hello.delivery.store.domain.Store;
 import java.util.ArrayList;
 import java.util.List;

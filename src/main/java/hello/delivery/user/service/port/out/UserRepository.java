@@ -1,4 +1,4 @@
-package hello.delivery.user.service.port;
+package hello.delivery.user.service.port.out;
 
 import hello.delivery.user.domain.User;
 import java.util.Optional;

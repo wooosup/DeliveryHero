@@ -1,7 +1,7 @@
 package hello.delivery.order.infrastructure;
 
 import hello.delivery.order.domain.Order;
-import hello.delivery.order.service.port.OrderRepository;
+import hello.delivery.order.service.port.out.OrderRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

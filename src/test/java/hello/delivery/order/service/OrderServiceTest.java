@@ -23,7 +23,7 @@ import hello.delivery.mock.FakeProductRepository;
 import hello.delivery.mock.FakeRiderRepository;
 import hello.delivery.mock.FakeStoreRepository;
 import hello.delivery.mock.TestClockHolder;
-import hello.delivery.order.controller.port.OrderService;
+import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderCreate;
 import hello.delivery.order.domain.OrderProductRequest;

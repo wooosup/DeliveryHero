@@ -12,7 +12,7 @@ import hello.delivery.common.exception.UserException;
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeStoreRepository;
 import hello.delivery.mock.TestClockHolder;
-import hello.delivery.store.controller.port.StoreService;
+import hello.delivery.store.service.port.in.StoreService;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.domain.StoreType;

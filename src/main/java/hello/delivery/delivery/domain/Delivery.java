@@ -5,7 +5,7 @@ import static hello.delivery.order.domain.OrderStatus.ACCEPTED;
 
 import hello.delivery.common.domain.Address;
 import hello.delivery.common.exception.DeliveryException;
-import hello.delivery.common.service.port.ClockHolder;
+import hello.delivery.common.service.port.out.ClockHolder;
 import hello.delivery.order.domain.Order;
 import java.time.LocalDateTime;
 import lombok.Builder;

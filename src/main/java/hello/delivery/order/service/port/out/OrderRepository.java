@@ -1,4 +1,4 @@
-package hello.delivery.order.service.port;
+package hello.delivery.order.service.port.out;
 
 import hello.delivery.order.domain.Order;
 import java.util.List;

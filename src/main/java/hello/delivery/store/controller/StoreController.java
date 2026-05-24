@@ -2,13 +2,13 @@ package hello.delivery.store.controller;
 
 import hello.delivery.common.annotation.LoginOwnerId;
 import hello.delivery.common.api.ApiResponse;
-import hello.delivery.common.service.port.ClockHolder;
-import hello.delivery.product.controller.port.ProductService;
+import hello.delivery.common.service.port.out.ClockHolder;
+import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductType;
 import hello.delivery.store.controller.docs.StoreControllerDocs;
-import hello.delivery.store.controller.port.StoreService;
+import hello.delivery.store.service.port.in.StoreService;
 import hello.delivery.store.controller.response.StoreCustomerResponse;
 import hello.delivery.store.controller.response.StoreOwnerResponse;
 import hello.delivery.store.domain.Store;

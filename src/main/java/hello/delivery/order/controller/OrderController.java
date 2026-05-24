@@ -5,7 +5,7 @@ import hello.delivery.common.annotation.LoginCustomerId;
 import hello.delivery.common.annotation.LoginOwnerId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.order.controller.docs.OrderControllerDocs;
-import hello.delivery.order.controller.port.OrderService;
+import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.order.controller.response.OrderResponse;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderCreate;

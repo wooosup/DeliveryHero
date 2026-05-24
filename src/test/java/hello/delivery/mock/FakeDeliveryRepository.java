@@ -1,7 +1,7 @@
 package hello.delivery.mock;
 
 import hello.delivery.delivery.domain.Delivery;
-import hello.delivery.delivery.service.port.DeliveryRepository;
+import hello.delivery.delivery.service.port.out.DeliveryRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

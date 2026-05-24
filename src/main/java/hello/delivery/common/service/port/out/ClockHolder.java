@@ -1,4 +1,4 @@
-package hello.delivery.common.service.port;
+package hello.delivery.common.service.port.out;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

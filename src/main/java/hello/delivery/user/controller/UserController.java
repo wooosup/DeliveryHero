@@ -6,7 +6,7 @@ import static hello.delivery.common.config.AuthSessionAttributes.USER_ROLE;
 import hello.delivery.common.annotation.LoginUser;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.user.controller.docs.UserControllerDocs;
-import hello.delivery.user.controller.port.UserService;
+import hello.delivery.user.service.port.in.UserService;
 import hello.delivery.user.controller.response.UserResponse;
 import hello.delivery.user.domain.AddressUpdate;
 import hello.delivery.user.domain.Login;

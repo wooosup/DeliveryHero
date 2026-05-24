@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import hello.delivery.common.domain.Address;
 import hello.delivery.common.domain.Money;
 import hello.delivery.common.exception.DeliveryException;
-import hello.delivery.delivery.controller.port.DeliveryService;
+import hello.delivery.delivery.service.port.in.DeliveryService;
 import hello.delivery.delivery.domain.Delivery;
 import hello.delivery.mock.FakeDeliveryRepository;
 import hello.delivery.mock.FakeFinder;

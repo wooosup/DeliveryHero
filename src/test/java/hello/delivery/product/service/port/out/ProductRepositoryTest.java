@@ -1,4 +1,4 @@
-package hello.delivery.product.service.port;
+package hello.delivery.product.service.port.out;
 
 import static hello.delivery.product.domain.ProductSellingStatus.STOP_SELLING;
 import static hello.delivery.product.domain.ProductType.FOOD;

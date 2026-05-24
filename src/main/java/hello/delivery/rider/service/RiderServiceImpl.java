@@ -4,12 +4,12 @@ import static hello.delivery.rider.domain.RiderStatus.AVAILABLE;
 
 import hello.delivery.common.exception.RiderException;
 import hello.delivery.common.exception.RiderNotFound;
-import hello.delivery.rider.controller.port.RiderService;
+import hello.delivery.rider.service.port.in.RiderService;
 import hello.delivery.rider.domain.Rider;
 import hello.delivery.rider.domain.RiderCreate;
 import hello.delivery.rider.domain.RiderLogin;
 import hello.delivery.rider.domain.RiderStatusUpdate;
-import hello.delivery.rider.service.port.RiderRepository;
+import hello.delivery.rider.service.port.out.RiderRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

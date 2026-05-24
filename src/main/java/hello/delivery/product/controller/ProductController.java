@@ -3,7 +3,7 @@ package hello.delivery.product.controller;
 import hello.delivery.common.annotation.LoginOwnerId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.product.controller.docs.ProductControllerDocs;
-import hello.delivery.product.controller.port.ProductService;
+import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;

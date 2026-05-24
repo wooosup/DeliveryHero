@@ -5,7 +5,7 @@ import static hello.delivery.common.config.AuthSessionAttributes.RIDER_ID;
 import hello.delivery.common.annotation.LoginRiderId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.rider.controller.docs.RiderControllerDocs;
-import hello.delivery.rider.controller.port.RiderService;
+import hello.delivery.rider.service.port.in.RiderService;
 import hello.delivery.rider.controller.response.RiderResponse;
 import hello.delivery.rider.domain.Rider;
 import hello.delivery.rider.domain.RiderCreate;

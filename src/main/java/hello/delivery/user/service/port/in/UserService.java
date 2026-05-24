@@ -1,4 +1,4 @@
-package hello.delivery.user.controller.port;
+package hello.delivery.user.service.port.in;
 
 import hello.delivery.user.domain.AddressUpdate;
 import hello.delivery.user.domain.Login;

@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import hello.delivery.common.exception.RiderException;
 import hello.delivery.common.exception.RiderNotFound;
 import hello.delivery.mock.FakeRiderRepository;
-import hello.delivery.rider.controller.port.RiderService;
+import hello.delivery.rider.service.port.in.RiderService;
 import hello.delivery.rider.domain.Rider;
 import hello.delivery.rider.domain.RiderCreate;
 import hello.delivery.rider.domain.RiderLogin;

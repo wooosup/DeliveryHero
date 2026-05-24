@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import hello.delivery.common.exception.UserException;
 import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.mock.FakeUserRepository;
-import hello.delivery.user.controller.port.UserService;
+import hello.delivery.user.service.port.in.UserService;
 import hello.delivery.user.domain.AddressUpdate;
 import hello.delivery.user.domain.Login;
 import hello.delivery.user.domain.PasswordUpdate;

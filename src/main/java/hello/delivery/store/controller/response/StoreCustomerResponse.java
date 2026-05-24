@@ -1,6 +1,6 @@
 package hello.delivery.store.controller.response;
 
-import hello.delivery.common.service.port.ClockHolder;
+import hello.delivery.common.service.port.out.ClockHolder;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreType;
 import java.time.LocalTime;

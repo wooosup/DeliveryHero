@@ -1,7 +1,7 @@
 package hello.delivery.user.infrastructure;
 
 import hello.delivery.user.domain.User;
-import hello.delivery.user.service.port.UserRepository;
+import hello.delivery.user.service.port.out.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

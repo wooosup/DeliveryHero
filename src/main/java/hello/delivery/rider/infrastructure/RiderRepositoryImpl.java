@@ -2,7 +2,7 @@ package hello.delivery.rider.infrastructure;
 
 import hello.delivery.rider.domain.Rider;
 import hello.delivery.rider.domain.RiderStatus;
-import hello.delivery.rider.service.port.RiderRepository;
+import hello.delivery.rider.service.port.out.RiderRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package hello.delivery.store.service.port;
+package hello.delivery.store.service.port.out;
 
 import static hello.delivery.store.domain.StoreType.JAPANESE_FOOD;
 import static hello.delivery.store.domain.StoreType.KOREAN_FOOD;

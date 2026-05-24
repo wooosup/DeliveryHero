@@ -1,4 +1,4 @@
-package hello.delivery.delivery.service.port;
+package hello.delivery.delivery.service.port.out;
 
 import hello.delivery.delivery.domain.Delivery;
 

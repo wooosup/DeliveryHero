@@ -14,7 +14,7 @@ import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.exception.StoreException;
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeProductRepository;
-import hello.delivery.product.controller.port.ProductService;
+import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.domain.ProductType;

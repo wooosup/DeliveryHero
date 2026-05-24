@@ -1,4 +1,4 @@
-package hello.delivery.store.controller.port;
+package hello.delivery.store.service.port.in;
 
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreCreate;

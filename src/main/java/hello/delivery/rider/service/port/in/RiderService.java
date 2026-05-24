@@ -1,4 +1,4 @@
-package hello.delivery.rider.controller.port;
+package hello.delivery.rider.service.port.in;
 
 import hello.delivery.rider.domain.Rider;
 import hello.delivery.rider.domain.RiderCreate;

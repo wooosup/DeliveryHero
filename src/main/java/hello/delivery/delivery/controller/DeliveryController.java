@@ -3,7 +3,7 @@ package hello.delivery.delivery.controller;
 import hello.delivery.common.annotation.LoginRiderId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.delivery.controller.docs.DeliveryControllerDocs;
-import hello.delivery.delivery.controller.port.DeliveryService;
+import hello.delivery.delivery.service.port.in.DeliveryService;
 import hello.delivery.delivery.controller.response.DeliveryResponse;
 import hello.delivery.delivery.domain.Delivery;
 import lombok.RequiredArgsConstructor;

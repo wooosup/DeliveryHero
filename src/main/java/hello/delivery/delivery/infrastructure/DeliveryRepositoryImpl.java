@@ -2,7 +2,7 @@ package hello.delivery.delivery.infrastructure;
 
 import hello.delivery.common.exception.OrderNotFound;
 import hello.delivery.delivery.domain.Delivery;
-import hello.delivery.delivery.service.port.DeliveryRepository;
+import hello.delivery.delivery.service.port.out.DeliveryRepository;
 import hello.delivery.order.infrastructure.OrderEntity;
 import hello.delivery.order.infrastructure.OrderJpaRepository;
 import java.util.Optional;

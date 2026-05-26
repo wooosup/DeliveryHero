@@ -3,13 +3,14 @@ package hello.delivery.store.service;
 import hello.delivery.common.exception.StoreException;
 import hello.delivery.common.exception.StoreNotFound;
 import hello.delivery.common.service.port.out.ClockHolder;
-import hello.delivery.common.service.port.out.FinderPort;
-import hello.delivery.store.service.port.in.StoreService;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.domain.StoreType;
+import hello.delivery.store.service.port.in.StoreService;
+import hello.delivery.store.service.port.out.StoreFinder;
 import hello.delivery.store.service.port.out.StoreRepository;
 import hello.delivery.user.domain.User;
+import hello.delivery.user.service.port.out.UserFinder;
 import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
-    private final FinderPort finder;
+    private final StoreFinder storeFinder;
+    private final UserFinder userFinder;
     private final ClockHolder clockHolder;
 
     @Transactional
     public Store create(Long userId, StoreCreate request) {
-        User owner = finder.findByUser(userId);
+        User owner = userFinder.findByUser(userId);
         validateDuplicate(request);
 
         Store store = Store.create(request, owner, clockHolder.now());
@@ -37,8 +39,8 @@ public class StoreServiceImpl implements StoreService {
 
     @Transactional
     public Store changeOpenTime(Long userId, Long storeId, LocalTime newOpenTime) {
-        Store store = finder.findByStore(storeId);
-        User user = finder.findByUser(userId);
+        Store store = storeFinder.findByStore(storeId);
+        User user = userFinder.findByUser(userId);
 
         store.validateIsOwner(user);
 
@@ -49,8 +51,8 @@ public class StoreServiceImpl implements StoreService {
 
     @Transactional
     public Store changeCloseTime(Long userId, Long storeId, LocalTime newCloseTime) {
-        Store store = finder.findByStore(storeId);
-        User user = finder.findByUser(userId);
+        Store store = storeFinder.findByStore(storeId);
+        User user = userFinder.findByUser(userId);
 
         store.validateIsOwner(user);
 
@@ -81,7 +83,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     public List<Store> findByOwnerId(Long userId) {
-        User owner = finder.findByUser(userId);
+        User owner = userFinder.findByUser(userId);
         owner.validateOwnerRole();
 
         return storeRepository.findByOwner(owner);

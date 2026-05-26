@@ -3,15 +3,17 @@ package hello.delivery.product.service;
 import static hello.delivery.product.domain.ProductSellingStatus.SELLING;
 
 import hello.delivery.common.exception.ProductException;
-import hello.delivery.common.service.port.out.FinderPort;
-import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.domain.ProductSellingStatus;
 import hello.delivery.product.domain.ProductType;
+import hello.delivery.product.service.port.in.ProductService;
+import hello.delivery.product.service.port.out.ProductFinder;
 import hello.delivery.product.service.port.out.ProductRepository;
 import hello.delivery.store.domain.Store;
+import hello.delivery.store.service.port.out.StoreFinder;
 import hello.delivery.user.domain.User;
+import hello.delivery.user.service.port.out.UserFinder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,14 +27,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-    private final FinderPort finder;
+    private final ProductFinder productFinder;
+    private final StoreFinder storeFinder;
+    private final UserFinder userFinder;
 
     @Transactional
     public Product create(Long userId, ProductCreate request) {
-        User owner = finder.findByUser(userId);
+        User owner = userFinder.findByUser(userId);
         owner.validateOwnerRole();
 
-        Store store = finder.findByStoreName(request.getStoreName());
+        Store store = storeFinder.findByStoreName(request.getStoreName());
         store.validateIsOwner(owner);
 
         validateProductDuplicate(store, request.getName());
@@ -48,9 +52,9 @@ public class ProductServiceImpl implements ProductService {
         validateSameStore(requests, storeName);
         validateDuplicateNamesInRequest(requests);
 
-        User owner = finder.findByUser(userId);
+        User owner = userFinder.findByUser(userId);
         owner.validateOwnerRole();
-        Store store = finder.findByStoreName(storeName);
+        Store store = storeFinder.findByStoreName(storeName);
         store.validateIsOwner(owner);
 
 
@@ -64,8 +68,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     public Product changeSellingStatus(Long id, Long userId, ProductSellingStatus status) {
-        Product product = finder.findByProduct(id);
-        User owner = finder.findByUser(userId);
+        Product product = productFinder.findByProduct(id);
+        User owner = userFinder.findByUser(userId);
 
         owner.validateOwnerRole();
         product.validateOwner(owner.getId());
@@ -76,8 +80,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     public void deleteById(Long ownerId, Long productId) {
-        Product product = finder.findByProduct(productId);
-        User owner = finder.findByUser(ownerId);
+        Product product = productFinder.findByProduct(productId);
+        User owner = userFinder.findByUser(ownerId);
 
         owner.validateOwnerRole();
         product.validateOwner(owner.getId());
@@ -90,17 +94,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public List<Product> findByType(Long storeId, ProductType type) {
-        Store store = finder.findByStore(storeId);
+        Store store = storeFinder.findByStore(storeId);
         return productRepository.findByProductType(store.getId(), type);
     }
 
     public List<Product> findBySelling(Long storeId) {
-        Store store = finder.findByStore(storeId);
+        Store store = storeFinder.findByStore(storeId);
         return productRepository.findByProductSellingStatusIs(store.getId(), SELLING);
     }
 
     public List<Product> findByStoreId(Long storeId) {
-        Store store = finder.findByStore(storeId);
+        Store store = storeFinder.findByStore(storeId);
         return productRepository.findByStore(store);
     }
 

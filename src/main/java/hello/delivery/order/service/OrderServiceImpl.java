@@ -4,19 +4,20 @@ import hello.delivery.common.exception.OrderNotFound;
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.service.port.out.ClockHolder;
-import hello.delivery.common.service.port.out.FinderPort;
 import hello.delivery.delivery.service.port.in.DeliveryService;
-import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderCreate;
 import hello.delivery.order.domain.OrderProduct;
 import hello.delivery.order.domain.OrderProductRequest;
+import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.order.service.port.out.OrderRepository;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.service.port.out.ProductRepository;
-import hello.delivery.store.service.port.in.StoreService;
 import hello.delivery.store.domain.Store;
+import hello.delivery.store.service.port.in.StoreService;
+import hello.delivery.store.service.port.out.StoreFinder;
 import hello.delivery.user.domain.User;
+import hello.delivery.user.service.port.out.UserFinder;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,12 +32,13 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final StoreService storeService;
     private final DeliveryService deliveryService;
-    private final FinderPort finder;
+    private final StoreFinder storeFinder;
+    private final UserFinder userFinder;
     private final ClockHolder clockHolder;
 
     public Order order(Long userId, OrderCreate request) {
-        User user = finder.findByUser(userId);
-        Store store = finder.findByStore(request.getStoreId());
+        User user = userFinder.findByUser(userId);
+        Store store = storeFinder.findByStore(request.getStoreId());
 
         List<OrderProduct> orderProducts = createOrderProducts(store, request.getOrderProducts());
         Order order = Order.order(user, store, orderProducts, request.getAddress(), clockHolder.nowDateTime());
@@ -91,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(readOnly = true)
     public List<Order> findOrdersByUserId(Long userId) {
-        User user = finder.findByUser(userId);
+        User user = userFinder.findByUser(userId);
         return orderRepository.findOrdersByUserId(user.getId());
     }
 

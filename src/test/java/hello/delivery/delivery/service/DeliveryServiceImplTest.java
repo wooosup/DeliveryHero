@@ -59,6 +59,7 @@ class DeliveryServiceImplTest {
                 fakeOrderRepository,
                 fakeRiderRepository,
                 fakeFinder,
+                fakeFinder,
                 testClockHolder
         );
     }

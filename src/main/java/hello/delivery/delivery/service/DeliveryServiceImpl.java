@@ -7,15 +7,16 @@ import hello.delivery.common.exception.ForbiddenException;
 import hello.delivery.common.exception.DeliveryException;
 import hello.delivery.common.exception.OrderNotFound;
 import hello.delivery.common.service.port.out.ClockHolder;
-import hello.delivery.common.service.port.out.FinderPort;
-import hello.delivery.delivery.service.port.in.DeliveryService;
 import hello.delivery.delivery.domain.Delivery;
+import hello.delivery.delivery.service.port.in.DeliveryService;
+import hello.delivery.delivery.service.port.out.DeliveryFinder;
 import hello.delivery.delivery.service.port.out.DeliveryRepository;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.service.port.out.OrderRepository;
 import hello.delivery.rider.domain.Rider;
 import hello.delivery.rider.domain.RiderStatus;
 import hello.delivery.rider.domain.RiderStatusUpdate;
+import hello.delivery.rider.service.port.out.RiderFinder;
 import hello.delivery.rider.service.port.out.RiderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,8 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final OrderRepository orderRepository;
     private final RiderRepository riderRepository;
-    private final FinderPort finderPort;
+    private final DeliveryFinder deliveryFinder;
+    private final RiderFinder riderFinder;
     private final ClockHolder clockHolder;
 
     @Transactional
@@ -44,7 +46,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         Delivery delivery = deliveryRepository.findByIdWithLock(id)
                 .orElseThrow(DeliveryNotFound::new);
 
-        Rider rider = finderPort.findByRider(riderId);
+        Rider rider = riderFinder.findByRider(riderId);
 
         rider.validateAvailable();
 
@@ -56,7 +58,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     public Delivery start(Long id, Long riderId) {
         Delivery delivery = deliveryRepository.findByIdWithLock(id)
                 .orElseThrow(DeliveryNotFound::new);
-        Rider rider = finderPort.findByRider(riderId);
+        Rider rider = riderFinder.findByRider(riderId);
         validateAssignedRider(delivery, rider.getId());
 
         rider.validateCanStartDelivery();
@@ -72,7 +74,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         Delivery delivery = deliveryRepository.findByIdWithLock(id)
                 .orElseThrow(DeliveryNotFound::new);
 
-        Rider rider = finderPort.findByRider(riderId);
+        Rider rider = riderFinder.findByRider(riderId);
         validateAssignedRider(delivery, rider.getId());
 
         rider.validateCanCompleteDelivery();
@@ -87,7 +89,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public Delivery findById(Long riderId, Long id) {
-        Delivery delivery = finderPort.findByDelivery(id);
+        Delivery delivery = deliveryFinder.findByDelivery(id);
         validateAssignedRider(delivery, riderId);
         return delivery;
     }

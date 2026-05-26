@@ -44,7 +44,7 @@ class StoreServiceImplTest {
         fakeStoreRepository = new FakeStoreRepository();
         fakeFinder = new FakeFinder();
         testClockHolder = new TestClockHolder();
-        storeService = new StoreServiceImpl(fakeStoreRepository, fakeFinder, testClockHolder);
+        storeService = new StoreServiceImpl(fakeStoreRepository, fakeFinder, fakeFinder, testClockHolder);
 
         owner = buildOwner();
     }

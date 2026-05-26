@@ -5,16 +5,20 @@ import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.exception.RiderNotFound;
 import hello.delivery.common.exception.StoreNotFound;
 import hello.delivery.common.exception.UserNotFound;
-import hello.delivery.common.service.port.out.FinderPort;
 import hello.delivery.delivery.domain.Delivery;
+import hello.delivery.delivery.service.port.out.DeliveryFinder;
 import hello.delivery.product.domain.Product;
+import hello.delivery.product.service.port.out.ProductFinder;
 import hello.delivery.rider.domain.Rider;
+import hello.delivery.rider.service.port.out.RiderFinder;
 import hello.delivery.store.domain.Store;
+import hello.delivery.store.service.port.out.StoreFinder;
 import hello.delivery.user.domain.User;
+import hello.delivery.user.service.port.out.UserFinder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FakeFinder implements FinderPort {
+public class FakeFinder implements ProductFinder, StoreFinder, UserFinder, DeliveryFinder, RiderFinder {
 
     private final List<User> users = new ArrayList<>();
     private final List<Store> stores = new ArrayList<>();

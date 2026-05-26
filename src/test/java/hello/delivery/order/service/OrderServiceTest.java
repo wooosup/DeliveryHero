@@ -66,11 +66,12 @@ class OrderServiceTest {
         TestClockHolder testClockHolder = new TestClockHolder();
         FakeDeliveryRepository fakeDeliveryRepository = new FakeDeliveryRepository();
         FakeRiderRepository fakeRiderRepository = new FakeRiderRepository();
-        StoreServiceImpl storeService = new StoreServiceImpl(fakeStoreRepository, fakeFinder, testClockHolder);
+        StoreServiceImpl storeService = new StoreServiceImpl(fakeStoreRepository, fakeFinder, fakeFinder, testClockHolder);
         DeliveryServiceImpl deliveryService = new DeliveryServiceImpl(
                 fakeDeliveryRepository,
                 fakeOrderRepository,
                 fakeRiderRepository,
+                fakeFinder,
                 fakeFinder,
                 testClockHolder
         );
@@ -80,6 +81,7 @@ class OrderServiceTest {
                 fakeProductRepository,
                 storeService,
                 deliveryService,
+                fakeFinder,
                 fakeFinder,
                 testClockHolder
         );

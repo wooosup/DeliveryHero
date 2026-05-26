@@ -43,7 +43,7 @@ class ProductServiceImplTest {
     void setUp() {
         FakeProductRepository fakeProductRepository = new FakeProductRepository();
         fakeFinder = new FakeFinder();
-        productService = new ProductServiceImpl(fakeProductRepository, fakeFinder);
+        productService = new ProductServiceImpl(fakeProductRepository, fakeFinder, fakeFinder, fakeFinder);
 
         owner = buildOwner();
         store = buildStore(owner);

@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
         validateUsernameNotExists(command.username());
         User.validatePassword(command.password());
         String encodedPassword = passwordEncoder.encode(command.password());
-        User user = User.signup(command.name(), command.username(), encodedPassword, command.address(), role);
+        User user = User.signup(command.toRegistration(encodedPassword, role));
 
         return userRepository.save(user);
     }

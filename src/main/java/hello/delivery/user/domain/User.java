@@ -25,14 +25,17 @@ public class User {
         this.role = role;
     }
 
-    public static User signup(String name, String username, String encodedPassword, Address address, UserRole role) {
-        validateSignup(name, username, encodedPassword, address, role);
+    public static User signup(UserRegistration registration) {
+        if (registration == null) {
+            throw new UserException("회원가입 정보는 필수입니다.");
+        }
+
         return User.builder()
-                .name(name)
-                .username(username)
-                .password(encodedPassword)
-                .address(address)
-                .role(role)
+                .name(registration.name())
+                .username(registration.username())
+                .password(registration.encodedPassword())
+                .address(registration.address())
+                .role(registration.role())
                 .build();
     }
 
@@ -80,23 +83,6 @@ public class User {
         return this.role != UserRole.OWNER;
     }
 
-    private static void validateSignup(String name, String username, String encodedPassword, Address address, UserRole role) {
-        if (name == null || name.isBlank()) {
-            throw new UserException("이름은 필수입니다.");
-        }
-        if (username == null || username.isBlank()) {
-            throw new UserException("아이디는 필수입니다.");
-        }
-        if (encodedPassword == null || encodedPassword.isBlank()) {
-            throw new UserException("비밀번호는 필수입니다.");
-        }
-        validateAddress(address);
-        if (role == null) {
-            throw new UserException("권한은 필수입니다.");
-        }
-        validateUsernameLength(username);
-    }
-
     private static void validateAddress(Address newAddress) {
         if (newAddress == null || newAddress.getAddress() == null || newAddress.getAddress().isBlank()) {
             throw new UserException("주소는 비어 있을 수 없습니다.");
@@ -106,12 +92,6 @@ public class User {
     private static void validatePasswordLength(String password) {
         if (password.length() < 8 || password.length() > 20) {
             throw new UserException("비밀번호는 8자 이상 20자 이하로 입력 가능합니다.");
-        }
-    }
-
-    private static void validateUsernameLength(String username) {
-        if (username.length() < 5 || username.length() > 20) {
-            throw new UserException("아이디는 5자 이상 20자 이하로 입력 가능합니다.");
         }
     }
 

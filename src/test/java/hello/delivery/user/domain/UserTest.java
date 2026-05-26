@@ -16,7 +16,15 @@ class UserTest {
     @Test
     @DisplayName("회원가입 시 서비스가 전달한 암호화 비밀번호를 저장한다.")
     void signupStoresEncodedPassword() {
-        User signupUser = User.signup("wss", "wss3325", ENCODED_PASSWORD, Address.of("Daegu"), UserRole.CUSTOMER);
+        UserRegistration registration = new UserRegistration(
+                "wss",
+                "wss3325",
+                ENCODED_PASSWORD,
+                Address.of("Daegu"),
+                UserRole.CUSTOMER
+        );
+
+        User signupUser = User.signup(registration);
 
         assertThat(signupUser.getName()).isEqualTo("wss");
         assertThat(signupUser.getUsername()).isEqualTo("wss3325");

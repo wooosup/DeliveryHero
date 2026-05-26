@@ -4,20 +4,21 @@ import hello.delivery.common.annotation.LoginOwnerId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.product.domain.ProductType;
+import hello.delivery.store.controller.request.StoreCreate;
 import hello.delivery.store.controller.response.StoreCustomerResponse;
 import hello.delivery.store.controller.response.StoreOwnerResponse;
-import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.domain.StoreType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.time.LocalTime;
-import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.time.LocalTime;
+import java.util.List;
 
 @Tag(name = "가게")
 public interface StoreControllerDocs {

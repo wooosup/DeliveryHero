@@ -35,16 +35,16 @@ public class Product {
         this.stock = stock;
     }
 
-    public static Product of(ProductCreate productCreate, Store store, User owner) {
-        validate(productCreate, store);
+    public static Product of(String storeName, String name, int price, ProductType type, Integer stock, Store store, User owner) {
+        validate(storeName, name, price, type, store);
         return Product.builder()
-                .name(productCreate.getName())
-                .price(Money.of(productCreate.getPrice()))
-                .productType(productCreate.getType())
-                .productSellingStatus(determineSellingStatus(productCreate.getStock()))
+                .name(name)
+                .price(Money.of(price))
+                .productType(type)
+                .productSellingStatus(determineSellingStatus(stock))
                 .store(store)
                 .owner(owner)
-                .stock(Stock.of(productCreate.getStock()))
+                .stock(Stock.of(stock))
                 .build();
     }
 
@@ -87,17 +87,17 @@ public class Product {
         return SELLING;
     }
 
-    private static void validate(ProductCreate productCreate, Store store) {
-        if (productCreate.getName() == null || productCreate.getName().isBlank()) {
+    private static void validate(String storeName, String name, int price, ProductType type, Store store) {
+        if (name == null || name.isBlank()) {
             throw new ProductException("상품 이름은 필수 입력 값입니다.");
         }
-        if (productCreate.getPrice() <= 0) {
+        if (price <= 0) {
             throw new ProductException("상품 가격은 양수여야 합니다.");
         }
-        if (productCreate.getType() == null) {
+        if (type == null) {
             throw new ProductException("상품 타입은 필수 입력 값입니다.");
         }
-        if (!store.getName().equals(productCreate.getStoreName())) {
+        if (!store.getName().equals(storeName)) {
             throw new ProductException("가게가 일치하지 않습니다.");
         }
     }

@@ -6,7 +6,7 @@ import hello.delivery.product.controller.docs.ProductControllerDocs;
 import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.product.domain.Product;
-import hello.delivery.product.domain.ProductCreate;
+import hello.delivery.product.controller.request.ProductCreate;
 import hello.delivery.product.domain.ProductStatusUpdate;
 import hello.delivery.product.domain.ProductType;
 import jakarta.validation.Valid;
@@ -33,7 +33,7 @@ public class ProductController implements ProductControllerDocs {
     @PostMapping("/new")
     public ApiResponse<ProductResponse> createProduct(@LoginOwnerId Long userId,
                                                       @Valid @RequestBody ProductCreate request) {
-        Product product = productService.create(userId, request);
+        Product product = productService.create(userId, request.toCommand());
         return ApiResponse.ok(ProductResponse.of(product));
     }
 
@@ -41,7 +41,9 @@ public class ProductController implements ProductControllerDocs {
     @PostMapping("/new/batch")
     public ApiResponse<List<ProductResponse>> createProducts(@LoginOwnerId Long userId,
                                                              @Valid @RequestBody List<ProductCreate> request) {
-        List<Product> products = productService.creates(userId, request);
+        List<Product> products = productService.creates(userId, request.stream()
+                .map(ProductCreate::toCommand)
+                .toList());
         return ApiResponse.ok(ProductResponse.of(products));
     }
 

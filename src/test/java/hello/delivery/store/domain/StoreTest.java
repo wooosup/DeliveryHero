@@ -5,7 +5,6 @@ import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import hello.delivery.common.domain.Address;
-import hello.delivery.mock.TestClockHolder;
 import hello.delivery.user.domain.User;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,20 +17,12 @@ class StoreTest {
     @DisplayName("사장과 가게 생성 요청으로 가게를 생성한다.")
     void create() throws Exception {
         // given
-        LocalDate now = new TestClockHolder().now();
         User owner = buildOwner();
         LocalTime openTime = LocalTime.of(12, 0);
         LocalTime closeTIme = LocalTime.of(21, 0);
 
-        StoreCreate storeCreate = StoreCreate.builder()
-                .storeType(KOREAN_FOOD)
-                .storeName("한식당")
-                .openTime(openTime)
-                .closeTime(closeTIme)
-                .build();
-
         // when
-        Store store = Store.create(storeCreate, owner, now);
+        Store store = Store.create(createRegistration(openTime, closeTIme, LocalDate.of(2025, 11, 10)), owner);
 
         // then
         assertThat(store.getName()).isEqualTo("한식당");
@@ -43,17 +34,10 @@ class StoreTest {
     @DisplayName("가게가 오픈했는지 확인한다.")
     void isOpening() throws Exception {
         //given
-        LocalDate now = new TestClockHolder().now();
         User owner = buildOwner();
         LocalTime openTime = LocalTime.of(12, 0);
         LocalTime closeTIme = LocalTime.of(21, 0);
-        StoreCreate storeCreate = StoreCreate.builder()
-                .storeType(KOREAN_FOOD)
-                .storeName("한식당")
-                .openTime(openTime)
-                .closeTime(closeTIme)
-                .build();
-        Store store = Store.create(storeCreate, owner, now);
+        Store store = Store.create(createRegistration(openTime, closeTIme, LocalDate.of(2025, 11, 10)), owner);
 
         //when
         boolean isOpening = store.isOpening(LocalTime.of(13, 0));
@@ -66,18 +50,12 @@ class StoreTest {
     @DisplayName("총 매출과 일일 매출이 같은 날짜면 누적된다.")
     void addTotalSalesWithSameDay() throws Exception {
         // given
-        LocalDate now = new TestClockHolder().now();
+        LocalDate now = LocalDate.of(2025, 11, 10);
         User owner = buildOwner();
         LocalTime openTime = LocalTime.of(12, 0);
         LocalTime closeTIme = LocalTime.of(21, 0);
 
-        StoreCreate storeCreate = StoreCreate.builder()
-                .storeType(KOREAN_FOOD)
-                .storeName("한식당")
-                .openTime(openTime)
-                .closeTime(closeTIme)
-                .build();
-        Store store = Store.create(storeCreate, owner, now);
+        Store store = Store.create(createRegistration(openTime, closeTIme, now), owner);
 
         // when
         Store result = store.addTotalSales(25000, now);
@@ -98,13 +76,7 @@ class StoreTest {
         LocalTime openTime = LocalTime.of(12, 0);
         LocalTime closeTIme = LocalTime.of(21, 0);
 
-        StoreCreate storeCreate = StoreCreate.builder()
-                .storeType(KOREAN_FOOD)
-                .storeName("한식당")
-                .openTime(openTime)
-                .closeTime(closeTIme)
-                .build();
-        Store store = Store.create(storeCreate, owner, yesterday);
+        Store store = Store.create(createRegistration(openTime, closeTIme, yesterday), owner);
 
         // when & then
         Store firstSale = store.addTotalSales(10000, yesterday);
@@ -126,6 +98,10 @@ class StoreTest {
                 .address(Address.of("대구"))
                 .role(OWNER)
                 .build();
+    }
+
+    private static StoreRegistration createRegistration(LocalTime openTime, LocalTime closeTime, LocalDate openDate) {
+        return new StoreRegistration("한식당", KOREAN_FOOD, openTime, closeTime, openDate);
     }
 
 }

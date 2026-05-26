@@ -1,38 +1,28 @@
 package hello.delivery.common;
 
-import static hello.delivery.user.domain.UserRole.CUSTOMER;
-import static hello.delivery.user.domain.UserRole.OWNER;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import hello.delivery.common.domain.Address;
 import hello.delivery.delivery.domain.Delivery;
 import hello.delivery.delivery.service.port.out.DeliveryRepository;
-import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderCreate;
 import hello.delivery.order.domain.OrderProductRequest;
-import hello.delivery.product.service.port.in.ProductService;
+import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.product.domain.Product;
-import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.domain.ProductType;
-import hello.delivery.rider.service.port.in.RiderService;
+import hello.delivery.product.service.port.in.ProductCreateCommand;
+import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.rider.domain.Rider;
 import hello.delivery.rider.domain.RiderCreate;
 import hello.delivery.rider.domain.RiderLogin;
-import hello.delivery.store.service.port.in.StoreService;
+import hello.delivery.rider.service.port.in.RiderService;
 import hello.delivery.store.domain.Store;
-import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.domain.StoreType;
-import hello.delivery.user.service.port.in.SignupCommand;
-import hello.delivery.user.service.port.in.UserService;
+import hello.delivery.store.service.port.in.StoreCreateCommand;
+import hello.delivery.store.service.port.in.StoreService;
 import hello.delivery.user.domain.User;
 import hello.delivery.user.domain.UserRole;
-import java.time.LocalTime;
-import java.util.List;
+import hello.delivery.user.service.port.in.SignupCommand;
+import hello.delivery.user.service.port.in.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +32,15 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalTime;
+import java.util.List;
+
+import static hello.delivery.user.domain.UserRole.CUSTOMER;
+import static hello.delivery.user.domain.UserRole.OWNER;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @Transactional
@@ -197,20 +196,20 @@ class AuthorizationIntegrationTest {
     }
 
     private Product createStoreWithProduct(Long ownerId, String storeName, String productName) {
-        Store store = storeService.create(ownerId, StoreCreate.builder()
-                .storeName(storeName)
-                .storeType(StoreType.KOREAN_FOOD)
-                .openTime(OPEN_TIME)
-                .closeTime(CLOSE_TIME)
-                .build());
+        Store store = storeService.create(ownerId, StoreCreateCommand.of(
+                storeName,
+                StoreType.KOREAN_FOOD,
+                OPEN_TIME,
+                CLOSE_TIME
+        ));
 
-        return productService.create(ownerId, ProductCreate.builder()
-                .storeName(store.getName())
-                .name(productName)
-                .price(10000)
-                .type(ProductType.FOOD)
-                .stock(10)
-                .build());
+        return productService.create(ownerId, ProductCreateCommand.of(
+                store.getName(),
+                productName,
+                10000,
+                ProductType.FOOD,
+                10
+        ));
     }
 
     private Order createOrder(Long customerId, Store store, Product product) {

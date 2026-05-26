@@ -4,9 +4,9 @@ import static hello.delivery.product.domain.ProductSellingStatus.SELLING;
 
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.product.domain.Product;
-import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.domain.ProductSellingStatus;
 import hello.delivery.product.domain.ProductType;
+import hello.delivery.product.service.port.in.ProductCreateCommand;
 import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.product.service.port.out.ProductFinder;
 import hello.delivery.product.service.port.out.ProductRepository;
@@ -32,37 +32,44 @@ public class ProductServiceImpl implements ProductService {
     private final UserFinder userFinder;
 
     @Transactional
-    public Product create(Long userId, ProductCreate request) {
+    public Product create(Long userId, ProductCreateCommand command) {
         User owner = userFinder.findByUser(userId);
         owner.validateOwnerRole();
 
-        Store store = storeFinder.findByStoreName(request.getStoreName());
+        Store store = storeFinder.findByStoreName(command.storeName());
         store.validateIsOwner(owner);
 
-        validateProductDuplicate(store, request.getName());
+        validateProductDuplicate(store, command.name());
 
-        Product product = Product.of(request, store, owner);
+        Product product = Product.of(
+                command.storeName(),
+                command.name(),
+                command.price(),
+                command.type(),
+                command.stock(),
+                store,
+                owner
+        );
         return productRepository.save(product);
     }
 
     @Transactional
-    public List<Product> creates(Long userId, List<ProductCreate> requests) {
-        validateList(requests);
-        String storeName = requests.get(0).getStoreName();
-        validateSameStore(requests, storeName);
-        validateDuplicateNamesInRequest(requests);
+    public List<Product> creates(Long userId, List<ProductCreateCommand> commands) {
+        validateList(commands);
+        String storeName = commands.get(0).storeName();
+        validateSameStore(commands, storeName);
+        validateDuplicateNamesInRequest(commands);
 
         User owner = userFinder.findByUser(userId);
         owner.validateOwnerRole();
         Store store = storeFinder.findByStoreName(storeName);
         store.validateIsOwner(owner);
 
-
-        for (ProductCreate request : requests) {
-            validateProductDuplicate(store, request.getName());
+        for (ProductCreateCommand command : commands) {
+            validateProductDuplicate(store, command.name());
         }
 
-        List<Product> products = getProductList(store, owner, requests);
+        List<Product> products = getProductList(store, owner, commands);
         return productRepository.saveAll(products);
     }
 
@@ -114,10 +121,10 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private static void validateDuplicateNamesInRequest(List<ProductCreate> requests) {
+    private static void validateDuplicateNamesInRequest(List<ProductCreateCommand> requests) {
         Set<String> names = new HashSet<>();
         boolean hasDuplicateName = requests.stream()
-                .map(ProductCreate::getName)
+                .map(ProductCreateCommand::name)
                 .filter(name -> name != null && !name.isBlank())
                 .anyMatch(name -> !names.add(name));
 
@@ -126,22 +133,22 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private static void validateList(List<ProductCreate> requests) {
+    private static void validateList(List<ProductCreateCommand> requests) {
         if (requests == null || requests.isEmpty()) {
             throw new ProductException("상품 목록이 비어 있습니다.");
         }
     }
 
-    private static void validateSameStore(List<ProductCreate> requests, String storeName) {
-        boolean sameStore = requests.stream().allMatch(r -> storeName.equals(r.getStoreName()));
+    private static void validateSameStore(List<ProductCreateCommand> requests, String storeName) {
+        boolean sameStore = requests.stream().allMatch(r -> storeName.equals(r.storeName()));
         if (!sameStore) {
             throw new ProductException("모든 상품은 동일한 매장에 속해야 합니다.");
         }
     }
 
-    private static List<Product> getProductList(Store store, User owner, List<ProductCreate> request) {
+    private static List<Product> getProductList(Store store, User owner, List<ProductCreateCommand> request) {
         return request.stream()
-                .map(r -> Product.of(r, store, owner))
+                .map(r -> Product.of(r.storeName(), r.name(), r.price(), r.type(), r.stock(), store, owner))
                 .toList();
     }
 }

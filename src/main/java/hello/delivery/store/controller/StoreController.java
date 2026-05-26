@@ -3,30 +3,24 @@ package hello.delivery.store.controller;
 import hello.delivery.common.annotation.LoginOwnerId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.common.service.port.out.ClockHolder;
-import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductType;
+import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.store.controller.docs.StoreControllerDocs;
-import hello.delivery.store.service.port.in.StoreService;
+import hello.delivery.store.controller.request.StoreCreate;
 import hello.delivery.store.controller.response.StoreCustomerResponse;
 import hello.delivery.store.controller.response.StoreOwnerResponse;
 import hello.delivery.store.domain.Store;
-import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.domain.StoreType;
+import hello.delivery.store.service.port.in.StoreService;
 import jakarta.validation.Valid;
-import java.time.LocalTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/stores")
@@ -41,7 +35,7 @@ public class StoreController implements StoreControllerDocs {
     @PostMapping("/new")
     public ApiResponse<StoreOwnerResponse> createStore(@LoginOwnerId Long userId,
                                                        @Valid @RequestBody StoreCreate request) {
-        Store store = storeService.create(userId, request);
+        Store store = storeService.create(userId, request.toCommand());
         return ApiResponse.ok(StoreOwnerResponse.of(store));
     }
 

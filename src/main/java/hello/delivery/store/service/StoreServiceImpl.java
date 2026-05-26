@@ -4,18 +4,19 @@ import hello.delivery.common.exception.StoreException;
 import hello.delivery.common.exception.StoreNotFound;
 import hello.delivery.common.service.port.out.ClockHolder;
 import hello.delivery.store.domain.Store;
-import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.domain.StoreType;
+import hello.delivery.store.service.port.in.StoreCreateCommand;
 import hello.delivery.store.service.port.in.StoreService;
 import hello.delivery.store.service.port.out.StoreFinder;
 import hello.delivery.store.service.port.out.StoreRepository;
 import hello.delivery.user.domain.User;
 import hello.delivery.user.service.port.out.UserFinder;
-import java.time.LocalTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalTime;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,11 +29,12 @@ public class StoreServiceImpl implements StoreService {
     private final ClockHolder clockHolder;
 
     @Transactional
-    public Store create(Long userId, StoreCreate request) {
+    public Store create(Long userId, StoreCreateCommand command) {
         User owner = userFinder.findByUser(userId);
-        validateDuplicate(request);
+        owner.validateOwnerRole();
+        validateDuplicate(command);
 
-        Store store = Store.create(request, owner, clockHolder.now());
+        Store store = Store.create(command.toRegistration(clockHolder.now()), owner);
 
         return storeRepository.save(store);
     }
@@ -45,7 +47,7 @@ public class StoreServiceImpl implements StoreService {
         store.validateIsOwner(user);
 
         Store updatedStore = store.openStore(newOpenTime);
-        repositoryUpdate(store, updatedStore);
+        storeRepository.updateBusinessHours(updatedStore);
         return updatedStore;
     }
 
@@ -57,7 +59,7 @@ public class StoreServiceImpl implements StoreService {
         store.validateIsOwner(user);
 
         Store updatedStore = store.closeStore(newCloseTime);
-        repositoryUpdate(store, updatedStore);
+        storeRepository.updateBusinessHours(updatedStore);
         return updatedStore;
     }
 
@@ -89,21 +91,10 @@ public class StoreServiceImpl implements StoreService {
         return storeRepository.findByOwner(owner);
     }
 
-    private void validateDuplicate(StoreCreate request) {
-        if (storeRepository.existsByName(request.getStoreName())) {
+    private void validateDuplicate(StoreCreateCommand request) {
+        if (storeRepository.existsByName(request.storeName())) {
             throw new StoreException("이미 존재하는 가게 이름입니다.");
         }
-    }
-
-    private void repositoryUpdate(Store store, Store updatedStore) {
-        storeRepository.updateSales(
-                store.getId(),
-                updatedStore.getDailySales(),
-                updatedStore.getTotalSales(),
-                updatedStore.getLastSalesDate(),
-                updatedStore.getOpenTime(),
-                updatedStore.getCloseTime()
-        );
     }
 
 }

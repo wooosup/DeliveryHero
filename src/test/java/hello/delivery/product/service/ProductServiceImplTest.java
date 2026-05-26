@@ -16,8 +16,8 @@ import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeProductRepository;
 import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.product.domain.Product;
-import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.domain.ProductType;
+import hello.delivery.product.service.port.in.ProductCreateCommand;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
 import java.util.List;
@@ -53,7 +53,7 @@ class ProductServiceImplTest {
     @DisplayName("가게에 상품을 등록할 수 있다.")
     void create() {
         // given
-        ProductCreate productCreate = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreateCommand productCreate = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
 
         // when
         Product product = productService.create(owner.getId(), productCreate);
@@ -70,8 +70,8 @@ class ProductServiceImplTest {
     @DisplayName("가게에 여러 상품을 등록할 수 있다.")
     void creates() {
         // given
-        ProductCreate product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
-        ProductCreate product2 = createProductCreate(CHEESE_CAKE, DESSERT, CHEESE_CAKE_PRICE);
+        ProductCreateCommand product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreateCommand product2 = createProductCreate(CHEESE_CAKE, DESSERT, CHEESE_CAKE_PRICE);
 
         // when
         List<Product> products = productService.creates(owner.getId(), List.of(product1, product2));
@@ -95,7 +95,7 @@ class ProductServiceImplTest {
     void validateCreate() {
         // given
         User anotherOwner = buildAnotherOwner();
-        ProductCreate productCreate = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreateCommand productCreate = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
 
         // expect
         assertThatThrownBy(() -> productService.create(anotherOwner.getId(), productCreate))
@@ -108,8 +108,8 @@ class ProductServiceImplTest {
     void validateCreates() {
         // given
         Store anotherStore = buildAnotherStore();
-        ProductCreate product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
-        ProductCreate product2 = createProductCreateWithStoreName(anotherStore.getName(), CHEESE_CAKE, DESSERT,
+        ProductCreateCommand product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreateCommand product2 = createProductCreateWithStoreName(anotherStore.getName(), CHEESE_CAKE, DESSERT,
                 CHEESE_CAKE_PRICE);
 
         // expect
@@ -122,8 +122,8 @@ class ProductServiceImplTest {
     @DisplayName("한 번에 등록하는 상품 목록에 중복 상품명이 있으면 예외를 던진다.")
     void validateDuplicateProductNamesInSameRequest() {
         // given
-        ProductCreate product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
-        ProductCreate product2 = createProductCreate(ICED_AMERICANO, DESSERT, CHEESE_CAKE_PRICE);
+        ProductCreateCommand product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreateCommand product2 = createProductCreate(ICED_AMERICANO, DESSERT, CHEESE_CAKE_PRICE);
 
         // expect
         assertThatThrownBy(() -> productService.creates(owner.getId(), List.of(product1, product2)))
@@ -135,7 +135,7 @@ class ProductServiceImplTest {
     @DisplayName("상품의 판매 상태를 변경할 수 있다.")
     void changeSellingStatus() {
         // given
-        ProductCreate productCreate = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreateCommand productCreate = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
         Product product = productService.create(owner.getId(), productCreate);
         fakeFinder.addProduct(product);
 
@@ -150,8 +150,8 @@ class ProductServiceImplTest {
     @DisplayName("모든 상품을 조회할 수 있다.")
     void findAll() {
         // given
-        ProductCreate product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
-        ProductCreate product2 = createProductCreate(CHEESE_CAKE, DESSERT, CHEESE_CAKE_PRICE);
+        ProductCreateCommand product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreateCommand product2 = createProductCreate(CHEESE_CAKE, DESSERT, CHEESE_CAKE_PRICE);
         productService.creates(owner.getId(), List.of(product1, product2));
 
         // when
@@ -167,8 +167,8 @@ class ProductServiceImplTest {
     @DisplayName("상품 타입으로 상품을 조회할 수 있다.")
     void findByType() {
         // given
-        ProductCreate product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
-        ProductCreate product2 = createProductCreate(CHEESE_CAKE, DESSERT, CHEESE_CAKE_PRICE);
+        ProductCreateCommand product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreateCommand product2 = createProductCreate(CHEESE_CAKE, DESSERT, CHEESE_CAKE_PRICE);
         productService.creates(owner.getId(), List.of(product1, product2));
 
         // when
@@ -184,8 +184,8 @@ class ProductServiceImplTest {
     @DisplayName("판매중인 상품을 조회할 수 있다.")
     void findBySelling() {
         // given
-        ProductCreate product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
-        ProductCreate product2 = createProductCreate(CHEESE_CAKE, DESSERT, CHEESE_CAKE_PRICE);
+        ProductCreateCommand product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreateCommand product2 = createProductCreate(CHEESE_CAKE, DESSERT, CHEESE_CAKE_PRICE);
         List<Product> products = productService.creates(owner.getId(), List.of(product1, product2));
 
         fakeFinder.addProduct(products.get(0));
@@ -213,17 +213,12 @@ class ProductServiceImplTest {
                 .hasMessage("상품을 찾을 수 없습니다.");
     }
 
-    private ProductCreate createProductCreate(String name, ProductType type, int price) {
+    private ProductCreateCommand createProductCreate(String name, ProductType type, int price) {
         return createProductCreateWithStoreName(STORE_NAME, name, type, price);
     }
 
-    private ProductCreate createProductCreateWithStoreName(String storeName, String name, ProductType type, int price) {
-        return ProductCreate.builder()
-                .storeName(storeName)
-                .type(type)
-                .name(name)
-                .price(price)
-                .build();
+    private ProductCreateCommand createProductCreateWithStoreName(String storeName, String name, ProductType type, int price) {
+        return ProductCreateCommand.of(storeName, name, price, type, null);
     }
 
     private User buildOwner() {

@@ -1,14 +1,14 @@
 package hello.delivery.store.service.port.in;
 
 import hello.delivery.store.domain.Store;
-import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.domain.StoreType;
+
 import java.time.LocalTime;
 import java.util.List;
 
 public interface StoreService {
 
-    Store create(Long userId, StoreCreate request);
+    Store create(Long userId, StoreCreateCommand request);
 
     Store changeOpenTime(Long userId, Long storeId, LocalTime time);
 

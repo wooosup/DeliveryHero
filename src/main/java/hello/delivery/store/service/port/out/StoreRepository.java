@@ -4,7 +4,6 @@ import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreType;
 import hello.delivery.user.domain.User;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +19,7 @@ public interface StoreRepository {
 
     Optional<Store> findByName(String name);
 
-    void updateSales(Long storeId, int dailySales, int totalSales, LocalDate lastSalesDate, LocalTime openTime, LocalTime closeTime);
+    void updateBusinessHours(Store store);
 
     boolean existsByName(String name);
 

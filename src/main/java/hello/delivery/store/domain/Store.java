@@ -2,10 +2,11 @@ package hello.delivery.store.domain;
 
 import hello.delivery.common.exception.StoreException;
 import hello.delivery.user.domain.User;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 public class Store {
@@ -37,18 +38,18 @@ public class Store {
         this.closeTime = closeTime;
     }
 
-    public static Store create(StoreCreate storeCreate, User owner, LocalDate currentDate) {
-        validate(storeCreate, owner);
+    public static Store create(StoreRegistration registration, User owner) {
+        if (owner == null) {
+            throw new StoreException("가게 주인은 필수입니다.");
+        }
+
         return Store.builder()
+                .name(registration.name())
+                .storeType(registration.type())
+                .openTime(registration.openTime())
+                .closeTime(registration.closeTime())
                 .owner(owner)
-                .name(storeCreate.getStoreName())
-                .storeType(storeCreate.getStoreType())
-                .dailySales(0)
-                .totalSales(0)
-                .openDate(currentDate)
-                .lastSalesDate(null)
-                .openTime(storeCreate.getOpenTime())
-                .closeTime(storeCreate.getCloseTime())
+                .openDate(registration.openDate())
                 .build();
     }
 
@@ -95,19 +96,6 @@ public class Store {
         if (!this.owner.getId().equals(user.getId())) {
             throw new StoreException("가게 소유자만 접근할 수 있습니다.");
         }
-    }
-
-    private static void validate(StoreCreate storeCreate, User owner) {
-        if (owner == null) {
-            throw new StoreException("가게 주인은 필수입니다.");
-        }
-        if (storeCreate.getStoreName() == null || storeCreate.getStoreName().isBlank()) {
-            throw new StoreException("가게 이름은 필수 입력 값입니다.");
-        }
-        if (storeCreate.getStoreType() == null) {
-            throw new StoreException("가게 타입은 필수 입력 값입니다.");
-        }
-        owner.validateOwnerRole();
     }
 
     private StoreBuilder copyWithBuilder() {

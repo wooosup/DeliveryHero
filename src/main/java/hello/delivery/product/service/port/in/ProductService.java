@@ -1,16 +1,15 @@
 package hello.delivery.product.service.port.in;
 
 import hello.delivery.product.domain.Product;
-import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.domain.ProductSellingStatus;
 import hello.delivery.product.domain.ProductType;
 import java.util.List;
 
 public interface ProductService {
 
-    Product create(Long userId, ProductCreate request);
+    Product create(Long userId, ProductCreateCommand command);
 
-    List<Product> creates(Long userId, List<ProductCreate> requests);
+    List<Product> creates(Long userId, List<ProductCreateCommand> commands);
 
     Product changeSellingStatus(Long id, Long userId, ProductSellingStatus status);
 

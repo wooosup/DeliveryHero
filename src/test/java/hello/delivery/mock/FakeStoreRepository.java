@@ -5,7 +5,6 @@ import hello.delivery.store.domain.StoreType;
 import hello.delivery.store.service.port.out.StoreRepository;
 import hello.delivery.user.domain.User;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,25 +66,25 @@ public class FakeStoreRepository implements StoreRepository {
     }
 
     @Override
-    public void updateSales(Long storeId, int dailySales, int totalSales, LocalDate lastSalesDate, LocalTime openTime, LocalTime closeTime) {
+    public void updateBusinessHours(Store updatedStore) {
         data.stream()
-                .filter(store -> store.getId().equals(storeId))
+                .filter(store -> store.getId().equals(updatedStore.getId()))
                 .findAny()
                 .ifPresent(store -> {
                     data.remove(store);
-                    Store updatedStore = Store.builder()
+                    Store storeWithBusinessHours = Store.builder()
                             .id(store.getId())
                             .owner(store.getOwner())
                             .name(store.getName())
                             .storeType(store.getStoreType())
-                            .dailySales(dailySales)
-                            .totalSales(totalSales)
+                            .dailySales(store.getDailySales())
+                            .totalSales(store.getTotalSales())
                             .openDate(store.getOpenDate())
-                            .lastSalesDate(lastSalesDate)
-                            .openTime(openTime)
-                            .closeTime(closeTime)
+                            .lastSalesDate(store.getLastSalesDate())
+                            .openTime(updatedStore.getOpenTime())
+                            .closeTime(updatedStore.getCloseTime())
                             .build();
-                    data.add(updatedStore);
+                    data.add(storeWithBusinessHours);
                 });
     }
 

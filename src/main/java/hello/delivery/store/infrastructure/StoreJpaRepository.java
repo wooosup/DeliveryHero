@@ -21,17 +21,12 @@ public interface StoreJpaRepository extends JpaRepository<StoreEntity, Long> {
 
     @Modifying
     @Query("update StoreEntity s set "
-            + "s.dailySales = :dailySales, "
-            + "s.totalSales = :totalSales, "
-            + "s.lastSalesDate = :lastSalesDate,"
-            + "s.openTime = :openTime,"
-            + "s.closeTime = :closeTime where s.id = :storeId")
-    void updateSales(@Param("storeId") Long storeId,
-                     @Param("dailySales") int dailySales,
-                     @Param("totalSales") int totalSales,
-                     @Param("lastSalesDate") LocalDate lastSalesDate,
-                     @Param("openTime") LocalTime openTime,
-                     @Param("closeTime") LocalTime closeTime);
+            + "s.openTime = :openTime, "
+            + "s.closeTime = :closeTime "
+            + "where s.id = :storeId")
+    void updateBusinessHours(@Param("storeId") Long storeId,
+                             @Param("openTime") LocalTime openTime,
+                             @Param("closeTime") LocalTime closeTime);
 
     @Query("select s from StoreEntity s where s.owner = :owner")
     List<StoreEntity> findByStoresForOwner(UserEntity owner);

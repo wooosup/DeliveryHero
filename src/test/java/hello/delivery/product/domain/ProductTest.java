@@ -25,15 +25,8 @@ class ProductTest {
         // given
         User owner = buildOwner();
         Store store = buildStore(owner);
-        ProductCreate productCreate = ProductCreate.builder()
-                .storeName(store.getName())
-                .name("치킨")
-                .price(20000)
-                .type(FOOD)
-                .build();
-
         // when
-        Product product = Product.of(productCreate, store, owner);
+        Product product = Product.of(store.getName(), "치킨", 20000, FOOD, null, store, owner);
 
         // then
         assertThat(product.getName()).isEqualTo("치킨");
@@ -48,16 +41,8 @@ class ProductTest {
         // given
         User owner = buildOwner();
         Store store = buildStore(owner);
-        ProductCreate productCreate = ProductCreate.builder()
-                .storeName(store.getName())
-                .name("콜라")
-                .price(1500)
-                .type(BEVERAGE)
-                .stock(5)
-                .build();
-
         // when
-        Product product = Product.of(productCreate, store, owner);
+        Product product = Product.of(store.getName(), "콜라", 1500, BEVERAGE, 5, store, owner);
 
         // then
         assertThat(product.getName()).isEqualTo("콜라");
@@ -73,16 +58,8 @@ class ProductTest {
         // given
         User owner = buildOwner();
         Store store = buildStore(owner);
-        ProductCreate productCreate = ProductCreate.builder()
-                .storeName(store.getName())
-                .name("콜라")
-                .price(1500)
-                .type(BEVERAGE)
-                .stock(0)
-                .build();
-
         // when
-        Product product = Product.of(productCreate, store, owner);
+        Product product = Product.of(store.getName(), "콜라", 1500, BEVERAGE, 0, store, owner);
 
         // then
         assertThat(product.getName()).isEqualTo("콜라");
@@ -98,15 +75,8 @@ class ProductTest {
         // given
         User owner = buildOwner();
         Store store = buildStore(owner);
-        ProductCreate productCreate = ProductCreate.builder()
-                .storeName(store.getName())
-                .name("치킨")
-                .price(0)
-                .type(FOOD)
-                .build();
-
         // expect
-        assertThatThrownBy(() -> Product.of(productCreate, store, owner))
+        assertThatThrownBy(() -> Product.of(store.getName(), "치킨", 0, FOOD, null, store, owner))
                 .isInstanceOf(ProductException.class)
                 .hasMessageContaining("상품 가격은 양수여야 합니다.");
     }
@@ -117,15 +87,8 @@ class ProductTest {
         // given
         User owner = buildOwner();
         Store store = buildStore(owner);
-        ProductCreate productCreate = ProductCreate.builder()
-                .storeName("ㅋㅋ")
-                .name("치킨")
-                .price(20000)
-                .type(FOOD)
-                .build();
-
         // expect
-        assertThatThrownBy(() -> Product.of(productCreate, store, owner))
+        assertThatThrownBy(() -> Product.of("ㅋㅋ", "치킨", 20000, FOOD, null, store, owner))
                 .isInstanceOf(ProductException.class)
                 .hasMessageContaining("가게가 일치하지 않습니다.");
     }
@@ -136,13 +99,7 @@ class ProductTest {
         // given
         User owner = buildOwner();
         Store store = buildStore(owner);
-        ProductCreate productCreate = ProductCreate.builder()
-                .storeName(store.getName())
-                .name("치킨")
-                .price(20000)
-                .type(FOOD)
-                .build();
-        Product product = Product.of(productCreate, store, owner);
+        Product product = Product.of(store.getName(), "치킨", 20000, FOOD, null, store, owner);
 
         // when
         Product result = product.changeSellingStatus(STOP_SELLING);

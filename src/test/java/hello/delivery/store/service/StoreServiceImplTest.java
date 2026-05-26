@@ -1,31 +1,32 @@
 package hello.delivery.store.service;
 
-import static hello.delivery.store.domain.StoreType.JAPANESE_FOOD;
-import static hello.delivery.store.domain.StoreType.KOREAN_FOOD;
-import static hello.delivery.user.domain.UserRole.CUSTOMER;
-import static hello.delivery.user.domain.UserRole.OWNER;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import hello.delivery.common.domain.Address;
 import hello.delivery.common.exception.UserException;
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeStoreRepository;
 import hello.delivery.mock.TestClockHolder;
-import hello.delivery.store.service.port.in.StoreService;
 import hello.delivery.store.domain.Store;
-import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.domain.StoreType;
+import hello.delivery.store.service.port.in.StoreCreateCommand;
+import hello.delivery.store.service.port.in.StoreService;
 import hello.delivery.user.domain.User;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+
+import static hello.delivery.store.domain.StoreType.JAPANESE_FOOD;
+import static hello.delivery.store.domain.StoreType.KOREAN_FOOD;
+import static hello.delivery.user.domain.UserRole.CUSTOMER;
+import static hello.delivery.user.domain.UserRole.OWNER;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class StoreServiceImplTest {
 
@@ -53,7 +54,7 @@ class StoreServiceImplTest {
     @DisplayName("가게를 생성할 수 있다.")
     void create() {
         // given
-        StoreCreate storeCreate = createStoreCreate("한식당", KOREAN_FOOD);
+        StoreCreateCommand storeCreate = createStoreCreate("한식당", KOREAN_FOOD);
 
         // when
         Store store = storeService.create(owner.getId(), storeCreate);
@@ -68,7 +69,7 @@ class StoreServiceImplTest {
     @DisplayName("오픈시간을 변경 할 수 있다.")
     void changeOpenTime() throws Exception {
         //given
-        StoreCreate storeCreate = createStoreCreate("한식당", KOREAN_FOOD);
+        StoreCreateCommand storeCreate = createStoreCreate("한식당", KOREAN_FOOD);
         Store store = storeService.create(owner.getId(), storeCreate);
 
         fakeFinder.addStore(store);
@@ -86,7 +87,7 @@ class StoreServiceImplTest {
     @DisplayName("마감시간을 변경 할 수 있다.")
     void changeCloseTIme() throws Exception {
         //given
-        StoreCreate storeCreate = createStoreCreate("한식당", KOREAN_FOOD);
+        StoreCreateCommand storeCreate = createStoreCreate("한식당", KOREAN_FOOD);
         Store store = storeService.create(owner.getId(), storeCreate);
 
         fakeFinder.addStore(store);
@@ -105,7 +106,7 @@ class StoreServiceImplTest {
     void validateCreate() {
         // given
         User customer = buildCustomer();
-        StoreCreate storeCreate = createStoreCreate("한식당", KOREAN_FOOD);
+        StoreCreateCommand storeCreate = createStoreCreate("한식당", KOREAN_FOOD);
 
         // expect
         assertThatThrownBy(() -> storeService.create(customer.getId(), storeCreate))
@@ -117,8 +118,8 @@ class StoreServiceImplTest {
     @DisplayName("가게 타입별로 가게를 조회할 수 있다.")
     void findByStoreType() {
         // given
-        StoreCreate koreanStore = createStoreCreate("한식당", KOREAN_FOOD);
-        StoreCreate japaneseStore = createStoreCreate("일식당", JAPANESE_FOOD);
+        StoreCreateCommand koreanStore = createStoreCreate("한식당", KOREAN_FOOD);
+        StoreCreateCommand japaneseStore = createStoreCreate("일식당", JAPANESE_FOOD);
         storeService.create(owner.getId(), koreanStore);
         storeService.create(owner.getId(), japaneseStore);
 
@@ -172,13 +173,8 @@ class StoreServiceImplTest {
         assertThat(result.getLastSalesDate()).isEqualTo(testClockHolder.now());
     }
 
-    private StoreCreate createStoreCreate(String storeName, StoreType storeType) {
-        return StoreCreate.builder()
-                .storeName(storeName)
-                .storeType(storeType)
-                .openTime(OPEN_TIME)
-                .closeTime(CLOSE_TIME)
-                .build();
+    private StoreCreateCommand createStoreCreate(String storeName, StoreType storeType) {
+        return StoreCreateCommand.of(storeName, storeType, OPEN_TIME, CLOSE_TIME);
     }
 
     private User buildOwner() {

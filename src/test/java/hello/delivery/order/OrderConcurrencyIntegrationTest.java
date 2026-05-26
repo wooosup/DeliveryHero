@@ -8,12 +8,12 @@ import hello.delivery.common.domain.Address;
 import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.order.domain.OrderCreate;
 import hello.delivery.order.domain.OrderProductRequest;
-import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.product.domain.Product;
-import hello.delivery.product.domain.ProductCreate;
-import hello.delivery.store.service.port.in.StoreService;
+import hello.delivery.product.service.port.in.ProductCreateCommand;
+import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.store.domain.Store;
-import hello.delivery.store.domain.StoreCreate;
+import hello.delivery.store.service.port.in.StoreCreateCommand;
+import hello.delivery.store.service.port.in.StoreService;
 import hello.delivery.user.service.port.in.SignupCommand;
 import hello.delivery.user.service.port.in.UserService;
 import hello.delivery.user.domain.User;
@@ -84,19 +84,19 @@ class OrderConcurrencyIntegrationTest {
     void concurrentOrdersDoNotOversellStock() throws Exception {
         // given
         User owner = createOwner("owner1");
-        Store store = storeService.create(owner.getId(), StoreCreate.builder()
-                .storeName("동시성-스토어")
-                .storeType(KOREAN_FOOD)
-                .openTime(OPEN_TIME)
-                .closeTime(CLOSE_TIME)
-                .build());
-        Product product = productService.create(owner.getId(), ProductCreate.builder()
-                .storeName(store.getName())
-                .name("치킨")
-                .price(15000)
-                .type(FOOD)
-                .stock(1)
-                .build());
+        Store store = storeService.create(owner.getId(), StoreCreateCommand.of(
+                "동시성-스토어",
+                KOREAN_FOOD,
+                OPEN_TIME,
+                CLOSE_TIME
+        ));
+        Product product = productService.create(owner.getId(), ProductCreateCommand.of(
+                store.getName(),
+                "치킨",
+                15000,
+                FOOD,
+                1
+        ));
 
         User customerA = createCustomer("custc1");
         User customerB = createCustomer("custc2");

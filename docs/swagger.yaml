@@ -1168,30 +1168,6 @@ components:
         nano:
           type: integer
           format: int32
-    ProductCreate:
-      required:
-      - name
-      - price
-      - storeName
-      - type
-      type: object
-      properties:
-        storeName:
-          type: string
-        name:
-          type: string
-        price:
-          type: integer
-          format: int32
-        type:
-          type: string
-          enum:
-          - FOOD
-          - BEVERAGE
-          - DESSERT
-        stock:
-          type: integer
-          format: int32
     StoreCreate:
       required:
       - closeTime
@@ -1213,10 +1189,6 @@ components:
           - SNACK
           - FAST_FOOD
           - DESSERT
-        products:
-          type: array
-          items:
-            $ref: "#/components/schemas/ProductCreate"
         openTime:
           $ref: "#/components/schemas/LocalTime"
         closeTime:
@@ -1442,6 +1414,30 @@ components:
       properties:
         phone:
           type: string
+    ProductCreate:
+      required:
+      - name
+      - price
+      - storeName
+      - type
+      type: object
+      properties:
+        storeName:
+          type: string
+        name:
+          type: string
+        price:
+          type: integer
+          format: int32
+        type:
+          type: string
+          enum:
+          - FOOD
+          - BEVERAGE
+          - DESSERT
+        stock:
+          type: integer
+          format: int32
     ApiResponseProductResponse:
       type: object
       properties:

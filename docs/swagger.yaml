@@ -230,39 +230,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseListProductResponse"
-  /api/orders/new:
+  /api/orders/reject/{orderId}:
     post:
       tags:
       - 주문
-      summary: 주문 생성
-      description: 새로운 주문을 생성합니다.
-      operationId: order
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/OrderCreate"
-        required: true
-      responses:
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponseOrderResponse"
-  /api/orders/complete/{orderId}:
-    post:
-      tags:
-      - 주문
-      summary: 주문 완료
-      description: 배달이 완료되어 주문 상태를 완료로 변경합니다.
-      operationId: complete
+      summary: 주문 거절
+      description: 사장님이 대기 중인 주문을 거절합니다.
+      operationId: reject
       parameters:
       - name: orderId
         in: path
@@ -284,12 +258,38 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseOrderResponse"
+  /api/orders/new:
+    post:
+      tags:
+      - 주문
+      summary: 주문 생성
+      description: "새로운 주문을 생성합니다. 요청 본문은 storeId, productId 기반입니다."
+      operationId: order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderCreate"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseOrderResponse"
   /api/orders/cancel/{orderId}:
     post:
       tags:
       - 주문
       summary: 주문 취소
-      description: "사장님이 주문을 거절하거나, 특정 조건에서 주문을 취소합니다."
+      description: 고객이 대기 중인 주문을 취소합니다.
       operationId: cancel
       parameters:
       - name: orderId
@@ -558,7 +558,7 @@ paths:
       - 배달
       summary: 배달 완료
       description: 배달을 완료 상태(DELIVERED)로 변경합니다. (라이더용)
-      operationId: complete_1
+      operationId: complete
       parameters:
       - name: deliveryId
         in: path
@@ -1628,32 +1628,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ProductResponse"
-    OrderCreate:
-      required:
-      - address
-      - orderProducts
-      - storeName
-      type: object
-      properties:
-        storeName:
-          type: string
-        orderProducts:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrderProductRequest"
-        address:
-          type: string
-    OrderProductRequest:
-      required:
-      - productName
-      - quantity
-      type: object
-      properties:
-        productName:
-          type: string
-        quantity:
-          type: integer
-          format: int32
     ApiResponseOrderResponse:
       type: object
       properties:
@@ -1778,7 +1752,37 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OrderProductResponse"
+    OrderCreate:
+      required:
+      - address
+      - orderProducts
+      - storeId
+      type: object
+      properties:
+        storeId:
+          type: integer
+          format: int64
+        orderProducts:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderProductRequest"
+        address:
+          type: string
+    OrderProductRequest:
+      required:
+      - productId
+      - quantity
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int64
+        quantity:
+          type: integer
+          format: int32
     PasswordUpdate:
+      required:
+      - password
       type: object
       properties:
         password:

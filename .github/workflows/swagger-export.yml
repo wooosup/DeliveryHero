@@ -19,8 +19,6 @@ jobs:
         run: chmod +x gradlew
       - name: Generate API Docs
         run: ./gradlew generateOpenApiDocs
-      - name: Copy to docs
-        run: cp build/openapi.yaml docs/swagger.yaml
       - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"

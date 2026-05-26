@@ -13,7 +13,11 @@ openApi {
     apiDocsUrl.set("http://localhost:8080/v3/api-docs.yaml")
     outputDir.set(file("${projectDir}/docs"))
     outputFileName.set("swagger.yaml")
-    waitTimeInSeconds.set(10)
+    waitTimeInSeconds.set(30)
+
+    customBootRun {
+        args.set(["--spring.profiles.active=openapi"])
+    }
 }
 
 java {

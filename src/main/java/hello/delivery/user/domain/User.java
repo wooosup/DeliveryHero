@@ -25,13 +25,13 @@ public class User {
         this.role = role;
     }
 
-    public static User signup(UserCreate userCreate, UserRole role, String encodedPassword) {
-        validate(userCreate);
+    public static User signup(String name, String username, String encodedPassword, Address address, UserRole role) {
+        validateSignup(name, username, encodedPassword, address, role);
         return User.builder()
-                .name(userCreate.getName())
-                .username(userCreate.getUsername())
+                .name(name)
+                .username(username)
                 .password(encodedPassword)
-                .address(Address.of(userCreate.getAddress()))
+                .address(address)
                 .role(role)
                 .build();
     }
@@ -80,25 +80,25 @@ public class User {
         return this.role != UserRole.OWNER;
     }
 
-    private static void validate(UserCreate userCreate) {
-        if (userCreate.getName() == null || userCreate.getName().isBlank()) {
+    private static void validateSignup(String name, String username, String encodedPassword, Address address, UserRole role) {
+        if (name == null || name.isBlank()) {
             throw new UserException("이름은 필수입니다.");
         }
-        if (userCreate.getUsername() == null || userCreate.getUsername().isBlank()) {
+        if (username == null || username.isBlank()) {
             throw new UserException("아이디는 필수입니다.");
         }
-        if (userCreate.getPassword() == null || userCreate.getPassword().isBlank()) {
+        if (encodedPassword == null || encodedPassword.isBlank()) {
             throw new UserException("비밀번호는 필수입니다.");
         }
-        if (userCreate.getAddress() == null || userCreate.getAddress().isBlank()) {
-            throw new UserException("주소는 필수입니다.");
+        validateAddress(address);
+        if (role == null) {
+            throw new UserException("권한은 필수입니다.");
         }
-        validateUsernameLength(userCreate.getUsername());
-        validatePasswordLength(userCreate.getPassword());
+        validateUsernameLength(username);
     }
 
-    private void validateAddress(Address newAddress) {
-        if (newAddress == null) {
+    private static void validateAddress(Address newAddress) {
+        if (newAddress == null || newAddress.getAddress() == null || newAddress.getAddress().isBlank()) {
             throw new UserException("주소는 비어 있을 수 없습니다.");
         }
     }

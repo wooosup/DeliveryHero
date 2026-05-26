@@ -1,21 +1,17 @@
 package hello.delivery.user.service.port.in;
 
-import hello.delivery.user.domain.AddressUpdate;
-import hello.delivery.user.domain.Login;
-import hello.delivery.user.domain.PasswordUpdate;
 import hello.delivery.user.domain.User;
-import hello.delivery.user.domain.UserCreate;
 
 public interface UserService {
 
-    User signupCustomer(UserCreate userCreate);
+    User signupCustomer(SignupCommand command);
 
-    User signupOwner(UserCreate userCreate);
+    User signupOwner(SignupCommand command);
 
-    User login(Login login);
+    User login(LoginCommand command);
 
-    User changeAddress(Long userId, AddressUpdate addressUpdate);
+    User changeAddress(Long userId, AddressUpdateCommand command);
 
-    User changePassword(Long userId, PasswordUpdate passwordUpdate);
+    User changePassword(Long userId, PasswordUpdateCommand passwordUpdate);
 
 }

@@ -3,8 +3,8 @@ package hello.delivery.order.controller.docs;
 import hello.delivery.common.annotation.LoginCustomerId;
 import hello.delivery.common.annotation.LoginOwnerId;
 import hello.delivery.common.api.ApiResponse;
+import hello.delivery.order.controller.request.OrderCreate;
 import hello.delivery.order.controller.response.OrderResponse;
-import hello.delivery.order.domain.OrderCreate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,12 +20,12 @@ public interface OrderControllerDocs {
     ApiResponse<OrderResponse> order(@Parameter(hidden = true) @LoginCustomerId Long customerId,
                                      @Valid @RequestBody OrderCreate request);
 
-    @Operation(summary = "주문 승인", description = "사장님이 들어온 주문을 승인하고 조리를 시작합니다.")
+    @Operation(summary = "주문 승인", description = "사장이 들어온 주문을 승인하고 조리를 시작합니다.")
     ApiResponse<OrderResponse> accept(
             @Parameter(hidden = true) @LoginOwnerId Long ownerId,
             @Parameter(description = "주문 ID") @PathVariable Long orderId);
 
-    @Operation(summary = "주문 거절", description = "사장님이 대기 중인 주문을 거절합니다.")
+    @Operation(summary = "주문 거절", description = "사장이 대기 중인 주문을 거절합니다.")
     ApiResponse<OrderResponse> reject(
             @Parameter(hidden = true) @LoginOwnerId Long ownerId,
             @Parameter(description = "주문 ID") @PathVariable Long orderId);

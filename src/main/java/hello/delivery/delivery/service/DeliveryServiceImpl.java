@@ -15,7 +15,6 @@ import hello.delivery.order.domain.Order;
 import hello.delivery.order.service.port.out.OrderRepository;
 import hello.delivery.rider.domain.Rider;
 import hello.delivery.rider.domain.RiderStatus;
-import hello.delivery.rider.domain.RiderStatusUpdate;
 import hello.delivery.rider.service.port.out.RiderFinder;
 import hello.delivery.rider.service.port.out.RiderRepository;
 import lombok.RequiredArgsConstructor;
@@ -103,9 +102,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     private void changeRiderStatus(Rider rider, RiderStatus newStatus) {
-        riderRepository.save(rider.changeStatus(RiderStatusUpdate.builder()
-                .status(newStatus)
-                .build()));
+        riderRepository.save(rider.changeStatus(newStatus));
     }
 
     private void validateAssignedRider(Delivery delivery, Long riderId) {

@@ -1,18 +1,17 @@
 package hello.delivery.rider.service.port.in;
 
 import hello.delivery.rider.domain.Rider;
-import hello.delivery.rider.domain.RiderCreate;
-import hello.delivery.rider.domain.RiderLogin;
-import hello.delivery.rider.domain.RiderStatusUpdate;
+import hello.delivery.rider.domain.RiderStatus;
 import java.util.List;
 
 public interface RiderService {
 
-    Rider signup(RiderCreate request);
+    Rider signup(RiderCreateCommand request);
 
-    Rider login(RiderLogin request);
+    Rider login(RiderLoginCommand request);
 
-    Rider changeStatus(Long riderId, RiderStatusUpdate request);
+    Rider changeStatus(Long riderId, RiderStatus status);
 
     List<Rider> findAvailableRiders();
+
 }

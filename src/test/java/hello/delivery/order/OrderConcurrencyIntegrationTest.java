@@ -5,9 +5,9 @@ import static hello.delivery.store.domain.StoreType.KOREAN_FOOD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import hello.delivery.common.domain.Address;
+import hello.delivery.order.service.port.in.OrderCreateCommand;
+import hello.delivery.order.service.port.in.OrderProductCommand;
 import hello.delivery.order.service.port.in.OrderService;
-import hello.delivery.order.domain.OrderCreate;
-import hello.delivery.order.domain.OrderProductRequest;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.service.port.in.ProductCreateCommand;
 import hello.delivery.product.service.port.in.ProductService;
@@ -100,14 +100,11 @@ class OrderConcurrencyIntegrationTest {
 
         User customerA = createCustomer("custc1");
         User customerB = createCustomer("custc2");
-        OrderCreate request = OrderCreate.builder()
-                .storeId(store.getId())
-                .address("서울시 강남구")
-                .orderProducts(List.of(OrderProductRequest.builder()
-                        .productId(product.getId())
-                        .quantity(1)
-                        .build()))
-                .build();
+        OrderCreateCommand request = OrderCreateCommand.of(
+                store.getId(),
+                List.of(OrderProductCommand.of(product.getId(), 1)),
+                "서울시 강남구"
+        );
 
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         CountDownLatch ready = new CountDownLatch(2);
@@ -144,7 +141,7 @@ class OrderConcurrencyIntegrationTest {
 
     private void submitOrder(ExecutorService executorService,
                              Long customerId,
-                             OrderCreate request,
+                             OrderCreateCommand request,
                              CountDownLatch ready,
                              CountDownLatch start,
                              CountDownLatch done,

@@ -6,9 +6,9 @@ import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.service.port.out.ClockHolder;
 import hello.delivery.delivery.service.port.in.DeliveryService;
 import hello.delivery.order.domain.Order;
-import hello.delivery.order.domain.OrderCreate;
 import hello.delivery.order.domain.OrderProduct;
-import hello.delivery.order.domain.OrderProductRequest;
+import hello.delivery.order.service.port.in.OrderCreateCommand;
+import hello.delivery.order.service.port.in.OrderProductCommand;
 import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.order.service.port.out.OrderRepository;
 import hello.delivery.product.domain.Product;
@@ -36,12 +36,12 @@ public class OrderServiceImpl implements OrderService {
     private final UserFinder userFinder;
     private final ClockHolder clockHolder;
 
-    public Order order(Long userId, OrderCreate request) {
+    public Order order(Long userId, OrderCreateCommand command) {
         User user = userFinder.findByUser(userId);
-        Store store = storeFinder.findByStore(request.getStoreId());
+        Store store = storeFinder.findByStore(command.storeId());
 
-        List<OrderProduct> orderProducts = createOrderProducts(store, request.getOrderProducts());
-        Order order = Order.order(user, store, orderProducts, request.getAddress(), clockHolder.nowDateTime());
+        List<OrderProduct> orderProducts = createOrderProducts(store, command.orderProducts());
+        Order order = Order.order(user, store, orderProducts, command.address(), clockHolder.nowDateTime());
 
         return orderRepository.save(order);
     }
@@ -97,21 +97,21 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findOrdersByUserId(user.getId());
     }
 
-    private List<OrderProduct> createOrderProducts(Store store, List<OrderProductRequest> orderProducts) {
+    private List<OrderProduct> createOrderProducts(Store store, List<OrderProductCommand> orderProducts) {
         return orderProducts.stream()
                 .map(req -> createOrderProduct(store, req))
                 .toList();
     }
 
-    private OrderProduct createOrderProduct(Store store, OrderProductRequest request) {
-        Product product = productRepository.findByIdWithLock(request.getProductId())
+    private OrderProduct createOrderProduct(Store store, OrderProductCommand command) {
+        Product product = productRepository.findByIdWithLock(command.productId())
                 .orElseThrow(ProductNotFound::new);
         validateProductBelongsToStore(store, product);
 
-        Product decreasedProduct = product.decreaseStock(request.getQuantity());
+        Product decreasedProduct = product.decreaseStock(command.quantity());
         productRepository.save(decreasedProduct);
 
-        return OrderProduct.create(decreasedProduct, request.getQuantity());
+        return OrderProduct.create(decreasedProduct, command.quantity());
     }
 
     private void validateProductBelongsToStore(Store store, Product product) {

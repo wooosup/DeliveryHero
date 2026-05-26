@@ -1,6 +1,8 @@
 package hello.delivery.rider.domain;
 
-import static hello.delivery.rider.domain.RiderStatus.*;
+import static hello.delivery.rider.domain.RiderStatus.AVAILABLE;
+import static hello.delivery.rider.domain.RiderStatus.DELIVERING;
+import static hello.delivery.rider.domain.RiderStatus.OFFLINE;
 
 import hello.delivery.common.exception.RiderException;
 import lombok.Builder;
@@ -22,29 +24,32 @@ public class Rider {
         this.status = status;
     }
 
-    public static Rider signup(RiderCreate riderCreate) {
+    public static Rider signup(RiderRegistration registration) {
         return Rider.builder()
-                .name(riderCreate.getName())
-                .phone(riderCreate.getPhone())
+                .name(registration.name())
+                .phone(registration.phone())
                 .status(OFFLINE)
                 .build();
     }
 
-    public Rider login(RiderLogin request) {
-        return Rider.builder()
-                .id(id)
-                .name(name)
-                .phone(request.getPhone())
-                .status(AVAILABLE)
-                .build();
-    }
-
-    public Rider changeStatus(RiderStatusUpdate newStatus) {
+    public Rider login() {
         return Rider.builder()
                 .id(id)
                 .name(name)
                 .phone(phone)
-                .status(newStatus.getStatus())
+                .status(AVAILABLE)
+                .build();
+    }
+
+    public Rider changeStatus(RiderStatus newStatus) {
+        if (newStatus == null) {
+            throw new RiderException("라이더 상태는 필수입니다.");
+        }
+        return Rider.builder()
+                .id(id)
+                .name(name)
+                .phone(phone)
+                .status(newStatus)
                 .build();
     }
 

@@ -1,14 +1,13 @@
 package hello.delivery.order.controller;
 
-
 import hello.delivery.common.annotation.LoginCustomerId;
 import hello.delivery.common.annotation.LoginOwnerId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.order.controller.docs.OrderControllerDocs;
-import hello.delivery.order.service.port.in.OrderService;
+import hello.delivery.order.controller.request.OrderCreate;
 import hello.delivery.order.controller.response.OrderResponse;
 import hello.delivery.order.domain.Order;
-import hello.delivery.order.domain.OrderCreate;
+import hello.delivery.order.service.port.in.OrderService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,7 @@ public class OrderController implements OrderControllerDocs {
     @PostMapping("/new")
     public ApiResponse<OrderResponse> order(@LoginCustomerId Long customerId,
                                             @Valid @RequestBody OrderCreate request) {
-        Order order = orderService.order(customerId, request);
+        Order order = orderService.order(customerId, request.toCommand());
         return ApiResponse.ok(OrderResponse.of(order));
     }
 

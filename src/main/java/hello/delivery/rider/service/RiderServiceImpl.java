@@ -4,11 +4,12 @@ import static hello.delivery.rider.domain.RiderStatus.AVAILABLE;
 
 import hello.delivery.common.exception.RiderException;
 import hello.delivery.common.exception.RiderNotFound;
-import hello.delivery.rider.service.port.in.RiderService;
 import hello.delivery.rider.domain.Rider;
-import hello.delivery.rider.domain.RiderCreate;
-import hello.delivery.rider.domain.RiderLogin;
-import hello.delivery.rider.domain.RiderStatusUpdate;
+import hello.delivery.rider.domain.RiderRegistration;
+import hello.delivery.rider.domain.RiderStatus;
+import hello.delivery.rider.service.port.in.RiderCreateCommand;
+import hello.delivery.rider.service.port.in.RiderLoginCommand;
+import hello.delivery.rider.service.port.in.RiderService;
 import hello.delivery.rider.service.port.out.RiderRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,28 +24,29 @@ public class RiderServiceImpl implements RiderService {
     private final RiderRepository riderRepository;
 
     @Transactional
-    public Rider signup(RiderCreate request) {
-        validate(request);
-        Rider rider = Rider.signup(request);
+    public Rider signup(RiderCreateCommand command) {
+        RiderRegistration registration = command.toRegistration();
+        validate(registration);
+        Rider rider = Rider.signup(registration);
 
         return riderRepository.save(rider);
     }
 
     @Transactional
-    public Rider login(RiderLogin request) {
-        Rider rider = riderRepository.findByPhone(request.getPhone())
+    public Rider login(RiderLoginCommand command) {
+        Rider rider = riderRepository.findByPhone(command.phone())
                 .orElseThrow(RiderNotFound::new);
 
-        rider = rider.login(request);
+        rider = rider.login();
         return riderRepository.save(rider);
     }
 
     @Transactional
-    public Rider changeStatus(Long riderId, RiderStatusUpdate request) {
+    public Rider changeStatus(Long riderId, RiderStatus status) {
         Rider rider = riderRepository.findById(riderId)
                 .orElseThrow(RiderNotFound::new);
 
-        rider = rider.changeStatus(request);
+        rider = rider.changeStatus(status);
         return riderRepository.save(rider);
     }
 
@@ -52,8 +54,8 @@ public class RiderServiceImpl implements RiderService {
         return riderRepository.findByStatus(AVAILABLE);
     }
 
-    private void validate(RiderCreate request) {
-        if (riderRepository.existsByPhone(request.getPhone())) {
+    private void validate(RiderRegistration registration) {
+        if (riderRepository.existsByPhone(registration.phone())) {
             throw new RiderException("이미 등록된 전화번호입니다.");
         }
     }

@@ -23,10 +23,10 @@ import hello.delivery.mock.FakeProductRepository;
 import hello.delivery.mock.FakeRiderRepository;
 import hello.delivery.mock.FakeStoreRepository;
 import hello.delivery.mock.TestClockHolder;
-import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.order.domain.Order;
-import hello.delivery.order.domain.OrderCreate;
-import hello.delivery.order.domain.OrderProductRequest;
+import hello.delivery.order.service.port.in.OrderCreateCommand;
+import hello.delivery.order.service.port.in.OrderProductCommand;
+import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.Stock;
 import hello.delivery.store.domain.Store;
@@ -100,7 +100,7 @@ class OrderServiceTest {
     @DisplayName("주문을 생성할 수 있다.")
     void order() {
         // given
-        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        OrderCreateCommand orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
 
         // when
         Order order = orderService.order(customer.getId(), orderCreate);
@@ -116,7 +116,7 @@ class OrderServiceTest {
     @DisplayName("재고가 있는 상품을 주문하면 재고가 차감된다.")
     void orderWithStock() {
         // given
-        OrderCreate orderCreate = createOrderCreate(store, productWithStock, ORDER_QUANTITY);
+        OrderCreateCommand orderCreate = createOrderCreate(store, productWithStock, ORDER_QUANTITY);
 
         // when
         Order order = orderService.order(customer.getId(), orderCreate);
@@ -135,7 +135,7 @@ class OrderServiceTest {
     @DisplayName("주문을 수락할 수 있다.")
     void accept() throws Exception {
         //given
-        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        OrderCreateCommand orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
         Order order = orderService.order(customer.getId(), orderCreate);
 
         //when
@@ -149,7 +149,7 @@ class OrderServiceTest {
     @DisplayName("가게 소유자가 아니면 주문을 수락할 수 없다.")
     void validateAcceptForOwner() throws Exception {
         //given
-        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        OrderCreateCommand orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
         Order order = orderService.order(customer.getId(), orderCreate);
 
         // expect
@@ -162,7 +162,7 @@ class OrderServiceTest {
     @DisplayName("주문을 취소할 수 있다.")
     void cancel() throws Exception {
         //given
-        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        OrderCreateCommand orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
         Order order = orderService.order(customer.getId(), orderCreate);
 
         //when
@@ -176,7 +176,7 @@ class OrderServiceTest {
     @DisplayName("주문을 취소하면 재고가 복구된다.")
     void cancelWithIncreaseStock() throws Exception {
         //given
-        OrderCreate orderCreate = createOrderCreate(store, productWithStock, 10);
+        OrderCreateCommand orderCreate = createOrderCreate(store, productWithStock, 10);
         Order order = orderService.order(customer.getId(), orderCreate);
 
         //when
@@ -192,7 +192,7 @@ class OrderServiceTest {
     @DisplayName("사장님이 주문을 거절하면 거절 상태가 되고 재고가 복구된다.")
     void reject() {
         // given
-        OrderCreate orderCreate = createOrderCreate(store, productWithStock, ORDER_QUANTITY);
+        OrderCreateCommand orderCreate = createOrderCreate(store, productWithStock, ORDER_QUANTITY);
         Order order = orderService.order(customer.getId(), orderCreate);
 
         // when
@@ -208,7 +208,7 @@ class OrderServiceTest {
     @DisplayName("상태가 완료된 주문을 취소하면 예외를 던진다.")
     void validateCancel() throws Exception {
         //given
-        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        OrderCreateCommand orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
         Order order = orderService.order(customer.getId(), orderCreate);
         Order acceptedOrder = orderService.accept(store.getOwner().getId(), order.getId());
         Order completedOrder = orderService.complete(acceptedOrder.getId());
@@ -223,7 +223,7 @@ class OrderServiceTest {
     @DisplayName("수락된 주문은 고객이 취소할 수 없다.")
     void validateCancelAfterAccepted() {
         // given
-        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        OrderCreateCommand orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
         Order order = orderService.order(customer.getId(), orderCreate);
         Order acceptedOrder = orderService.accept(store.getOwner().getId(), order.getId());
 
@@ -237,7 +237,7 @@ class OrderServiceTest {
     @DisplayName("주문을 완료할 수 있다.")
     void complete() throws Exception {
         //given
-        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        OrderCreateCommand orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
         Order order = orderService.order(customer.getId(), orderCreate);
         Order acceptedOrder = orderService.accept(store.getOwner().getId(), order.getId());
 
@@ -252,7 +252,7 @@ class OrderServiceTest {
     @DisplayName("상태가 수락되지 않은 주문을 완료하면 예외를 던진다.")
     void validateComplete() throws Exception {
         //given
-        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        OrderCreateCommand orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
         Order order = orderService.order(customer.getId(), orderCreate);
 
         // expect
@@ -265,7 +265,7 @@ class OrderServiceTest {
     @DisplayName("재고가 부족한 상품을 주문하면 예외를 던진다.")
     void validateOrderOf() {
         // given
-        OrderCreate orderCreate = createOrderCreate(store, productWithStock, 20);
+        OrderCreateCommand orderCreate = createOrderCreate(store, productWithStock, 20);
 
         // expect
         assertThatThrownBy(() -> orderService.order(customer.getId(), orderCreate))
@@ -295,7 +295,7 @@ class OrderServiceTest {
                 .build());
         fakeFinder.addProduct(anotherStoreProduct);
 
-        OrderCreate orderCreate = createOrderCreate(store, anotherStoreProduct, ORDER_QUANTITY);
+        OrderCreateCommand orderCreate = createOrderCreate(store, anotherStoreProduct, ORDER_QUANTITY);
 
         // expect
         assertThatThrownBy(() -> orderService.order(customer.getId(), orderCreate))
@@ -307,7 +307,7 @@ class OrderServiceTest {
     @DisplayName("사용자 아이디로 주문 내역을 조회할 수 있다.")
     void findOrdersByUserId() {
         // given
-        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        OrderCreateCommand orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
         orderService.order(customer.getId(), orderCreate);
 
         // when
@@ -320,17 +320,10 @@ class OrderServiceTest {
         assertThat(result.get(0).getTotalPrice()).isEqualTo(Money.of(PRODUCT_PRICE * ORDER_QUANTITY));
     }
 
-    private OrderCreate createOrderCreate(Store store, Product product, int quantity) {
-        OrderProductRequest orderProduct = OrderProductRequest.builder()
-                .productId(product.getId())
-                .quantity(quantity)
-                .build();
+    private OrderCreateCommand createOrderCreate(Store store, Product product, int quantity) {
+        OrderProductCommand orderProduct = OrderProductCommand.of(product.getId(), quantity);
 
-        return OrderCreate.builder()
-                .storeId(store.getId())
-                .orderProducts(List.of(orderProduct))
-                .address(ADDRESS)
-                .build();
+        return OrderCreateCommand.of(store.getId(), List.of(orderProduct), ADDRESS);
     }
 
     private User buildOwner() {

@@ -5,12 +5,12 @@ import static hello.delivery.common.config.AuthSessionAttributes.RIDER_ID;
 import hello.delivery.common.annotation.LoginRiderId;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.rider.controller.docs.RiderControllerDocs;
-import hello.delivery.rider.service.port.in.RiderService;
+import hello.delivery.rider.controller.request.RiderCreate;
+import hello.delivery.rider.controller.request.RiderLogin;
+import hello.delivery.rider.controller.request.RiderStatusUpdate;
 import hello.delivery.rider.controller.response.RiderResponse;
 import hello.delivery.rider.domain.Rider;
-import hello.delivery.rider.domain.RiderCreate;
-import hello.delivery.rider.domain.RiderLogin;
-import hello.delivery.rider.domain.RiderStatusUpdate;
+import hello.delivery.rider.service.port.in.RiderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -33,14 +33,15 @@ public class RiderController implements RiderControllerDocs {
     @Override
     @PostMapping("/new")
     public ApiResponse<RiderResponse> signup(@Valid @RequestBody RiderCreate request) {
-        Rider rider = riderService.signup(request);
+        Rider rider = riderService.signup(request.toCommand());
         return ApiResponse.ok(RiderResponse.of(rider));
     }
 
     @Override
     @PostMapping("/login")
-    public ApiResponse<RiderResponse> login(@Valid @RequestBody RiderLogin request, HttpServletRequest httpServletRequest) {
-        Rider rider = riderService.login(request);
+    public ApiResponse<RiderResponse> login(@Valid @RequestBody RiderLogin request,
+                                            HttpServletRequest httpServletRequest) {
+        Rider rider = riderService.login(request.toCommand());
         HttpSession currentSession = httpServletRequest.getSession(false);
         if (currentSession != null) {
             currentSession.invalidate();
@@ -55,7 +56,7 @@ public class RiderController implements RiderControllerDocs {
     @PatchMapping("/status")
     public ApiResponse<RiderResponse> changeStatus(@LoginRiderId Long riderId,
                                                    @Valid @RequestBody RiderStatusUpdate request) {
-        Rider rider = riderService.changeStatus(riderId, request);
+        Rider rider = riderService.changeStatus(riderId, request.status());
         return ApiResponse.ok(RiderResponse.of(rider));
     }
 

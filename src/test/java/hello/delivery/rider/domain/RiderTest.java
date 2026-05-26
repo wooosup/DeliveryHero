@@ -11,61 +11,46 @@ import org.junit.jupiter.api.Test;
 class RiderTest {
 
     @Test
-    @DisplayName("라이더 회원가입")
-    void signup() throws Exception {
+    @DisplayName("라이더를 회원가입할 수 있다")
+    void signup() {
         // given
-        RiderCreate riderCreate = RiderCreate.builder()
-                .name("없을무")
-                .phone("010-1234-5678")
-                .build();
+        RiderRegistration registration = new RiderRegistration("홍길동", "010-1234-5678");
 
         // when
-        Rider result = Rider.signup(riderCreate);
+        Rider result = Rider.signup(registration);
 
         // then
-        assertThat(result.getName()).isEqualTo("없을무");
+        assertThat(result.getName()).isEqualTo("홍길동");
         assertThat(result.getPhone()).isEqualTo("010-1234-5678");
         assertThat(result.getStatus()).isEqualTo(OFFLINE);
     }
 
     @Test
-    @DisplayName("라이더 로그인")
-    void login() throws Exception {
+    @DisplayName("라이더가 로그인하면 배달 가능 상태가 된다")
+    void login() {
         // given
-        RiderCreate riderCreate = RiderCreate.builder()
-                .name("없을무")
-                .phone("010-1234-5678")
-                .build();
-        RiderLogin riderLogin = RiderLogin.builder()
-                .phone("010-1234-5678")
-                .build();
+        Rider rider = Rider.signup(new RiderRegistration("홍길동", "010-1234-5678"));
 
         // when
-        Rider result = Rider.signup(riderCreate).login(riderLogin);
+        Rider result = rider.login();
 
         // then
-        assertThat(result.getName()).isEqualTo("없을무");
+        assertThat(result.getName()).isEqualTo("홍길동");
         assertThat(result.getPhone()).isEqualTo("010-1234-5678");
         assertThat(result.getStatus()).isEqualTo(AVAILABLE);
     }
 
     @Test
-    @DisplayName("라이더 상태 변경")
-    void changeStatus() throws Exception {
+    @DisplayName("라이더 상태를 변경할 수 있다")
+    void changeStatus() {
         // given
-        RiderCreate riderCreate = RiderCreate.builder()
-                .name("없을무")
-                .phone("010-1234-5678")
-                .build();
-        RiderStatusUpdate statusUpdate = RiderStatusUpdate.builder()
-                .status(DELIVERING)
-                .build();
+        Rider rider = Rider.signup(new RiderRegistration("홍길동", "010-1234-5678"));
 
         // when
-        Rider result = Rider.signup(riderCreate).changeStatus(statusUpdate);
+        Rider result = rider.changeStatus(DELIVERING);
 
         // then
-        assertThat(result.getName()).isEqualTo("없을무");
+        assertThat(result.getName()).isEqualTo("홍길동");
         assertThat(result.getPhone()).isEqualTo("010-1234-5678");
         assertThat(result.getStatus()).isEqualTo(DELIVERING);
     }

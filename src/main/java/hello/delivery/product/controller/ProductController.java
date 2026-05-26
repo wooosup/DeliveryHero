@@ -7,7 +7,7 @@ import hello.delivery.product.service.port.in.ProductService;
 import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.controller.request.ProductCreate;
-import hello.delivery.product.domain.ProductStatusUpdate;
+import hello.delivery.product.controller.request.ProductStatusUpdate;
 import hello.delivery.product.domain.ProductType;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -51,7 +51,7 @@ public class ProductController implements ProductControllerDocs {
     @PatchMapping("/{id}/status")
     public ApiResponse<ProductResponse> changeStatus(@LoginOwnerId Long userId, @PathVariable Long id,
                                                      @Valid @RequestBody ProductStatusUpdate request) {
-        Product product = productService.changeSellingStatus(id, userId, request.getStatus());
+        Product product = productService.changeSellingStatus(id, userId, request.status());
         return ApiResponse.ok(ProductResponse.of(product));
     }
 

@@ -1,12 +1,11 @@
 package hello.delivery.order.service.port.in;
 
 import hello.delivery.order.domain.Order;
-import hello.delivery.order.domain.OrderCreate;
 import java.util.List;
 
 public interface OrderService {
 
-    Order order(Long userId, OrderCreate request);
+    Order order(Long userId, OrderCreateCommand request);
 
     Order accept(Long ownerId, Long orderId);
 
@@ -17,5 +16,4 @@ public interface OrderService {
     Order complete(Long orderId);
 
     List<Order> findOrdersByUserId(Long userId);
-
 }

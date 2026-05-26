@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import hello.delivery.common.domain.Address;
 import hello.delivery.delivery.domain.Delivery;
 import hello.delivery.delivery.service.port.out.DeliveryRepository;
 import hello.delivery.order.service.port.in.OrderService;
@@ -26,9 +27,9 @@ import hello.delivery.store.service.port.in.StoreService;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.domain.StoreType;
+import hello.delivery.user.service.port.in.SignupCommand;
 import hello.delivery.user.service.port.in.UserService;
 import hello.delivery.user.domain.User;
-import hello.delivery.user.domain.UserCreate;
 import hello.delivery.user.domain.UserRole;
 import java.time.LocalTime;
 import java.util.List;
@@ -241,21 +242,21 @@ class AuthorizationIntegrationTest {
     }
 
     private User createOwner(String username) {
-        return userService.signupOwner(UserCreate.builder()
-                .name("사장")
-                .username(username)
-                .password("password1234")
-                .address("서울")
-                .build());
+        return userService.signupOwner(SignupCommand.of(
+                "사장",
+                username,
+                "password1234",
+                Address.of("서울")
+        ));
     }
 
     private User createCustomer(String username) {
-        return userService.signupCustomer(UserCreate.builder()
-                .name("고객")
-                .username(username)
-                .password("password1234")
-                .address("서울")
-                .build());
+        return userService.signupCustomer(SignupCommand.of(
+                "고객",
+                username,
+                "password1234",
+                Address.of("서울")
+        ));
     }
 
     private Rider createAvailableRider(String phone) {

@@ -16,9 +16,7 @@ class UserTest {
     @Test
     @DisplayName("회원가입 시 서비스가 전달한 암호화 비밀번호를 저장한다.")
     void signupStoresEncodedPassword() {
-        UserCreate userCreate = createUserCreate();
-
-        User signupUser = User.signup(userCreate, UserRole.CUSTOMER, ENCODED_PASSWORD);
+        User signupUser = User.signup("wss", "wss3325", ENCODED_PASSWORD, Address.of("Daegu"), UserRole.CUSTOMER);
 
         assertThat(signupUser.getName()).isEqualTo("wss");
         assertThat(signupUser.getUsername()).isEqualTo("wss3325");
@@ -49,14 +47,5 @@ class UserTest {
     void validatePasswordRejectsTooShortPasswords() {
         assertThatThrownBy(() -> User.validatePassword("1234"))
                 .isInstanceOf(UserException.class);
-    }
-
-    private UserCreate createUserCreate() {
-        return UserCreate.builder()
-                .name("wss")
-                .username("wss3325")
-                .password(RAW_PASSWORD)
-                .address("Daegu")
-                .build();
     }
 }

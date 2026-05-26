@@ -4,6 +4,7 @@ import static hello.delivery.product.domain.ProductType.FOOD;
 import static hello.delivery.store.domain.StoreType.KOREAN_FOOD;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import hello.delivery.common.domain.Address;
 import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.order.domain.OrderCreate;
 import hello.delivery.order.domain.OrderProductRequest;
@@ -13,9 +14,9 @@ import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.store.service.port.in.StoreService;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreCreate;
+import hello.delivery.user.service.port.in.SignupCommand;
 import hello.delivery.user.service.port.in.UserService;
 import hello.delivery.user.domain.User;
-import hello.delivery.user.domain.UserCreate;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -168,21 +169,21 @@ class OrderConcurrencyIntegrationTest {
     }
 
     private User createOwner(String username) {
-        return userService.signupOwner(UserCreate.builder()
-                .name("사장")
-                .username(username)
-                .password("password1234")
-                .address("서울")
-                .build());
+        return userService.signupOwner(SignupCommand.of(
+                "사장",
+                username,
+                "password1234",
+                Address.of("서울")
+        ));
     }
 
     private User createCustomer(String username) {
-        return userService.signupCustomer(UserCreate.builder()
-                .name("고객")
-                .username(username)
-                .password("password1234")
-                .address("서울")
-                .build());
+        return userService.signupCustomer(SignupCommand.of(
+                "고객",
+                username,
+                "password1234",
+                Address.of("서울")
+        ));
     }
 
     private String rootCauseMessage(Throwable throwable) {

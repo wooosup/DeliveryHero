@@ -7,58 +7,57 @@ import hello.delivery.order.controller.docs.OrderControllerDocs;
 import hello.delivery.order.controller.request.OrderCreate;
 import hello.delivery.order.controller.response.OrderResponse;
 import hello.delivery.order.domain.Order;
-import hello.delivery.order.service.port.in.OrderService;
+import hello.delivery.order.query.OrderQueryResult;
+import hello.delivery.order.service.port.in.OrderCommandService;
+import hello.delivery.order.service.port.in.OrderQueryService;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController implements OrderControllerDocs {
 
-    private final OrderService orderService;
+    private final OrderCommandService orderCommandService;
+    private final OrderQueryService orderQueryService;
 
     @Override
     @PostMapping("/new")
     public ApiResponse<OrderResponse> order(@LoginCustomerId Long customerId,
                                             @Valid @RequestBody OrderCreate request) {
-        Order order = orderService.order(customerId, request.toCommand());
+        Order order = orderCommandService.order(customerId, request.toCommand());
         return ApiResponse.ok(OrderResponse.of(order));
     }
 
     @Override
     @PostMapping("/accept/{orderId}")
     public ApiResponse<OrderResponse> accept(@LoginOwnerId Long ownerId, @PathVariable Long orderId) {
-        Order order = orderService.accept(ownerId, orderId);
+        Order order = orderCommandService.accept(ownerId, orderId);
         return ApiResponse.ok(OrderResponse.of(order));
     }
 
     @Override
     @PostMapping("/reject/{orderId}")
     public ApiResponse<OrderResponse> reject(@LoginOwnerId Long ownerId, @PathVariable Long orderId) {
-        Order order = orderService.reject(ownerId, orderId);
+        Order order = orderCommandService.reject(ownerId, orderId);
         return ApiResponse.ok(OrderResponse.of(order));
     }
 
     @Override
     @PostMapping("/cancel/{orderId}")
     public ApiResponse<OrderResponse> cancel(@LoginCustomerId Long customerId, @PathVariable Long orderId) {
-        Order order = orderService.cancel(customerId, orderId);
+        Order order = orderCommandService.cancel(customerId, orderId);
         return ApiResponse.ok(OrderResponse.of(order));
     }
 
     @Override
     @GetMapping("/my-orders")
     public ApiResponse<List<OrderResponse>> getMyOrders(@LoginCustomerId Long customerId) {
-        List<Order> orders = orderService.findOrdersByUserId(customerId);
-        return ApiResponse.ok(OrderResponse.of(orders));
+        List<OrderQueryResult> orders = orderQueryService.findOrdersByUserId(customerId);
+        return ApiResponse.ok(OrderResponse.fromQueryResults(orders));
     }
 
 }

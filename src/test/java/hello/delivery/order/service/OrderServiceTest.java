@@ -1,14 +1,5 @@
 package hello.delivery.order.service;
 
-import static hello.delivery.order.domain.OrderStatus.ACCEPTED;
-import static hello.delivery.order.domain.OrderStatus.CANCELLED;
-import static hello.delivery.order.domain.OrderStatus.COMPLETED;
-import static hello.delivery.order.domain.OrderStatus.REJECTED;
-import static hello.delivery.user.domain.UserRole.CUSTOMER;
-import static hello.delivery.user.domain.UserRole.OWNER;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import hello.delivery.common.domain.Address;
 import hello.delivery.common.domain.Money;
 import hello.delivery.common.exception.ForbiddenException;
@@ -16,31 +7,35 @@ import hello.delivery.common.exception.OrderException;
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.StockException;
 import hello.delivery.delivery.service.DeliveryServiceImpl;
-import hello.delivery.mock.FakeDeliveryRepository;
-import hello.delivery.mock.FakeFinder;
-import hello.delivery.mock.FakeOrderRepository;
-import hello.delivery.mock.FakeProductRepository;
-import hello.delivery.mock.FakeRiderRepository;
-import hello.delivery.mock.FakeStoreRepository;
-import hello.delivery.mock.TestClockHolder;
+import hello.delivery.mock.*;
 import hello.delivery.order.domain.Order;
+import hello.delivery.order.query.OrderQueryResult;
+import hello.delivery.order.service.port.in.OrderCommandService;
 import hello.delivery.order.service.port.in.OrderCreateCommand;
 import hello.delivery.order.service.port.in.OrderProductCommand;
-import hello.delivery.order.service.port.in.OrderService;
+import hello.delivery.order.service.port.in.OrderQueryService;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.Stock;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.service.StoreServiceImpl;
 import hello.delivery.user.domain.User;
-import java.time.LocalTime;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalTime;
+import java.util.List;
+
+import static hello.delivery.order.domain.OrderStatus.*;
+import static hello.delivery.user.domain.UserRole.CUSTOMER;
+import static hello.delivery.user.domain.UserRole.OWNER;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 class OrderServiceTest {
 
-    private OrderService orderService;
+    private OrderCommandService orderService;
+    private OrderQueryService orderQueryService;
     private FakeFinder fakeFinder;
     private FakeProductRepository fakeProductRepository;
     private FakeStoreRepository fakeStoreRepository;
@@ -76,7 +71,7 @@ class OrderServiceTest {
                 testClockHolder
         );
 
-        orderService = new OrderServiceImpl(
+        orderService = new OrderCommandServiceImpl(
                 fakeOrderRepository,
                 fakeProductRepository,
                 storeService,
@@ -85,6 +80,7 @@ class OrderServiceTest {
                 fakeFinder,
                 testClockHolder
         );
+        orderQueryService = new OrderQueryServiceImpl(new FakeOrderQueryRepository(fakeOrderRepository));
         setUpTestData();
     }
 
@@ -311,13 +307,13 @@ class OrderServiceTest {
         orderService.order(customer.getId(), orderCreate);
 
         // when
-        List<Order> result = orderService.findOrdersByUserId(customer.getId());
+        List<OrderQueryResult> result = orderQueryService.findOrdersByUserId(customer.getId());
 
         // then
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getUser().getName()).isEqualTo("김우섭");
-        assertThat(result.get(0).getStore().getName()).isEqualTo("BBQ");
-        assertThat(result.get(0).getTotalPrice()).isEqualTo(Money.of(PRODUCT_PRICE * ORDER_QUANTITY));
+        assertThat(result.get(0).userName()).isEqualTo("김우섭");
+        assertThat(result.get(0).storeName()).isEqualTo("BBQ");
+        assertThat(result.get(0).totalPrice()).isEqualTo(PRODUCT_PRICE * ORDER_QUANTITY);
     }
 
     private OrderCreateCommand createOrderCreate(Store store, Product product, int quantity) {

@@ -4,9 +4,9 @@ import hello.delivery.common.domain.Address;
 import hello.delivery.delivery.domain.Delivery;
 import hello.delivery.delivery.service.port.out.DeliveryRepository;
 import hello.delivery.order.domain.Order;
+import hello.delivery.order.service.port.in.OrderCommandService;
 import hello.delivery.order.service.port.in.OrderCreateCommand;
 import hello.delivery.order.service.port.in.OrderProductCommand;
-import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductType;
 import hello.delivery.product.service.port.in.ProductCreateCommand;
@@ -64,7 +64,7 @@ class AuthorizationIntegrationTest {
     private ProductService productService;
 
     @Autowired
-    private OrderService orderService;
+    private OrderCommandService orderService;
 
     @Autowired
     private RiderService riderService;

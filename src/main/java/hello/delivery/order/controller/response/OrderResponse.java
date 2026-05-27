@@ -1,10 +1,12 @@
 package hello.delivery.order.controller.response;
 
 import hello.delivery.order.domain.Order;
-import java.time.LocalDateTime;
-import java.util.List;
+import hello.delivery.order.query.OrderQueryResult;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class OrderResponse {
@@ -32,24 +34,58 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(Order order) {
-        return OrderResponse.builder()
-                .id(order.getId())
-                .storeId(order.getStore().getId())
-                .totalPrice(order.getTotalPrice().getAmount())
-                .address(order.getAddress().getAddress())
-                .storeName(order.getStore().getName())
-                .orderStatus(order.getOrderStatus().getDescription())
-                .orderedAt(order.getOrderedAt())
-                .orderProducts(order.getOrderProducts().stream()
+        return create(
+                order.getId(),
+                order.getStore().getId(),
+                order.getTotalPrice().getAmount(),
+                order.getAddress().getAddress(),
+                order.getStore().getName(),
+                order.getOrderStatus().getDescription(),
+                order.getOrderedAt(),
+                order.getOrderProducts().stream()
                         .map(OrderProductResponse::of)
-                        .toList())
-                .build();
+                        .toList()
+        );
+    }
+
+    public static OrderResponse from(OrderQueryResult result) {
+        return create(
+                result.id(),
+                result.storeId(),
+                result.totalPrice(),
+                result.address(),
+                result.storeName(),
+                result.orderStatus(),
+                result.orderedAt(),
+                OrderProductResponse.fromQueryResults(result.orderProducts())
+        );
     }
 
     public static List<OrderResponse> of(List<Order> orders) {
         return orders.stream()
                 .map(OrderResponse::of)
                 .toList();
+    }
+
+    public static List<OrderResponse> fromQueryResults(List<OrderQueryResult> orders) {
+        return orders.stream()
+                .map(OrderResponse::from)
+                .toList();
+    }
+
+    private static OrderResponse create(Long id, Long storeId, int totalPrice, String address, String storeName,
+                                        String orderStatus, LocalDateTime orderedAt,
+                                        List<OrderProductResponse> orderProducts) {
+        return OrderResponse.builder()
+                .id(id)
+                .storeId(storeId)
+                .totalPrice(totalPrice)
+                .address(address)
+                .storeName(storeName)
+                .orderStatus(orderStatus)
+                .orderedAt(orderedAt)
+                .orderProducts(orderProducts)
+                .build();
     }
 
 }

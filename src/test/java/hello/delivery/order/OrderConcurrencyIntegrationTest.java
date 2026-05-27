@@ -5,9 +5,9 @@ import static hello.delivery.store.domain.StoreType.KOREAN_FOOD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import hello.delivery.common.domain.Address;
+import hello.delivery.order.service.port.in.OrderCommandService;
 import hello.delivery.order.service.port.in.OrderCreateCommand;
 import hello.delivery.order.service.port.in.OrderProductCommand;
-import hello.delivery.order.service.port.in.OrderService;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.service.port.in.ProductCreateCommand;
 import hello.delivery.product.service.port.in.ProductService;
@@ -77,7 +77,7 @@ class OrderConcurrencyIntegrationTest {
     private ProductService productService;
 
     @Autowired
-    private OrderService orderService;
+    private OrderCommandService orderService;
 
     @Test
     @DisplayName("재고가 1개인 상품에 대한 동시 주문은 1건만 성공하고 재고는 0이 된다.")

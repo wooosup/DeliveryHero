@@ -1,28 +1,30 @@
+@baseUrl = http://localhost:8080
+
 ### 라이더 회원가입
-POST localhost:8080/api/riders/new
+POST {{baseUrl}}/api/riders/new
 Content-Type: application/json
 
 {
-  "name" : "없을무",
+  "name": "rider",
   "phone": "01012345678"
 }
 
 ### 라이더 로그인
-POST localhost:8080/api/riders/login
+POST {{baseUrl}}/api/riders/login
 Content-Type: application/json
 
 {
   "phone": "01012345678"
 }
 
-### 라이더 상태변경
-PATCH localhost:8080/api/riders/status
+### 라이더 상태 변경
+PATCH {{baseUrl}}/api/riders/status
 Content-Type: application/json
 
 {
-  "status" : "OFFLINE"
+  "status": "AVAILABLE"
 }
 
-### 대기중인 라이더 조회
-GET localhost:8080/api/riders/available
+### 배차 대기 라이더 조회
+GET {{baseUrl}}/api/riders/available
 Content-Type: application/json

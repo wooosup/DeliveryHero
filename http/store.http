@@ -1,52 +1,48 @@
+@baseUrl = http://localhost:8080
+
 ### 가게 생성
-POST localhost:8080/api/stores/new
+POST {{baseUrl}}/api/stores/new
 Content-Type: application/json
 
 {
-  "storeName" : "라멘다이스키보이즈",
-  "storeType" : "JAPANESE_FOOD"
+  "storeName": "ramen-shop",
+  "storeType": "JAPANESE_FOOD",
+  "openTime": "09:00:00",
+  "closeTime": "22:00:00"
 }
 
-### 자신의 가게 조회
-GET localhost:8080/api/stores/owner
+### 내 가게 조회
+GET {{baseUrl}}/api/stores/owner
 Content-Type: application/json
 
 ### 타입별 가게 조회
-GET localhost:8080/api/stores/type/JAPANESE_FOOD
+GET {{baseUrl}}/api/stores/type/JAPANESE_FOOD
 Content-Type: application/json
 
 ### 전체 가게 조회
-GET localhost:8080/api/stores/all
+GET {{baseUrl}}/api/stores/all
 Content-Type: application/json
 
-### 가게 이름으로 가게 조회
-GET localhost:8080/api/stores/search?name=라멘다이스키보이즈
+### 가게 이름으로 조회
+GET {{baseUrl}}/api/stores/search?name=ramen-shop
 Content-Type: application/json
 
-### 가게의 모든 상품 조회
-GET localhost:8080/api/stores/1
+### 가게 상품 전체 조회
+GET {{baseUrl}}/api/stores/1
 Content-Type: application/json
 
-### 판매중인 상품 조회
-GET localhost:8080/api/stores/1/selling
+### 가게 판매중 상품 조회
+GET {{baseUrl}}/api/stores/1/selling
 Content-Type: application/json
 
-### 상품 타입별 조회
-GET localhost:8080/api/stores/1/type/FOOD
+### 가게 상품 타입별 조회
+GET {{baseUrl}}/api/stores/1/type/FOOD
 Content-Type: application/json
 
 ### 오픈 시간 변경
-PATCH localhost:8080/api/stores/1/open-time
+PATCH {{baseUrl}}/api/stores/1/open-time?newOpenTime=10:00:00
 Content-Type: application/json
 
-{
-  "openTime" : "10:00"
-}
-
-### 종료 시간 변경
-PATCH localhost:8080/api/stores/1/close-time
+### 마감 시간 변경
+PATCH {{baseUrl}}/api/stores/1/close-time?newCloseTime=21:00:00
 Content-Type: application/json
-
-{
-  "closeTime" : "22:00"
-}

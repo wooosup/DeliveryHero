@@ -1,55 +1,57 @@
-### 고객 생성
-POST localhost:8080/api/users/signup
+@baseUrl = http://localhost:8080
+
+### 고객 회원가입
+POST {{baseUrl}}/api/users/signup
 Content-Type: application/json
 
 {
-  "name" : "김우섭",
-  "username" : "krs3454",
-  "password" : "password1234",
-  "address" : "대구"
+  "name": "kim",
+  "username": "customer01",
+  "password": "password1234",
+  "address": "Daegu"
 }
 
-### 사장 생성
-POST localhost:8080/api/users/owners/signup
+### 사장 회원가입
+POST {{baseUrl}}/api/users/owners/signup
 Content-Type: application/json
 
 {
-  "name" : "우섭킴",
-  "username" : "wss3454",
-  "password" : "password1234",
-  "address" : "대구"
+  "name": "lee",
+  "username": "owner01",
+  "password": "password1234",
+  "address": "Daegu"
 }
 
 ### 사장 로그인
-POST localhost:8080/api/users/login
+POST {{baseUrl}}/api/users/login
 Content-Type: application/json
 
 {
-  "username": "wss3454",
+  "username": "owner01",
   "password": "password1234"
 }
 
 ### 고객 로그인
-POST localhost:8080/api/users/login
+POST {{baseUrl}}/api/users/login
 Content-Type: application/json
 
 {
-  "username": "krs3454",
+  "username": "customer01",
   "password": "password1234"
 }
 
 ### 주소 변경
-PATCH localhost:8080/api/users/address
+PATCH {{baseUrl}}/api/users/address
 Content-Type: application/json
 
 {
-  "address" : "서울"
+  "address": "Seoul"
 }
 
 ### 비밀번호 변경
-PATCH localhost:8080/api/users/password
+PATCH {{baseUrl}}/api/users/password
 Content-Type: application/json
 
 {
-  "password" : "newpassword1234"
+  "password": "newpassword1234"
 }

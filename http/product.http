@@ -1,41 +1,58 @@
-### 상품생성
-POST localhost:8080/api/products/new
+@baseUrl = http://localhost:8080
+
+### 상품 생성
+POST {{baseUrl}}/api/products/new
 Content-Type: application/json
 
 {
-  "storeName" : "라멘다이스키보이즈",
-  "name" : "라멘",
-  "price" : 11100,
-  "type": "FOOD"
+  "storeName": "ramen-shop",
+  "name": "ramen",
+  "price": 11100,
+  "type": "FOOD",
+  "stock": 10
 }
 
-### 상품 여러개 생성
-POST localhost:8080/api/products/new/batch
+### 상품 여러 개 생성
+POST {{baseUrl}}/api/products/new/batch
 Content-Type: application/json
 
 [
   {
-    "storeName" : "라멘다이스키보이즈",
-    "name" : "초밥",
-    "price" : 15000,
-    "type": "FOOD"
+    "storeName": "ramen-shop",
+    "name": "sushi",
+    "price": 15000,
+    "type": "FOOD",
+    "stock": 10
   },
   {
-    "storeName" : "라멘다이스키보이즈",
-    "name" : "우동",
-    "price" : 9000,
-    "type": "FOOD"
+    "storeName": "ramen-shop",
+    "name": "udon",
+    "price": 9000,
+    "type": "FOOD",
+    "stock": 10
   }
 ]
 
-### 상품 상태변경
-PATCH localhost:8080/api/products/1/status
+### 전체 상품 조회
+GET {{baseUrl}}/api/products
+Content-Type: application/json
+
+### 판매중 상품 조회
+GET {{baseUrl}}/api/products/selling?storeId=1
+Content-Type: application/json
+
+### 상품 타입별 조회
+GET {{baseUrl}}/api/products/search?storeId=1&type=FOOD
+Content-Type: application/json
+
+### 상품 상태 변경
+PATCH {{baseUrl}}/api/products/1/status
 Content-Type: application/json
 
 {
-  "status" : "STOP_SELLING"
+  "status": "STOP_SELLING"
 }
 
 ### 상품 삭제
-DELETE localhost:8080/api/products/1
+DELETE {{baseUrl}}/api/products/1
 Content-Type: application/json

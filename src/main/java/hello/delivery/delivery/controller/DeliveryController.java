@@ -49,9 +49,9 @@ public class DeliveryController implements DeliveryControllerDocs {
     }
 
     @Override
-    @GetMapping("/order/{deliveryId}")
-    public ApiResponse<DeliveryResponse> getOrderForDelivery(@LoginRiderId Long riderId, @PathVariable Long deliveryId) {
-        Delivery delivery = deliveryService.findByOrderId(riderId, deliveryId);
+    @GetMapping("/order/{orderId}")
+    public ApiResponse<DeliveryResponse> getDeliveryByOrderId(@LoginRiderId Long riderId, @PathVariable Long orderId) {
+        Delivery delivery = deliveryService.findByOrderId(riderId, orderId);
         return ApiResponse.ok(DeliveryResponse.of(delivery));
     }
 

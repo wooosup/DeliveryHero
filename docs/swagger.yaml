@@ -529,7 +529,7 @@ paths:
       tags:
       - 배달
       summary: 배달 시작
-      description: 배달을 시작 상태(PICKED_UP)로 변경합니다. (라이더용)
+      description: 배달을 픽업 완료 상태(PICKED_UP)로 변경합니다. (라이더용)
       operationId: start
       parameters:
       - name: deliveryId
@@ -585,7 +585,7 @@ paths:
       tags:
       - 배달
       summary: 배차 완료
-      description: 배달을 시작 상태(ASSIGNED)로 변경합니다. (라이더용)
+      description: 배달을 배차 완료 상태(ASSIGNED)로 변경합니다. (라이더용)
       operationId: assign
       parameters:
       - name: deliveryId
@@ -958,17 +958,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseDeliveryResponse"
-  /api/deliveries/order/{deliveryId}:
+  /api/deliveries/order/{orderId}:
     get:
       tags:
       - 배달
-      summary: 배달 주문 조회
-      description: 배달에 해당하는 주문 정보를 조회합니다. (라이더용)
-      operationId: getOrderForDelivery
+      summary: 주문 기준 배달 조회
+      description: 주문 ID로 배달 정보를 조회합니다. (라이더용)
+      operationId: getDeliveryByOrderId
       parameters:
-      - name: deliveryId
+      - name: orderId
         in: path
-        description: 배달 ID
+        description: 주문 ID
         required: true
         schema:
           type: integer
@@ -1406,6 +1406,7 @@ components:
           enum:
           - OFFLINE
           - AVAILABLE
+          - ASSIGNED
           - DELIVERING
     RiderLogin:
       required:
@@ -1802,6 +1803,7 @@ components:
           enum:
           - OFFLINE
           - AVAILABLE
+          - ASSIGNED
           - DELIVERING
     ProductStatusUpdate:
       required:

@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Tag(name = "배달")
 public interface DeliveryControllerDocs {
 
-    @Operation(summary = "배차 완료", description = "배달을 시작 상태(ASSIGNED)로 변경합니다. (라이더용)")
+    @Operation(summary = "배차 완료", description = "배달을 배차 완료 상태(ASSIGNED)로 변경합니다. (라이더용)")
     ApiResponse<DeliveryResponse> assign(
             @Parameter(hidden = true) @LoginRiderId Long riderId,
             @Parameter(description = "배달 ID") @PathVariable Long deliveryId);
 
-    @Operation(summary = "배달 시작", description = "배달을 시작 상태(PICKED_UP)로 변경합니다. (라이더용)")
+    @Operation(summary = "배달 시작", description = "배달을 픽업 완료 상태(PICKED_UP)로 변경합니다. (라이더용)")
     ApiResponse<DeliveryResponse> start(
             @Parameter(hidden = true) @LoginRiderId Long riderId,
             @Parameter(description = "배달 ID") @PathVariable Long deliveryId);
@@ -31,9 +31,9 @@ public interface DeliveryControllerDocs {
             @Parameter(hidden = true) @LoginRiderId Long riderId,
             @Parameter(description = "배달 ID") @PathVariable Long deliveryId);
 
-    @Operation(summary = "배달 주문 조회", description = "배달에 해당하는 주문 정보를 조회합니다. (라이더용)")
-    ApiResponse<DeliveryResponse> getOrderForDelivery(
+    @Operation(summary = "주문 기준 배달 조회", description = "주문 ID로 배달 정보를 조회합니다. (라이더용)")
+    ApiResponse<DeliveryResponse> getDeliveryByOrderId(
             @Parameter(hidden = true) @LoginRiderId Long riderId,
-            @Parameter(description = "배달 ID") @PathVariable Long deliveryId);
+            @Parameter(description = "주문 ID") @PathVariable Long orderId);
 
 }

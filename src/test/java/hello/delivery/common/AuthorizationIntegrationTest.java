@@ -230,10 +230,10 @@ class AuthorizationIntegrationTest {
         Product product = createStoreWithProduct(owner.getId(), storeName, productName);
         Store store = product.getStore();
         Order order = createOrder(customer.getId(), store, product);
-        orderService.accept(owner.getId(), order.getId());
+        Order acceptedOrder = orderService.accept(owner.getId(), order.getId());
 
         Rider rider = createAvailableRider(riderPhone);
-        Delivery delivery = deliveryRepository.findByOrderId(order.getId()).orElseThrow();
+        Delivery delivery = deliveryRepository.save(Delivery.create(acceptedOrder));
         return deliveryRepository.save(delivery.assign(rider.getId()));
     }
 

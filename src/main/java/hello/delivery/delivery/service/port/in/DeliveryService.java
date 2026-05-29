@@ -1,11 +1,10 @@
 package hello.delivery.delivery.service.port.in;
 
 import hello.delivery.delivery.domain.Delivery;
-import hello.delivery.order.domain.Order;
 
 public interface DeliveryService {
 
-    void createDeliveryForOrder(Order order);
+    void createDeliveryForOrder(Long orderId);
 
     Delivery assign(Long id, Long riderId);
 

@@ -34,7 +34,10 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final ClockHolder clockHolder;
 
     @Transactional
-    public void createDeliveryForOrder(Order order) {
+    public void createDeliveryForOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(OrderNotFound::new);
+
         Delivery delivery = Delivery.create(order);
 
         deliveryRepository.save(delivery);

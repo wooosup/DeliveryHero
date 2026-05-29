@@ -6,7 +6,6 @@ import hello.delivery.common.exception.ForbiddenException;
 import hello.delivery.common.exception.OrderException;
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.StockException;
-import hello.delivery.delivery.service.DeliveryServiceImpl;
 import hello.delivery.mock.*;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.query.OrderQueryResult;
@@ -39,6 +38,7 @@ class OrderServiceTest {
     private FakeFinder fakeFinder;
     private FakeProductRepository fakeProductRepository;
     private FakeStoreRepository fakeStoreRepository;
+    private FakeOrderEventPublisher eventPublisher;
 
     public static final int ORDER_QUANTITY = 2;
     private static final int PRODUCT_PRICE = 20000;
@@ -59,26 +59,18 @@ class OrderServiceTest {
         fakeProductRepository = new FakeProductRepository();
         fakeStoreRepository = new FakeStoreRepository();
         TestClockHolder testClockHolder = new TestClockHolder();
-        FakeDeliveryRepository fakeDeliveryRepository = new FakeDeliveryRepository();
-        FakeRiderRepository fakeRiderRepository = new FakeRiderRepository();
+        eventPublisher = new FakeOrderEventPublisher();
         StoreServiceImpl storeService = new StoreServiceImpl(fakeStoreRepository, fakeFinder, fakeFinder, testClockHolder);
-        DeliveryServiceImpl deliveryService = new DeliveryServiceImpl(
-                fakeDeliveryRepository,
-                fakeOrderRepository,
-                fakeRiderRepository,
-                fakeFinder,
-                fakeFinder,
-                testClockHolder
-        );
 
         orderService = new OrderCommandServiceImpl(
                 fakeOrderRepository,
                 fakeProductRepository,
                 storeService,
-                deliveryService,
                 fakeFinder,
                 fakeFinder,
-                testClockHolder
+                testClockHolder,
+                eventPublisher
+
         );
         orderQueryService = new OrderQueryServiceImpl(new FakeOrderQueryRepository(fakeOrderRepository));
         setUpTestData();
@@ -128,7 +120,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문을 수락할 수 있다.")
+    @DisplayName("주문을 수락하면 배달 이벤트가 발행된다.")
     void accept() throws Exception {
         //given
         OrderCreateCommand orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
@@ -139,6 +131,9 @@ class OrderServiceTest {
 
         //then
         assertThat(acceptedOrder.getOrderStatus()).isEqualTo(ACCEPTED);
+
+        assertThat(eventPublisher.getEvents()).hasSize(1);
+        assertThat(eventPublisher.getEvents().get(0).orderId()).isEqualTo(order.getId());
     }
 
     @Test

@@ -83,7 +83,7 @@ class DeliveryServiceImplTest {
         Order order = setUpOrder();
 
         // when
-        deliveryService.createDeliveryForOrder(order);
+        deliveryService.createDeliveryForOrder(order.getId());
 
         // then
         Delivery delivery = fakeDeliveryRepository.findByOrderId(order.getId()).orElseThrow();
@@ -100,7 +100,7 @@ class DeliveryServiceImplTest {
         Order order = setUpOrder(OrderStatus.PENDING);
 
         // expect
-        assertThatThrownBy(() -> deliveryService.createDeliveryForOrder(order))
+        assertThatThrownBy(() -> deliveryService.createDeliveryForOrder(order.getId()))
                 .isInstanceOf(DeliveryException.class)
                 .hasMessageContaining("수락된 주문만 배달을 생성할 수 있습니다.");
     }

@@ -4,12 +4,13 @@ import hello.delivery.common.exception.OrderNotFound;
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.service.port.out.ClockHolder;
-import hello.delivery.delivery.service.port.in.DeliveryService;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderProduct;
+import hello.delivery.order.domain.event.OrderAcceptedEvent;
 import hello.delivery.order.service.port.in.OrderCommandService;
 import hello.delivery.order.service.port.in.OrderCreateCommand;
 import hello.delivery.order.service.port.in.OrderProductCommand;
+import hello.delivery.order.service.port.out.OrderEventPublisher;
 import hello.delivery.order.service.port.out.OrderRepository;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.service.port.out.ProductRepository;
@@ -32,10 +33,10 @@ public class OrderCommandServiceImpl implements OrderCommandService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final StoreService storeService;
-    private final DeliveryService deliveryService;
     private final StoreFinder storeFinder;
     private final UserFinder userFinder;
     private final ClockHolder clockHolder;
+    private final OrderEventPublisher eventPublisher;
 
     public Order order(Long userId, OrderCreateCommand command) {
         User user = userFinder.findByUser(userId);
@@ -54,10 +55,12 @@ public class OrderCommandServiceImpl implements OrderCommandService {
         order.validateOwner(ownerId);
         Order acceptedOrder = order.accept();
 
-        storeService.addTotalSales(acceptedOrder.getStore().getId(), acceptedOrder.getTotalPrice().getAmount());
-        deliveryService.createDeliveryForOrder(acceptedOrder);
+        Order savedOrder = orderRepository.save(acceptedOrder);
+        storeService.addTotalSales(savedOrder.getStore().getId(), savedOrder.getTotalPrice().getAmount());
 
-        return orderRepository.save(acceptedOrder);
+        eventPublisher.publish(new OrderAcceptedEvent(savedOrder.getId()));
+
+        return savedOrder;
     }
 
     @Override

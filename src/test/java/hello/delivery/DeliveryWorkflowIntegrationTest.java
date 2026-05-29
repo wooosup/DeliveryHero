@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.delivery.delivery.domain.Delivery;
 import hello.delivery.delivery.service.port.out.DeliveryRepository;
+import hello.delivery.order.domain.OrderStatus;
 import hello.delivery.order.service.port.out.OrderRepository;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.DisplayName;
@@ -27,10 +28,9 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @SpringBootTest
-@Transactional
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class DeliveryWorkflowIntegrationTest {
@@ -46,6 +46,9 @@ class DeliveryWorkflowIntegrationTest {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
 
     @Test
     @DisplayName("회원가입부터 배달 완료까지 전체 주문 흐름이 동작한다.")
@@ -99,7 +102,11 @@ class DeliveryWorkflowIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.status").value(DELIVERED.name()));
 
-        assertThat(orderRepository.findById(orderId).orElseThrow().getOrderStatus()).isEqualTo(COMPLETED);
+        OrderStatus orderStatus = transactionTemplate.execute(status -> orderRepository.findById(orderId)
+                .orElseThrow()
+                .getOrderStatus());
+
+        assertThat(orderStatus).isEqualTo(COMPLETED);
     }
 
     private void signupOwner(String username) throws Exception {

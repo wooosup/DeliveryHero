@@ -12,4 +12,6 @@ public interface OrderRepository {
 
     List<Order> findOrdersByUserId(long userId);
 
+    Optional<Order> findByIdWithLock(Long id);
+
 }

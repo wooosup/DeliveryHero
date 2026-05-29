@@ -41,6 +41,11 @@ public class FakeOrderRepository implements OrderRepository {
     }
 
     @Override
+    public Optional<Order> findByIdWithLock(Long id) {
+        return findById(id);
+    }
+
+    @Override
     public List<Order> findOrdersByUserId(long userId) {
         return data.stream()
                 .filter(order -> order.getUser().getId() == userId)

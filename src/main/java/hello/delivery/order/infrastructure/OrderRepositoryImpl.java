@@ -2,10 +2,11 @@ package hello.delivery.order.infrastructure;
 
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.service.port.out.OrderRepository;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,6 +29,11 @@ public class OrderRepositoryImpl implements OrderRepository {
         return orderJpaRepository.findOrdersByUserId(userId).stream()
                 .map(OrderEntity::toDomain)
                 .toList();
+    }
+
+    @Override
+    public Optional<Order> findByIdWithLock(Long id) {
+        return orderJpaRepository.findByIdWithLock(id).map(OrderEntity::toDomain);
     }
 
 }

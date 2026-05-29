@@ -48,7 +48,7 @@ public class OrderCommandServiceImpl implements OrderCommandService {
     }
 
     public Order accept(Long ownerId, Long orderId) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdWithLock(orderId)
                 .orElseThrow(OrderNotFound::new);
 
         order.validateOwner(ownerId);
@@ -62,7 +62,7 @@ public class OrderCommandServiceImpl implements OrderCommandService {
 
     @Override
     public Order reject(Long ownerId, Long orderId) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdWithLock(orderId)
                 .orElseThrow(OrderNotFound::new);
 
         order.validateOwner(ownerId);
@@ -74,7 +74,7 @@ public class OrderCommandServiceImpl implements OrderCommandService {
 
     @Override
     public Order cancel(Long customerId, Long orderId) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdWithLock(orderId)
                 .orElseThrow(OrderNotFound::new);
         order.validateCustomer(customerId);
         Order cancelledOrder = order.cancel();
@@ -85,7 +85,7 @@ public class OrderCommandServiceImpl implements OrderCommandService {
 
     @Override
     public Order complete(Long orderId) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdWithLock(orderId)
                 .orElseThrow(OrderNotFound::new);
         Order completedOrder = order.complete();
 

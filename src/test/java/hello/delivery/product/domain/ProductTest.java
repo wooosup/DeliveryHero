@@ -26,7 +26,7 @@ class ProductTest {
         User owner = buildOwner();
         Store store = buildStore(owner);
         // when
-        Product product = Product.of(store.getName(), "치킨", 20000, FOOD, null, store, owner);
+        Product product = Product.create(store.getName(), "치킨", 20000, FOOD, null, store, owner);
 
         // then
         assertThat(product.getName()).isEqualTo("치킨");
@@ -42,7 +42,7 @@ class ProductTest {
         User owner = buildOwner();
         Store store = buildStore(owner);
         // when
-        Product product = Product.of(store.getName(), "콜라", 1500, BEVERAGE, 5, store, owner);
+        Product product = Product.create(store.getName(), "콜라", 1500, BEVERAGE, 5, store, owner);
 
         // then
         assertThat(product.getName()).isEqualTo("콜라");
@@ -59,7 +59,7 @@ class ProductTest {
         User owner = buildOwner();
         Store store = buildStore(owner);
         // when
-        Product product = Product.of(store.getName(), "콜라", 1500, BEVERAGE, 0, store, owner);
+        Product product = Product.create(store.getName(), "콜라", 1500, BEVERAGE, 0, store, owner);
 
         // then
         assertThat(product.getName()).isEqualTo("콜라");
@@ -76,7 +76,7 @@ class ProductTest {
         User owner = buildOwner();
         Store store = buildStore(owner);
         // expect
-        assertThatThrownBy(() -> Product.of(store.getName(), "치킨", 0, FOOD, null, store, owner))
+        assertThatThrownBy(() -> Product.create(store.getName(), "치킨", 0, FOOD, null, store, owner))
                 .isInstanceOf(ProductException.class)
                 .hasMessageContaining("상품 가격은 양수여야 합니다.");
     }
@@ -88,7 +88,7 @@ class ProductTest {
         User owner = buildOwner();
         Store store = buildStore(owner);
         // expect
-        assertThatThrownBy(() -> Product.of("ㅋㅋ", "치킨", 20000, FOOD, null, store, owner))
+        assertThatThrownBy(() -> Product.create("ㅋㅋ", "치킨", 20000, FOOD, null, store, owner))
                 .isInstanceOf(ProductException.class)
                 .hasMessageContaining("가게가 일치하지 않습니다.");
     }
@@ -99,7 +99,7 @@ class ProductTest {
         // given
         User owner = buildOwner();
         Store store = buildStore(owner);
-        Product product = Product.of(store.getName(), "치킨", 20000, FOOD, null, store, owner);
+        Product product = Product.create(store.getName(), "치킨", 20000, FOOD, null, store, owner);
 
         // when
         Product result = product.changeSellingStatus(STOP_SELLING);

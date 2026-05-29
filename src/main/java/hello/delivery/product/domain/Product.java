@@ -1,7 +1,5 @@
 package hello.delivery.product.domain;
 
-import static hello.delivery.product.domain.ProductSellingStatus.*;
-
 import hello.delivery.common.domain.Money;
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.StoreException;
@@ -9,6 +7,9 @@ import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
+
+import static hello.delivery.product.domain.ProductSellingStatus.SELLING;
+import static hello.delivery.product.domain.ProductSellingStatus.SOLD_OUT;
 
 @Getter
 public class Product {
@@ -35,7 +36,7 @@ public class Product {
         this.stock = stock;
     }
 
-    public static Product of(String storeName, String name, int price, ProductType type, Integer stock, Store store, User owner) {
+    public static Product create(String storeName, String name, int price, ProductType type, Integer stock, Store store, User owner) {
         validate(storeName, name, price, type, store);
         return Product.builder()
                 .name(name)

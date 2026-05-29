@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 
         validateProductDuplicate(store, command.name());
 
-        Product product = Product.of(
+        Product product = Product.create(
                 command.storeName(),
                 command.name(),
                 command.price(),
@@ -148,7 +148,7 @@ public class ProductServiceImpl implements ProductService {
 
     private static List<Product> getProductList(Store store, User owner, List<ProductCreateCommand> request) {
         return request.stream()
-                .map(r -> Product.of(r.storeName(), r.name(), r.price(), r.type(), r.stock(), store, owner))
+                .map(r -> Product.create(r.storeName(), r.name(), r.price(), r.type(), r.stock(), store, owner))
                 .toList();
     }
 }

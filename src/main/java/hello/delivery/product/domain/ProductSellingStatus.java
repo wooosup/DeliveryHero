@@ -1,5 +1,6 @@
 package hello.delivery.product.domain;
 
+import hello.delivery.common.exception.ProductException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +15,7 @@ public enum ProductSellingStatus {
 
     public ProductSellingStatus changeStatus(ProductSellingStatus status) {
         if (this == status) {
-            throw new IllegalArgumentException("이미 " + status.text + " 상태입니다.");
+            throw new ProductException("이미 " + status.text + " 상태입니다.");
         }
         return status;
     }

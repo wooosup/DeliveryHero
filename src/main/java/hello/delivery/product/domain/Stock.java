@@ -1,10 +1,11 @@
 package hello.delivery.product.domain;
 
-import static hello.delivery.product.domain.ProductSellingStatus.*;
-
 import hello.delivery.common.exception.StockException;
 import lombok.Builder;
 import lombok.Getter;
+
+import static hello.delivery.product.domain.ProductSellingStatus.SELLING;
+import static hello.delivery.product.domain.ProductSellingStatus.SOLD_OUT;
 
 @Getter
 public class Stock {
@@ -47,7 +48,7 @@ public class Stock {
 
     private static void validate(int quantity) {
         if (quantity < 0) {
-            throw new IllegalArgumentException("재고 수량은 음수일 수 없습니다.");
+            throw new StockException("재고 수량은 음수일 수 없습니다.");
         }
     }
 

@@ -1,11 +1,13 @@
 package hello.delivery.common.controller;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import hello.delivery.common.exception.DeliveryAppException;
 import hello.delivery.common.exception.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,6 +44,14 @@ public class ExceptionController {
                 .build();
 
         return new ResponseEntity<>(response, e.getStatus());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> dataIntegrityViolationException(DataIntegrityViolationException e) {
+        log.error("데이터 무결성 위반: {}", e.getMessage());
+        ErrorResponse response = ErrorResponse.of("409", "이미 존재하는 데이터입니다.");
+
+        return new ResponseEntity<>(response, CONFLICT);
     }
 
     @ResponseStatus(INTERNAL_SERVER_ERROR)

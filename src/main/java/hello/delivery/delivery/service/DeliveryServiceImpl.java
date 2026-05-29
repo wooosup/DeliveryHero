@@ -1,10 +1,8 @@
 package hello.delivery.delivery.service;
 
-import static hello.delivery.rider.domain.RiderStatus.*;
-
+import hello.delivery.common.exception.DeliveryException;
 import hello.delivery.common.exception.DeliveryNotFound;
 import hello.delivery.common.exception.ForbiddenException;
-import hello.delivery.common.exception.DeliveryException;
 import hello.delivery.common.exception.OrderNotFound;
 import hello.delivery.common.service.port.out.ClockHolder;
 import hello.delivery.delivery.domain.Delivery;
@@ -20,6 +18,8 @@ import hello.delivery.rider.service.port.out.RiderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static hello.delivery.rider.domain.RiderStatus.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -48,6 +48,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         Rider rider = riderFinder.findByRider(riderId);
 
         rider.validateAvailable();
+        changeRiderStatus(rider, ASSIGNED);
 
         delivery = delivery.assign(rider.getId());
         return deliveryRepository.save(delivery);

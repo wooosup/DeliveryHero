@@ -1,12 +1,10 @@
 package hello.delivery.rider.domain;
 
-import static hello.delivery.rider.domain.RiderStatus.AVAILABLE;
-import static hello.delivery.rider.domain.RiderStatus.DELIVERING;
-import static hello.delivery.rider.domain.RiderStatus.OFFLINE;
-
 import hello.delivery.common.exception.RiderException;
 import lombok.Builder;
 import lombok.Getter;
+
+import static hello.delivery.rider.domain.RiderStatus.*;
 
 @Getter
 public class Rider {
@@ -54,13 +52,13 @@ public class Rider {
     }
 
     public void validateAvailable() {
-        if (status == OFFLINE) {
-            throw new RiderException("오프라인 상태에서는 배달 업무를 수행할 수 없습니다.");
+        if (status != AVAILABLE) {
+            throw new RiderException("배달을 수행할 수 없습니다.");
         }
     }
 
     public void validateCanStartDelivery() {
-        if (status != AVAILABLE) {
+        if (status != ASSIGNED) {
             throw new RiderException("배달을 시작할 수 없는 상태입니다. (현재 상태: " + status.getDescription() + ")");
         }
     }

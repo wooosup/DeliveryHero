@@ -135,7 +135,7 @@ class DeliveryServiceImplTest {
     void start() {
         // given
         Order order = setUpOrder();
-        Rider rider = buildRider(AVAILABLE);
+        Rider rider = buildRider(RiderStatus.ASSIGNED);
 
         Delivery delivery = Delivery.builder()
                 .id(1L)

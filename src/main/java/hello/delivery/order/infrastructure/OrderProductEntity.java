@@ -13,9 +13,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,15 +47,16 @@ public class OrderProductEntity extends BaseEntity {
         this.quantity = quantity;
     }
 
-    public static List<OrderProductEntity> of(List<OrderProduct> orderProducts, OrderEntity orderEntity) {
-        return orderProducts.stream()
-                .map(op -> OrderProductEntity.builder()
-                        .order(orderEntity)
-                        .product(ProductEntity.of(op.getProduct()))
-                        .price(op.getPrice())
-                        .quantity(op.getQuantity())
-                        .build())
-                .collect(Collectors.toCollection(ArrayList::new));
+    public static OrderProductEntity of(OrderProduct orderProduct) {
+        return OrderProductEntity.builder()
+                .product(ProductEntity.of(orderProduct.getProduct()))
+                .price(orderProduct.getPrice())
+                .quantity(orderProduct.getQuantity())
+                .build();
+    }
+
+    void assignOrder(OrderEntity order) {
+        this.order = order;
     }
 
     public OrderProduct toDomain() {

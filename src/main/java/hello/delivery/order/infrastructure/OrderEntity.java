@@ -1,32 +1,21 @@
 package hello.delivery.order.infrastructure;
 
-import hello.delivery.common.infrastructure.BaseEntity;
 import hello.delivery.common.domain.Address;
 import hello.delivery.common.domain.Money;
+import hello.delivery.common.infrastructure.BaseEntity;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderStatus;
 import hello.delivery.store.infrastructure.StoreEntity;
 import hello.delivery.user.infrastructure.UserEntity;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Entity
@@ -62,16 +51,26 @@ public class OrderEntity extends BaseEntity {
 
     public static OrderEntity of(Order order) {
         OrderEntity orderEntity = new OrderEntity();
+
         orderEntity.id = order.getId();
         orderEntity.totalPrice = order.getTotalPrice();
         orderEntity.user = UserEntity.of(order.getUser());
         orderEntity.store = StoreEntity.of(order.getStore());
         orderEntity.address = order.getAddress();
         orderEntity.orderedAt = order.getOrderedAt();
-        List<OrderProductEntity> children = OrderProductEntity.of(order.getOrderProducts(), orderEntity);
-        orderEntity.orderProducts.addAll(children);
         orderEntity.orderStatus = order.getOrderStatus();
+
+        order.getOrderProducts().stream()
+                .map(OrderProductEntity::of)
+                .forEach(orderEntity::addOrderProduct);
+
         return orderEntity;
+    }
+
+    private void addOrderProduct(OrderProductEntity orderProduct) {
+        Objects.requireNonNull(orderProduct, "주문 상품은 필수입니다.");
+        this.orderProducts.add(orderProduct);
+        orderProduct.assignOrder(this);
     }
 
     public Order toDomain() {
